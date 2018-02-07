@@ -15,6 +15,8 @@ public class ReceiveThread extends Thread {
 		this.manager = manager;
 	
 		buffer = new byte[NetworkManager.DEFAULT_BUFFER_SIZE];
+		
+		setDaemon(true);
 	}
 
 	public void stopListening() {
