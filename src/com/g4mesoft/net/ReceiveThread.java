@@ -2,6 +2,7 @@ package com.g4mesoft.net;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.SocketException;
 
 public class ReceiveThread extends Thread {
 
@@ -33,6 +34,8 @@ public class ReceiveThread extends Thread {
 			try {
 				manager.socket.receive(packet);
 				manager.receiveDatagramPacket(packet);
+			} catch (SocketException se) {
+				break;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
