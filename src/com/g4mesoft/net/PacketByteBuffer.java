@@ -34,9 +34,26 @@ public class PacketByteBuffer {
 	}
 
 	private void doubleCapacity() {
-		byte[] tmp = new byte[data.length << 1];
+		setCapacity(data.length << 1);
+	}
+	
+	private void setCapacity(int newCapacity) {
+		byte[] tmp = new byte[newCapacity];
 		System.arraycopy(data, 0, tmp, 0, data.length);
 		data = tmp;
+	}
+	
+	public void putBytes(byte[] data) {
+		putBytes(data, 0, data.length);
+	}
+
+	public void putBytes(byte[] data, int pos, int length) {
+		if (this.pos + length >= this.data.length)
+			setCapacity(pos + length + 1);
+		
+		System.arraycopy(data, pos, this.data, this.pos, length);
+		this.pos += length;
+		size += length;
 	}
 	
 	public void putByte(byte value) {
@@ -145,6 +162,10 @@ public class PacketByteBuffer {
 		size = 0;
 	}
 	
+	public void resetPos() {
+		pos = 0;
+	}
+
 	public byte[] getData() {
 		return data;
 	}
