@@ -145,7 +145,7 @@ public class PacketByteBuffer {
 		size = 0;
 	}
 	
-	public byte[] toByteArray() {
+	public byte[] getData() {
 		return data;
 	}
 }
