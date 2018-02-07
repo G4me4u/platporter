@@ -3,7 +3,6 @@ package com.g4mesoft.net;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.LinkedList;
-import java.util.Queue;
 
 import com.g4mesoft.net.packet.IPacket;
 import com.sun.xml.internal.ws.Closeable;
@@ -20,8 +19,10 @@ public abstract class NetworkManager implements Closeable {
 	private final PacketByteBuffer sendBuffer;
 	private final PacketByteBuffer receiveBuffer;
 	
-	private final Queue<IPacket> packetsToSend;
-	private final Queue<IPacket> packetsToProcess;
+	private final PacketLinkedList[] packetsToSend;
+	private final PacketLinkedList[] packetsToProcess;
+	private int packetsToSendIndex;
+	private int packetsToProcessIndex;
 	
 	public NetworkManager(DatagramSocket socket) {
 		this.socket = socket;
@@ -31,8 +32,13 @@ public abstract class NetworkManager implements Closeable {
 		sendBuffer = new PacketByteBuffer(DEFAULT_BUFFER_SIZE);
 		receiveBuffer = new PacketByteBuffer(DEFAULT_BUFFER_SIZE);
 		
-		packetsToSend = new LinkedList<IPacket>();
-		packetsToProcess = new LinkedList<IPacket>();
+		packetsToSend = new PacketLinkedList[2];
+		packetsToSend[0] = new PacketLinkedList();
+		packetsToSend[1] = new PacketLinkedList();
+		
+		packetsToProcess = new PacketLinkedList[2];
+		packetsToProcess[0] = new PacketLinkedList();
+		packetsToProcess[1] = new PacketLinkedList();
 		
 		receiveThread.startListening();
 	}
@@ -47,13 +53,19 @@ public abstract class NetworkManager implements Closeable {
 	protected abstract boolean sendPacket(IPacket packet);
 	
 	protected void sendAllPackets() {
+		PacketLinkedList packetsToSend = this.packetsToSend[packetsToSendIndex];
+		packetsToSendIndex ^= 1;
+		
 		int numToSend = Math.min(packetsToSend.size(), MAX_BATCH_PACKETS);
 		while (numToSend-- > 0)
 			sendPacket(packetsToSend.poll());
 	}
 	
 	protected void processAllPackets() {
-		while (!packetsToProcess.isEmpty())
+		PacketLinkedList packetsToProcess = this.packetsToProcess[packetsToProcessIndex];
+		packetsToProcessIndex ^= 1;
+
+		while (packetsToProcess.size() > 0)
 			packetsToProcess.poll().processPacket(this);
 	}
 
@@ -63,7 +75,7 @@ public abstract class NetworkManager implements Closeable {
 	}
 	
 	public void addPacketToSend(IPacket packet) {
-		packetsToSend.add(packet);
+		packetsToSend[packetsToSendIndex].add(packet);
 	}
 	
 	public void receiveDatagramPacket(DatagramPacket datagramPacket) {
@@ -72,26 +84,29 @@ public abstract class NetworkManager implements Closeable {
 		                       datagramPacket.getOffset(),
 		                       datagramPacket.getLength());
 		receiveBuffer.resetPos();
-		
+
 		int packetId = receiveBuffer.getInt();
 		Class<? extends IPacket> packetClazz = PacketRegistry.getPacketClass(packetId);
 		
-		IPacket packet = null;
+		IPacket packet;
 		try {
 			packet = packetClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
+			return;
 		}
 		
-		if (packet != null) {
-			packet.read(receiveBuffer);
-			packetsToProcess.add(packet);
-		}
+		packet.read(receiveBuffer);
+		packetsToProcess[packetsToProcessIndex].add(packet);
 	}
 	
 	@Override
 	public void close() {
 		receiveThread.stopListening();
 		socket.close();
+	}
+	
+	@SuppressWarnings("serial")
+	private class PacketLinkedList extends LinkedList<IPacket> {
 	}
 }
