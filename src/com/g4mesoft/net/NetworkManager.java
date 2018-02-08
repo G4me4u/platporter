@@ -2,6 +2,7 @@ package com.g4mesoft.net;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
 import java.util.LinkedList;
 
 import com.g4mesoft.net.packet.Packet;
@@ -55,27 +56,27 @@ public abstract class NetworkManager implements Closeable {
 	protected abstract boolean sendPacket(Packet packet, Object identifier);
 	
 	protected void sendAllPackets() {
-		PacketLinkedList packetsToSend = this.packetsToSend[packetsToSendIndex];
+		PacketLinkedList packets = packetsToSend[packetsToSendIndex];
 		packetsToSendIndex ^= 1;
 		
-		int numToSend = Math.min(packetsToSend.size(), MAX_BATCH_PACKETS);
+		int numToSend = Math.min(packets.size(), MAX_BATCH_PACKETS);
 		while (numToSend-- > 0) {
-			PacketEntry packetEntry = packetsToSend.poll();
+			PacketEntry packetEntry = packets.poll();
 			sendPacket(packetEntry.packet, packetEntry.identifier);
 		}
 	}
 	
 	protected void processAllPackets() {
-		PacketLinkedList packetsToProcess = this.packetsToProcess[packetsToProcessIndex];
+		PacketLinkedList packets = packetsToProcess[packetsToProcessIndex];
 		packetsToProcessIndex ^= 1;
 
-		while (packetsToProcess.size() > 0)
-			packetsToProcess.poll().packet.processPacket(this);
+		while (packets.size() > 0)
+			packets.poll().packet.processPacket(this);
 	}
 
 	public void update() {
-		sendAllPackets();
 		processAllPackets();
+		sendAllPackets();
 	}
 	
 	public void addPacketToSend(Packet packet) {
@@ -98,7 +99,7 @@ public abstract class NetworkManager implements Closeable {
 		
 		int packetId = receiveBuffer.getInt();
 		Class<? extends Packet> packetClazz = PacketRegistry.getPacketClass(packetId);
-		
+
 		Packet packet;
 		try {
 			packet = packetClazz.newInstance();
@@ -117,7 +118,7 @@ public abstract class NetworkManager implements Closeable {
 			packetsToProcess[packetsToProcessIndex].add(new PacketEntry(packet, null));
 	}
 	
-	private boolean confirmPacket(Packet packet) {
+	protected boolean confirmPacket(Packet packet) {
 		return true;
 	}
 	
@@ -127,6 +128,10 @@ public abstract class NetworkManager implements Closeable {
 	
 	public boolean isClient() {
 		return side == NetworkSide.CLIENT;
+	}
+	
+	public SocketAddress getAddress() {
+		return socket.getLocalSocketAddress();
 	}
 	
 	@Override

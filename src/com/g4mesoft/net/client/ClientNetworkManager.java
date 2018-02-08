@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.UUID;
 
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
@@ -15,14 +16,27 @@ public class ClientNetworkManager extends NetworkManager {
 
 	public static final long CLIENT_HANDSHAKE_SEQUENCE = 0x636c69656e74L;
 	
+	private SocketAddress serverAddress;
+
+	private boolean connected;
+	private UUID connectionUUID;
+	
 	public ClientNetworkManager() throws SocketException {
 		super(new DatagramSocket(), NetworkSide.CLIENT);
 	}
 
 	public void connect(SocketAddress serverAddress) throws SocketException {
-		socket.connect(serverAddress);
+		this.serverAddress = serverAddress;
 		
+		connected = false;
+		socket.connect(serverAddress);
+
 		addPacketToSend(new C00HandshakePacket(CLIENT_HANDSHAKE_SEQUENCE));
+	}
+
+	@Override
+	protected boolean confirmPacket(Packet packet) {
+		return serverAddress != null && serverAddress.equals(packet.address);
 	}
 	
 	@Override
@@ -35,7 +49,17 @@ public class ClientNetworkManager extends NetworkManager {
 		}
 		return true;
 	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	public UUID getConnectionUUID() {
+		return connectionUUID;
+	}
 
 	public void makeHandshake(S00HandshakePacket handshakePacket) {
+		connected = true;
+		connectionUUID = handshakePacket.clientUUID;
 	}
 }

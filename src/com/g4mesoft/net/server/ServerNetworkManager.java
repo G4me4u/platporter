@@ -71,7 +71,7 @@ public class ServerNetworkManager extends NetworkManager {
 			clientUUID = UUID.randomUUID();
 		} while (connectedClients.containsKey(clientUUID));
 		
-		addPacketToSend(new S00HandshakePacket(SERVER_HANDSHAKE, seq + 1L, clientUUID));
+		addPacketToSend(new S00HandshakePacket(SERVER_HANDSHAKE, seq + 1L, clientUUID), clientUUID);
 		connectedClients.put(clientUUID, new ClientConnection(address, clientUUID));
 	}
 }
