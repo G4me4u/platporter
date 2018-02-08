@@ -58,7 +58,7 @@ public abstract class NetworkManager implements Closeable {
 	protected void sendAllPackets() {
 		PacketLinkedList packets = packetsToSend[packetsToSendIndex];
 		packetsToSendIndex ^= 1;
-		
+
 		int numToSend = Math.min(packets.size(), MAX_BATCH_PACKETS);
 		while (numToSend-- > 0) {
 			PacketEntry packetEntry = packets.poll();

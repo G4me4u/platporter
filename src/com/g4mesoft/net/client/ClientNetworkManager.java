@@ -11,18 +11,23 @@ import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
+import com.g4mesoft.platporter.PlatPorterMain;
 
 public class ClientNetworkManager extends NetworkManager {
 
-	public static final long CLIENT_HANDSHAKE_SEQUENCE = 0x636c69656e74L;
+	public static final long CLIENT_HANDSHAKE = 0x636c69656e74L;
 	
 	private SocketAddress serverAddress;
 
 	private boolean connected;
 	private UUID connectionUUID;
 	
-	public ClientNetworkManager() throws SocketException {
+	private PlatPorterMain main;
+	
+	public ClientNetworkManager(PlatPorterMain main) throws SocketException {
 		super(new DatagramSocket(), NetworkSide.CLIENT);
+		
+		this.main = main;
 	}
 
 	public void connect(SocketAddress serverAddress) throws SocketException {
@@ -31,7 +36,7 @@ public class ClientNetworkManager extends NetworkManager {
 		connected = false;
 		socket.connect(serverAddress);
 
-		addPacketToSend(new C00HandshakePacket(CLIENT_HANDSHAKE_SEQUENCE));
+		addPacketToSend(new C00HandshakePacket(CLIENT_HANDSHAKE));
 	}
 
 	@Override
@@ -59,7 +64,12 @@ public class ClientNetworkManager extends NetworkManager {
 	}
 
 	public void makeHandshake(S00HandshakePacket handshakePacket) {
+		if (connected || handshakePacket.acknowledgement != CLIENT_HANDSHAKE + 1L)
+			return;
+		
 		connected = true;
 		connectionUUID = handshakePacket.clientUUID;
+		
+		addPacketToSend(new C00HandshakePacket(handshakePacket.sequence + 1L));
 	}
 }

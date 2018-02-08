@@ -29,7 +29,7 @@ public class C00HandshakePacket extends Packet {
 	@Override
 	public void processPacket(NetworkManager manager) {
 		if (manager.isServer())
-			((ServerNetworkManager)manager).makeHandshake(this);
+			((ServerNetworkManager)manager).handleHandshake(this);
 	}
 	
 	@Override
