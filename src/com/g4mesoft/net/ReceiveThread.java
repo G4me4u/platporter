@@ -13,7 +13,7 @@ public class ReceiveThread extends Thread {
 	
 	public ReceiveThread(NetworkManager manager) {
 		this.manager = manager;
-	
+		
 		buffer = new byte[NetworkManager.DEFAULT_BUFFER_SIZE];
 		
 		setDaemon(true);
