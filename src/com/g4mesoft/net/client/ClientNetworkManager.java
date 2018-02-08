@@ -10,6 +10,7 @@ import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
+import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
 import com.g4mesoft.platporter.PlatPorterMain;
 
@@ -70,6 +71,10 @@ public class ClientNetworkManager extends NetworkManager {
 		connected = true;
 		connectionUUID = handshakePacket.clientUUID;
 		
-		addPacketToSend(new C00HandshakePacket(handshakePacket.sequence + 1L));
+		addPacketToSend(new C01AcknowledgePacket(handshakePacket.sequence + 1L, connectionUUID));
+	}
+
+	public void setAngle(float angle) {
+		main.setAngle(angle);
 	}
 }
