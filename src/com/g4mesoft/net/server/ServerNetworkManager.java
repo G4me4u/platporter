@@ -82,7 +82,10 @@ public class ServerNetworkManager extends NetworkManager {
 		} while (connectedClients.containsKey(clientUUID));
 		
 		addPacketToSend(new S00HandshakePacket(SERVER_HANDSHAKE, seq + 1L, clientUUID), clientUUID);
-		clientsToConfirm.add(new ClientConnection(address, clientUUID));
+		
+		ClientConnection client = new ClientConnection(address, clientUUID);
+		connectedClients.put(clientUUID, client);
+		clientsToConfirm.add(client);
 	}
 	
 	public void handleAcknowledgement(C01AcknowledgePacket acknowledgePacket) {
@@ -101,7 +104,6 @@ public class ServerNetworkManager extends NetworkManager {
 				continue;
 			
 			clientsToConfirm.remove(i);
-			connectedClients.put(client.getClientUUID(), client);
 			break;
 		}
 	}
