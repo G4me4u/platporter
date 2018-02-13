@@ -1,0 +1,6 @@
+title=PlatPorter v0.1
+preferredWidth=512
+preferredHeight=512
+resizable=false
+centered=true
+displayMode=normal
