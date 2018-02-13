@@ -12,7 +12,7 @@ import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
 import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
-import com.g4mesoft.platporter.PlatPorterMain;
+import com.g4mesoft.platporter.PlatPorter;
 
 public class ClientNetworkManager extends NetworkManager {
 
@@ -23,12 +23,12 @@ public class ClientNetworkManager extends NetworkManager {
 	private boolean connected;
 	private UUID connectionUUID;
 	
-	private PlatPorterMain main;
+	private PlatPorter platPorter;
 	
-	public ClientNetworkManager(PlatPorterMain main) throws SocketException {
+	public ClientNetworkManager(PlatPorter platPorter) throws SocketException {
 		super(new DatagramSocket(), NetworkSide.CLIENT);
 		
-		this.main = main;
+		this.platPorter = platPorter;
 	}
 
 	public void connect(SocketAddress serverAddress) throws SocketException {
@@ -72,9 +72,5 @@ public class ClientNetworkManager extends NetworkManager {
 		connectionUUID = handshakePacket.clientUUID;
 		
 		addPacketToSend(new C01AcknowledgePacket(handshakePacket.sequence + 1L, connectionUUID));
-	}
-
-	public void setAngle(float angle) {
-		main.setAngle(angle);
 	}
 }
