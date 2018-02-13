@@ -11,6 +11,8 @@ import com.g4mesoft.graphic.Renderer2D;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.net.client.ClientNetworkManager;
+import com.g4mesoft.util.IScheduledTask;
+import com.g4mesoft.util.ScheduledTaskManager;
 
 public class PlatPorter extends Application {
 
@@ -23,7 +25,9 @@ public class PlatPorter extends Application {
 	private BufferedImage image;
 	private int[] pixels;
 	private Screen2D screen;
-
+	
+	private ScheduledTaskManager taskManager;
+	
 	@Override
 	public void init() {
 		super.init();
@@ -35,9 +39,49 @@ public class PlatPorter extends Application {
 			se.printStackTrace();
 		}
 		
+		IScheduledTask task1 = new IScheduledTask() {
+			
+			@Override
+			public void doTask() {
+				
+				
+				
+				taskManager.addTask(() -> System.out.println("This is an automated added task"), 10, true);
+			}
+		};
+		
+		IScheduledTask task2 = new IScheduledTask() {
+			
+			@Override
+			public void doTask() {
+				System.out.println("Once a second");
+				
+			}
+		};
+		
+		IScheduledTask task3 = new IScheduledTask() {
+			
+			@Override
+			public void doTask() {
+				System.out.println("Every second second");
+			}
+		};
+		
+		IScheduledTask task4 = new IScheduledTask() {
+			
+			@Override
+			public void doTask() {
+				System.out.println("Another every second second");
+			}
+		};
+		
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		screen = new Screen2D(pixels, WIDTH, HEIGHT);
+
+		taskManager = new ScheduledTaskManager();
+
+		
 	}
 	
 	@Override
@@ -49,8 +93,9 @@ public class PlatPorter extends Application {
 	
 	@Override
 	protected void tick() {
-		client.update();
+		taskManager.update();
 		
+		client.update();
 		if (!client.isConnected())
 			return;
 	}
