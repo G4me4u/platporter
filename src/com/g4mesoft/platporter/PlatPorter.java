@@ -10,7 +10,9 @@ import com.g4mesoft.Application;
 import com.g4mesoft.graphic.Renderer2D;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.input.key.KeyInputListener;
 import com.g4mesoft.net.client.ClientNetworkManager;
+import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.util.ScheduledTaskManager;
 
 public class PlatPorter extends Application {
@@ -30,6 +32,8 @@ public class PlatPorter extends Application {
 	@Override
 	public void init() {
 		super.init();
+		
+		KeyInputListener.getInstance().registerDisplay(getDisplay());
 		
 		try {
 			client = new ClientNetworkManager(this);
@@ -56,8 +60,8 @@ public class PlatPorter extends Application {
 		taskManager.update();
 		
 		client.update();
-		if (!client.isConnected())
-			return;
+		
+		KeyInputListener.getInstance().updateKeys();
 	}
 
 	@Override
