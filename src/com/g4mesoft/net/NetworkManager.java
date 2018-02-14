@@ -6,6 +6,7 @@ import java.net.SocketAddress;
 import java.util.LinkedList;
 
 import com.g4mesoft.net.packet.Packet;
+import com.g4mesoft.platporter.PlatPorter;
 import com.sun.xml.internal.ws.Closeable;
 
 public abstract class NetworkManager implements Closeable {
@@ -15,6 +16,7 @@ public abstract class NetworkManager implements Closeable {
 	
 	protected final DatagramSocket socket;
 	public final NetworkSide side;
+	protected final PlatPorter platPorter;
 	
 	protected final ReceiveThread receiveThread;
 	
@@ -26,9 +28,12 @@ public abstract class NetworkManager implements Closeable {
 	private int packetsToSendIndex;
 	private int packetsToProcessIndex;
 	
-	public NetworkManager(DatagramSocket socket, NetworkSide side) {
+	protected long uptime;
+	
+	public NetworkManager(DatagramSocket socket, NetworkSide side, PlatPorter platPorter) {
 		this.socket = socket;
 		this.side = side;
+		this.platPorter = platPorter;
 		
 		receiveThread = new ReceiveThread(this);
 
@@ -75,6 +80,8 @@ public abstract class NetworkManager implements Closeable {
 	}
 
 	public void update() {
+		uptime++;
+		
 		processAllPackets();
 		sendAllPackets();
 	}
@@ -132,6 +139,10 @@ public abstract class NetworkManager implements Closeable {
 	
 	public SocketAddress getAddress() {
 		return socket.getLocalSocketAddress();
+	}
+	
+	public long getUpTime() {
+		return uptime;
 	}
 	
 	@Override

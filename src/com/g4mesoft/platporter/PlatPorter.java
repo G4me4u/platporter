@@ -73,6 +73,10 @@ public class PlatPorter extends Application {
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 	}
 	
+	public ScheduledTaskManager getTaskManager() {
+		return taskManager;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		new PlatPorter().start();
 	}

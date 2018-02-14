@@ -8,7 +8,9 @@ import java.util.Map;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
 import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
+import com.g4mesoft.net.packet.client.C02PingPacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
+import com.g4mesoft.net.packet.server.S01PongPacket;
 
 public final class PacketRegistry {
 
@@ -44,7 +46,12 @@ public final class PacketRegistry {
 		// Handshake
 		addPacketEntry(C00HandshakePacket.class);
 		addPacketEntry(C01AcknowledgePacket.class);
-
+		
 		addPacketEntry(S00HandshakePacket.class);
+		
+		// Ping pong
+		addPacketEntry(C02PingPacket.class);
+		
+		addPacketEntry(S01PongPacket.class);
 	}
 }

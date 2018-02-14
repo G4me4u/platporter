@@ -10,6 +10,8 @@ public class ClientConnection {
 	
 	private boolean connectionConfirmed;
 	
+	private long lastPingTime;
+	
 	public ClientConnection(SocketAddress address, UUID clientUUID) {
 		this.address = address;
 		this.clientUUID = clientUUID;
@@ -31,5 +33,13 @@ public class ClientConnection {
 	
 	public boolean isConnectionConfirmed() {
 		return connectionConfirmed;
+	}
+	
+	public void setLastPingTime(long time) {
+		lastPingTime = time;
+	}
+	
+	public long getLastPingTime() {
+		return lastPingTime;
 	}
 }

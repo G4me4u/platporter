@@ -17,22 +17,50 @@ import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
 import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
+import com.g4mesoft.net.packet.client.C02PingPacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
+import com.g4mesoft.net.packet.server.S01PongPacket;
+import com.g4mesoft.platporter.PlatPorter;
 
 public class ServerNetworkManager extends NetworkManager {
 
-	private static final long SERVER_HANDSHAKE = 0x736572766572L;
+	public static final long SERVER_HANDSHAKE = 0x736572766572L;
+	
+	public static final long MAX_PING_INTERVAL = 100;
 	
 	private Map<UUID, ClientConnection> connectedClients;
 	private List<ClientConnection> clientsToConfirm;
 	
-	public ServerNetworkManager(int port) throws SocketException {
-		super(new DatagramSocket(port), NetworkSide.SERVER);
+	private List<ClientConnection> clientsToDisconnect;
+	
+	public ServerNetworkManager(int port, PlatPorter platPorter) throws SocketException {
+		super(new DatagramSocket(port), NetworkSide.SERVER, platPorter);
 	
 		connectedClients = new HashMap<UUID, ClientConnection>();
 		clientsToConfirm = new ArrayList<ClientConnection>();
+		
+		clientsToDisconnect = new ArrayList<ClientConnection>();
 	}
 
+	@Override
+	public void update() {
+		super.update();
+		
+		for (ClientConnection client : connectedClients.values()) {
+			if (uptime - client.getLastPingTime() < MAX_PING_INTERVAL)
+				disconnectClient(client);
+		}
+		
+		if (!clientsToDisconnect.isEmpty()) {
+			for (ClientConnection client : clientsToDisconnect) {
+				if (!client.isConnectionConfirmed())
+					clientsToConfirm.remove(client);
+				connectedClients.remove(client.getClientUUID());
+			}
+			clientsToDisconnect.clear();
+		}
+	}
+	
 	@Override
 	protected boolean sendPacket(Packet packet, Object identifier) {
 		ClientConnection client = connectedClients.get(identifier);
@@ -67,6 +95,18 @@ public class ServerNetworkManager extends NetworkManager {
 		return null;
 	}
 	
+	public void disconnectClient(UUID clientUUID) {
+		disconnectClient(connectedClients.get(clientUUID));
+	}
+
+	public void disconnectClient(ClientConnection client) {
+		if (client == null || !connectedClients.containsKey(client.getClientUUID()))
+			return;
+		if (clientsToDisconnect.contains(client))
+			return;
+		clientsToDisconnect.add(client);
+	}
+	
 	public void handleHandshake(C00HandshakePacket handshakePacket) {
 		long seq = handshakePacket.sequence;
 		if (seq != ClientNetworkManager.CLIENT_HANDSHAKE)
@@ -86,6 +126,8 @@ public class ServerNetworkManager extends NetworkManager {
 		ClientConnection client = new ClientConnection(address, clientUUID);
 		connectedClients.put(clientUUID, client);
 		clientsToConfirm.add(client);
+		
+		client.setLastPingTime(uptime);
 	}
 	
 	public void handleAcknowledgement(C01AcknowledgePacket acknowledgePacket) {
@@ -106,5 +148,15 @@ public class ServerNetworkManager extends NetworkManager {
 			clientsToConfirm.remove(i);
 			break;
 		}
+	}
+
+	public void processPing(C02PingPacket pingPacket) {
+		ClientConnection client = getClient(pingPacket.clientUUID, pingPacket.address);
+		if (client == null) 
+			return;
+		
+		long pingInterval = uptime - client.getLastPingTime();
+		client.setLastPingTime(uptime);
+		addPacketToSend(new S01PongPacket(pingInterval), client.getClientUUID());
 	}
 }
