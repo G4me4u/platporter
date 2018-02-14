@@ -36,17 +36,16 @@ public class ScheduledTaskManager {
 			TaskEntry task = itr.next();
 			if (task.time > timer)
 				break;
-			task.scheduledTask.doTask();
-			itr.remove();
-			if (task.repeat) {
+			if (task.scheduledTask.doTask()) {
 				task.time += task.interval;
 				tasksToAdd.add(task);
 			}
+			itr.remove();
 		}
 	}
 	
-	public void addTask(IScheduledTask scheduledTask, long interval, boolean repeat) {
-		tasksToAdd.add(new TaskEntry(taskCounter++, scheduledTask, interval, repeat));
+	public void addTask(IScheduledTask scheduledTask, long interval) {
+		tasksToAdd.add(new TaskEntry(taskCounter++, scheduledTask, interval));
 	}
 	
 	private class TaskEntry implements Comparable<TaskEntry> {
@@ -55,16 +54,14 @@ public class ScheduledTaskManager {
 
 		private IScheduledTask scheduledTask;
 		private long interval;
-		private boolean repeat;
 
 		private long time;
 		
-		private TaskEntry(long taskId, IScheduledTask scheduledTask, long interval, boolean repeat){
+		private TaskEntry(long taskId, IScheduledTask scheduledTask, long interval){
 			this.taskId = taskId;
 
 			this.scheduledTask = scheduledTask;
 			this.interval = interval;
-			this.repeat = repeat;
 			
 
 			this.time = ScheduledTaskManager.this.timer + interval;
@@ -75,25 +72,6 @@ public class ScheduledTaskManager {
 			if (time != other.time)
 				return Long.compare(time, other.time);
 			return Long.compare(taskId, other.taskId);
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof TaskEntry)
-				return equals((TaskEntry)o);
-			return false;
-		}
-		
-		public boolean equals(TaskEntry o) {
-			if (o == null)
-				return false;
-			if (o.time != time)
-				return false;
-			if (o.interval != interval)
-				return false;
-			if (o.repeat != repeat)
-				return false;
-			return o.scheduledTask.equals(scheduledTask);
 		}
 	}
 }
