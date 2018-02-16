@@ -60,7 +60,7 @@ public class ClientNetworkManager extends NetworkManager {
 	@Override
 	public void update() {
 		super.update();
-		if (connected && (uptime - lastServerPong < MAX_PONG_INTERVAL))
+		if (connected && (uptime - lastServerPong > MAX_PONG_INTERVAL))
 			disconnect();
 	}
 
