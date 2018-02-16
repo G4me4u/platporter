@@ -11,7 +11,6 @@ import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00HandshakePacket;
 import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
-import com.g4mesoft.net.packet.client.C02PingPacket;
 import com.g4mesoft.net.packet.server.S00HandshakePacket;
 import com.g4mesoft.net.packet.server.S01PongPacket;
 import com.g4mesoft.platporter.PlatPorter;
@@ -26,6 +25,7 @@ public class ClientNetworkManager extends NetworkManager {
 	private SocketAddress serverAddress;
 
 	private boolean connected;
+	private boolean handshaking;
 	private UUID connectionUUID;
 	
 	private long lastServerPong;
@@ -42,18 +42,25 @@ public class ClientNetworkManager extends NetworkManager {
 		socket.connect(serverAddress);
 
 		addPacketToSend(new C00HandshakePacket(CLIENT_HANDSHAKE));
+
+		handshaking = true;
 	}
 	
 	public void disconnect() {
+		if (!connected)
+			return;
+		
 		serverAddress = null;
 		connected = false;
+		handshaking = false;
 
 		socket.disconnect();
 	}
 
 	@Override
 	public void update() {
-		if (uptime - lastServerPong < MAX_PONG_INTERVAL)
+		super.update();
+		if (connected && (uptime - lastServerPong < MAX_PONG_INTERVAL))
 			disconnect();
 	}
 
@@ -79,15 +86,11 @@ public class ClientNetworkManager extends NetworkManager {
 		
 		connected = true;
 		connectionUUID = handshakePacket.clientUUID;
+		handshaking = false;
 		
 		lastServerPong = uptime;
 		
-		platPorter.getTaskManager().addTask(() -> {
-			if (!connected)
-				return false;
-			addPacketToSend(new C02PingPacket(connectionUUID));
-			return true;
-		}, PING_INTERVAL);
+		platPorter.getTaskManager().addTask(new PingTask(this), PING_INTERVAL);
 		
 		addPacketToSend(new C01AcknowledgePacket(handshakePacket.sequence + 1L, connectionUUID));
 	}
@@ -102,6 +105,10 @@ public class ClientNetworkManager extends NetworkManager {
 	
 	public boolean isConnected() {
 		return connected;
+	}
+	
+	public boolean isHandshaking() {
+		return handshaking;
 	}
 	
 	public UUID getConnectionUUID() {
