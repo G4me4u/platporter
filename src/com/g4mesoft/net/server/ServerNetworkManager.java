@@ -13,13 +13,9 @@ import java.util.UUID;
 
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
-import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.packet.Packet;
-import com.g4mesoft.net.packet.client.C00HandshakePacket;
-import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
-import com.g4mesoft.net.packet.client.C02PingPacket;
-import com.g4mesoft.net.packet.server.S00HandshakePacket;
-import com.g4mesoft.net.packet.server.S01PongPacket;
+import com.g4mesoft.net.packet.client.C00PingPacket;
+import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.platporter.PlatPorter;
 
 public class ServerNetworkManager extends NetworkManager {
@@ -29,16 +25,12 @@ public class ServerNetworkManager extends NetworkManager {
 	public static final long MAX_PING_INTERVAL = 100;
 	
 	private Map<UUID, ClientConnection> connectedClients;
-	private List<ClientConnection> clientsToConfirm;
-	
 	private List<ClientConnection> clientsToDisconnect;
 	
 	public ServerNetworkManager(int port, PlatPorter platPorter) throws SocketException {
-		super(new DatagramSocket(port), NetworkSide.SERVER, platPorter);
+		super(new DatagramSocket(port), NetworkSide.SERVER, platPorter, UUID.randomUUID());
 	
 		connectedClients = new HashMap<UUID, ClientConnection>();
-		clientsToConfirm = new ArrayList<ClientConnection>();
-		
 		clientsToDisconnect = new ArrayList<ClientConnection>();
 	}
 
@@ -47,16 +39,13 @@ public class ServerNetworkManager extends NetworkManager {
 		super.update();
 		
 		for (ClientConnection client : connectedClients.values()) {
-			if (uptime - client.getLastPingTime() < MAX_PING_INTERVAL)
+			if (uptime - client.getLastPingTime() > MAX_PING_INTERVAL)
 				disconnectClient(client);
 		}
 		
 		if (!clientsToDisconnect.isEmpty()) {
-			for (ClientConnection client : clientsToDisconnect) {
-				if (!client.isConnectionConfirmed())
-					clientsToConfirm.remove(client);
+			for (ClientConnection client : clientsToDisconnect)
 				connectedClients.remove(client.getClientUUID());
-			}
 			clientsToDisconnect.clear();
 		}
 	}
@@ -86,11 +75,25 @@ public class ServerNetworkManager extends NetworkManager {
 		return false;
 	}
 	
+	public boolean isClientConnected(UUID clientUUID) {
+		return connectedClients.containsKey(clientUUID);
+	}
+	
 	public ClientConnection getClient(UUID clientUUID, SocketAddress address) {
 		if (address != null) {
 			ClientConnection client = connectedClients.get(clientUUID);
 			if (client != null && address.equals(client.getAddress()))
 				return client;
+		}
+		return null;
+	}
+
+	public ClientConnection getClient(SocketAddress address) {
+		if (address != null) {
+			for (ClientConnection client : connectedClients.values()) {
+				if (address.equals(client.getAddress()))
+					return client;
+			}
 		}
 		return null;
 	}
@@ -100,6 +103,7 @@ public class ServerNetworkManager extends NetworkManager {
 	}
 
 	public void disconnectClient(ClientConnection client) {
+		System.out.println("Disconnecting client: " + client.getClientUUID());
 		if (client == null || !connectedClients.containsKey(client.getClientUUID()))
 			return;
 		if (clientsToDisconnect.contains(client))
@@ -107,56 +111,34 @@ public class ServerNetworkManager extends NetworkManager {
 		clientsToDisconnect.add(client);
 	}
 	
-	public void handleHandshake(C00HandshakePacket handshakePacket) {
-		long seq = handshakePacket.sequence;
-		if (seq != ClientNetworkManager.CLIENT_HANDSHAKE)
-			return;
-
-		SocketAddress address = handshakePacket.address;
+	public ClientConnection addClient(SocketAddress address) {
 		if (address == null || isAddressConnected(address))
-			return;
+			return null;
 	
 		UUID clientUUID;
 		do {
 			clientUUID = UUID.randomUUID();
 		} while (connectedClients.containsKey(clientUUID));
 		
-		addPacketToSend(new S00HandshakePacket(SERVER_HANDSHAKE, seq + 1L, clientUUID), clientUUID);
-		
 		ClientConnection client = new ClientConnection(address, clientUUID);
-		connectedClients.put(clientUUID, client);
-		clientsToConfirm.add(client);
-		
 		client.setLastPingTime(uptime);
+
+		connectedClients.put(clientUUID, client);
+		return client;
 	}
 	
-	public void handleAcknowledgement(C01AcknowledgePacket acknowledgePacket) {
-		if (acknowledgePacket.acknowledge != SERVER_HANDSHAKE + 1L)
-			return;
-		
-		SocketAddress address = acknowledgePacket.address;
-		if (address == null)
-			return;
-		
-		for (int i = 0; i < clientsToConfirm.size(); i++) {
-			ClientConnection client = clientsToConfirm.get(i);
-			if (!acknowledgePacket.clientUUID.equals(client.getClientUUID()))
-				continue;
-			if (!address.equals(client.getAddress()))
-				continue;
-			
-			clientsToConfirm.remove(i);
-			break;
-		}
-	}
-
-	public void processPing(C02PingPacket pingPacket) {
-		ClientConnection client = getClient(pingPacket.clientUUID, pingPacket.address);
+	public void processPing(C00PingPacket pingPacket) {
+		ClientConnection client = getClient(pingPacket.senderUUID, pingPacket.address);
 		if (client == null) 
 			return;
 		
-		long pingInterval = uptime - client.getLastPingTime();
 		client.setLastPingTime(uptime);
-		addPacketToSend(new S01PongPacket(pingInterval), client.getClientUUID());
+		addPacketToSend(new S00PongPacket(), client.getClientUUID());
+	
+		System.out.println("Received ping from: " + client.getClientUUID());
+	}
+
+	public Map<UUID, ClientConnection> getConnectedClients() {
+		return connectedClients;
 	}
 }

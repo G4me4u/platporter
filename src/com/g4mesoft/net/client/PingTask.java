@@ -1,6 +1,6 @@
 package com.g4mesoft.net.client;
 
-import com.g4mesoft.net.packet.client.C02PingPacket;
+import com.g4mesoft.net.packet.client.C00PingPacket;
 import com.g4mesoft.util.IScheduledTask;
 
 public class PingTask implements IScheduledTask {
@@ -15,7 +15,7 @@ public class PingTask implements IScheduledTask {
 	public boolean doTask() {
 		if (!client.isConnected())
 			return false;
-		client.addPacketToSend(new C02PingPacket(client.getConnectionUUID()));
+		client.addPacketToSend(new C00PingPacket());
 		return true;
 	}
 }

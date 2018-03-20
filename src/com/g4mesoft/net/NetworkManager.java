@@ -3,7 +3,10 @@ package com.g4mesoft.net;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.UUID;
 
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.platporter.PlatPorter;
@@ -14,9 +17,12 @@ public abstract class NetworkManager implements Closeable {
 	public static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 	public static final int MAX_BATCH_PACKETS = 1000;
 	
+	public static final UUID NO_UUID = new UUID(0L, 0L);
+	
 	protected final DatagramSocket socket;
 	public final NetworkSide side;
 	protected final PlatPorter platPorter;
+	protected UUID connectionUUID;
 	
 	protected final ReceiveThread receiveThread;
 	
@@ -28,12 +34,15 @@ public abstract class NetworkManager implements Closeable {
 	private int packetsToSendIndex;
 	private int packetsToProcessIndex;
 	
+	private final Map<Integer, Protocol> idToProtocol;
+	
 	protected long uptime;
 	
-	public NetworkManager(DatagramSocket socket, NetworkSide side, PlatPorter platPorter) {
+	public NetworkManager(DatagramSocket socket, NetworkSide side, PlatPorter platPorter, UUID connectionUUID) {
 		this.socket = socket;
 		this.side = side;
 		this.platPorter = platPorter;
+		this.connectionUUID = connectionUUID == null ? NO_UUID : connectionUUID;
 		
 		receiveThread = new ReceiveThread(this);
 
@@ -49,11 +58,14 @@ public abstract class NetworkManager implements Closeable {
 		packetsToProcess[1] = new PacketLinkedList();
 		
 		receiveThread.startListening();
+		
+		idToProtocol = new HashMap<Integer, Protocol>();
 	}
 
 	public DatagramPacket prepareToSendPacket(Packet packet) {
 		sendBuffer.reset();
-		sendBuffer.putInt(PacketRegistry.getId(packet.getClass()));
+		sendBuffer.putInt(PacketRegistry.getInstance().getId(packet.getClass()));
+		sendBuffer.putUUID(connectionUUID);
 		packet.write(sendBuffer);
 		return new DatagramPacket(sendBuffer.getData(), sendBuffer.getSize());
 	}
@@ -101,11 +113,16 @@ public abstract class NetworkManager implements Closeable {
 		                       datagramPacket.getLength());
 		receiveBuffer.resetPos();
 
-		if (receiveBuffer.getSize() < 4)
+		if (receiveBuffer.getSize() < 12) // int uuid
 			return;
 		
 		int packetId = receiveBuffer.getInt();
-		Class<? extends Packet> packetClazz = PacketRegistry.getPacketClass(packetId);
+		UUID senderUUID = receiveBuffer.getUUID();
+		
+		Class<? extends Packet> packetClazz = PacketRegistry.getInstance().getClass(packetId);
+
+		if (packetClazz == null)
+			return;
 
 		Packet packet;
 		try {
@@ -114,11 +131,12 @@ public abstract class NetworkManager implements Closeable {
 			e.printStackTrace();
 			return;
 		}
-		
-		if (receiveBuffer.getSize() - 4 != packet.getByteSize())
+
+		if (!packet.checkSize(receiveBuffer.remaining()))
 			return;
 		
-		packet.setReceiveAddress(datagramPacket.getSocketAddress());
+		packet.setSenderAddress(datagramPacket.getSocketAddress());
+		packet.setSenderUUID(senderUUID);
 		packet.read(receiveBuffer);
 		
 		if (confirmPacket(packet))
@@ -127,6 +145,26 @@ public abstract class NetworkManager implements Closeable {
 	
 	protected boolean confirmPacket(Packet packet) {
 		return true;
+	}
+	
+	public Protocol getProtocol(int protocolId) {
+		Protocol protocol = idToProtocol.get(protocolId);
+		if (protocol == null) {
+			Class<? extends Protocol> protocolClazz = ProtocolRegistry.getInstance().getClass(protocolId);
+
+			if (protocolClazz == null)
+				return null;
+			
+			try {
+				protocol = protocolClazz.getDeclaredConstructor(NetworkManager.class).newInstance(this);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+			
+			idToProtocol.put(protocolId, protocol);
+		}
+		return protocol;
 	}
 	
 	public boolean isServer() {
@@ -139,6 +177,10 @@ public abstract class NetworkManager implements Closeable {
 	
 	public SocketAddress getAddress() {
 		return socket.getLocalSocketAddress();
+	}
+	
+	public UUID getConnectionUUID() {
+		return connectionUUID;
 	}
 	
 	public long getUpTime() {

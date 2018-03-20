@@ -8,19 +8,11 @@ public class ClientConnection {
 	private final SocketAddress address;
 	private final UUID clientUUID;
 	
-	private boolean connectionConfirmed;
-	
 	private long lastPingTime;
 	
 	public ClientConnection(SocketAddress address, UUID clientUUID) {
 		this.address = address;
 		this.clientUUID = clientUUID;
-	
-		connectionConfirmed = false;
-	}
-	
-	public void confirmConnection() {
-		connectionConfirmed = true;
 	}
 	
 	public SocketAddress getAddress() {
@@ -29,10 +21,6 @@ public class ClientConnection {
 	
 	public UUID getClientUUID() {
 		return clientUUID;
-	}
-	
-	public boolean isConnectionConfirmed() {
-		return connectionConfirmed;
 	}
 	
 	public void setLastPingTime(long time) {

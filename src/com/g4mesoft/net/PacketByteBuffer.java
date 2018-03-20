@@ -16,14 +16,21 @@ public class PacketByteBuffer {
 	}
 	
 	public PacketByteBuffer(byte[] data) {
-		this(data, 0, data.length);
+		this(data, 0, data.length, true);
 	}
 	
-	public PacketByteBuffer(byte[] data, int pos, int length) {
-		this(length);
-		
-		System.arraycopy(data, pos, this.data, 0, length);
-		size = length;
+	public PacketByteBuffer(byte[] data, int pos, int length, boolean newBuffer) {
+		if (!newBuffer) {
+			this.data = data;
+			this.pos = pos;
+			size = length + pos;
+		} else {
+			this.data = new byte[length];
+			this.pos = 0;
+			size = length;
+			
+			System.arraycopy(data, pos, this.data, 0, length);
+		}
 	}
 	
 	public PacketByteBuffer(int initialCapacity) {
@@ -54,6 +61,24 @@ public class PacketByteBuffer {
 		System.arraycopy(data, pos, this.data, this.pos, length);
 		this.pos += length;
 		size += length;
+	}
+	
+	public byte[] getBytes(byte[] data) {
+		return getBytes(data, 0, data.length);
+	}
+
+	public byte[] getBytes(byte[] data, int length) {
+		return getBytes(data, 0, length);
+	}
+
+	public byte[] getBytes(byte[] data, int pos, int length) {
+		if (this.pos + length > size)
+			throw new IndexOutOfBoundsException("Position out of bounds!");
+			
+		System.arraycopy(this.data, this.pos, data, pos, length);
+		this.pos += length;
+		
+		return data;
 	}
 	
 	public void putByte(byte value) {
@@ -145,6 +170,14 @@ public class PacketByteBuffer {
 		return new UUID(most, least);
 	}
 	
+	public boolean getBoolean() {
+		return getByte() != 0;
+	}
+	
+	public void putBoolean(boolean value) {
+		putByte((byte)(value ? 0x1 : 0x0));
+	}
+	
 	public int getPos() {
 		return pos;
 	}
@@ -155,6 +188,10 @@ public class PacketByteBuffer {
 	
 	public int getCapacity() {
 		return data.length;
+	}
+
+	public int remaining() {
+		return size - pos;
 	}
 	
 	public void reset() {

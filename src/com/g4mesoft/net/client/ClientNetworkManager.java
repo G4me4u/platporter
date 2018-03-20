@@ -6,13 +6,13 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.UUID;
 
+import com.g4mesoft.net.HandshakeProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
+import com.g4mesoft.net.Protocol;
+import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
-import com.g4mesoft.net.packet.client.C00HandshakePacket;
-import com.g4mesoft.net.packet.client.C01AcknowledgePacket;
-import com.g4mesoft.net.packet.server.S00HandshakePacket;
-import com.g4mesoft.net.packet.server.S01PongPacket;
+import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.platporter.PlatPorter;
 
 public class ClientNetworkManager extends NetworkManager {
@@ -23,27 +23,32 @@ public class ClientNetworkManager extends NetworkManager {
 	public static final long MAX_PONG_INTERVAL = 100;
 	
 	private SocketAddress serverAddress;
-
+	private UUID serverUUID;
+	
 	private boolean connected;
 	private boolean handshaking;
-	private UUID connectionUUID;
 	
 	private long lastServerPong;
-	private long pingDelay;
 	
 	public ClientNetworkManager(PlatPorter platPorter) throws SocketException {
-		super(new DatagramSocket(), NetworkSide.CLIENT, platPorter);
+		super(new DatagramSocket(), NetworkSide.CLIENT, platPorter, null);
 	}
 
-	public void connect(SocketAddress serverAddress) throws SocketException {
+	public boolean connect(SocketAddress serverAddress) throws SocketException {
 		this.serverAddress = serverAddress;
 		
 		connected = false;
 		socket.connect(serverAddress);
 
-		addPacketToSend(new C00HandshakePacket(CLIENT_HANDSHAKE));
-
 		handshaking = true;
+
+		Protocol protocol = getProtocol(ProtocolRegistry.getInstance().getId(HandshakeProtocol.class));
+		if (protocol != null) {
+			((HandshakeProtocol)protocol).handshakeServer();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public void disconnect() {
@@ -66,7 +71,9 @@ public class ClientNetworkManager extends NetworkManager {
 
 	@Override
 	protected boolean confirmPacket(Packet packet) {
-		return serverAddress != null && serverAddress.equals(packet.address);
+		if (serverUUID == null)
+			return serverAddress != null && serverAddress.equals(packet.address);
+		return serverUUID.equals(packet.senderUUID);
 	}
 	
 	@Override
@@ -80,27 +87,22 @@ public class ClientNetworkManager extends NetworkManager {
 		return true;
 	}
 	
-	public void makeHandshake(S00HandshakePacket handshakePacket) {
-		if (connected || handshakePacket.acknowledgement != CLIENT_HANDSHAKE + 1L)
+	public void connectionFinished(UUID clientUUID, UUID serverUUID) {
+		if (connected)
 			return;
 		
 		connected = true;
-		connectionUUID = handshakePacket.clientUUID;
+		connectionUUID = clientUUID;
+		this.serverUUID = serverUUID;
 		handshaking = false;
 		
 		lastServerPong = uptime;
-		
 		platPorter.getTaskManager().addTask(new PingTask(this), PING_INTERVAL);
-		
-		addPacketToSend(new C01AcknowledgePacket(handshakePacket.sequence + 1L, connectionUUID));
 	}
 	
-	public void processPong(S01PongPacket pongPacket) {
-		if (!connected)
-			return;
-		lastServerPong = uptime;
-		
-		pingDelay = Math.max(pongPacket.pingInterval - PING_INTERVAL, 0L);
+	public void processPong(S00PongPacket pongPacket) {
+		if (connected)
+			lastServerPong = uptime;
 	}
 	
 	public boolean isConnected() {
@@ -111,11 +113,7 @@ public class ClientNetworkManager extends NetworkManager {
 		return handshaking;
 	}
 	
-	public UUID getConnectionUUID() {
-		return connectionUUID;
-	}
-	
-	public long getPingDelay() {
-		return pingDelay;
+	public UUID getServerUUID() {
+		return serverUUID;
 	}
 }
