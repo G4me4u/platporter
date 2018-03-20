@@ -22,17 +22,22 @@ public class ColorPalette {
 		int[] palette = new int[NUM_COLORS];
 		
 		int i = 0;
-		for (int r = 0; r < COLORS_PER_CHANNEL; r++) {
-			for (int g = 0; g < COLORS_PER_CHANNEL; g++) {
-				for (int b = 0; b < COLORS_PER_CHANNEL; b++) {
-					int rr = r * 191 / (COLORS_PER_CHANNEL - 1) + 64;
-					int gg = g * 191 / (COLORS_PER_CHANNEL - 1) + 64;
-					int bb = b * 191 / (COLORS_PER_CHANNEL - 1) + 64;
-					palette[i++] = (rr << 16) | (gg << 8) | bb;
+		for (int r = 0; r < 6; r++) {
+			for (int g = 0; g < 6; g++) {
+				for (int b = 0; b < 6; b++) {
+					int rr = r * 255 / 5;
+					int gg = g * 255 / 5;
+					int bb = b * 255 / 5;
+					int mid = (rr * 30 + gg * 59 + bb * 11) / 100;
+					
+					int r1 = (rr + mid) / 2 * 230 / 255 + 10;
+					int g1 = (gg + mid) / 2 * 230 / 255 + 10;
+					int b1 = (bb + mid) / 2 * 230 / 255 + 10;
+					palette[i++] = (r1 << 16 | g1 << 8 | b1);
 				}
 			}
 		}
-		
+	
 		return palette;
 	}
 	
