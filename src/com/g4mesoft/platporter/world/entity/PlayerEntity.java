@@ -32,7 +32,7 @@ public class PlayerEntity extends PPEntity {
 		}
 		
 		if (KeyManager.KEY_UP.isPressed() && onGround) {
-			velocity.y = -15.00f / 8.0f;
+			velocity.y = -16.00f / 8.0f;
 		}
 		
 		velocity.y += 2.00f / 8.0f;
