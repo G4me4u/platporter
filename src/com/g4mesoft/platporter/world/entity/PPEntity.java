@@ -28,13 +28,15 @@ public abstract class PPEntity extends LivingEntity {
 		float oxm = xm;
 		float oym = ym;
 		
-		List<AABB> tileHitboxes = new ArrayList<>();
+		List<AABB> tileHitboxes = ((PPWorld)world).getTileColliders(body.expand(xm, ym));
 		for (AABB aabb : tileHitboxes) 
 			xm = aabb.clipX(body, xm);
 		body.move(xm, 0);
 
-		for (AABB aabb : tileHitboxes) 
+		for (AABB aabb : tileHitboxes) {
 			ym = aabb.clipY(body, ym);
+			System.out.println(ym);
+		}
 		body.move(0, ym);
 		
 		onGround = oym > 0.0f && ym != oym;
@@ -44,6 +46,6 @@ public abstract class PPEntity extends LivingEntity {
 
 	@Override
 	protected AABB createBody() {
-		return new AABB(0, 0, 8, 8);
+		return new AABB(0.0f, 0.0f, 1.0f, 1.0f);
 	}
 }

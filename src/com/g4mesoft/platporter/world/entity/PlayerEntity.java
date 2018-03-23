@@ -17,28 +17,28 @@ public class PlayerEntity extends PPEntity {
 	public void render(Screen2D screen, float dt) {
 		float xp = prevPos.x + (pos.x - prevPos.x) * dt;
 		float yp = prevPos.y + (pos.y - prevPos.y) * dt;
-		screen.drawRect((int) xp,(int) yp, 8, 8, ColorPalette.getColor(135));
+		screen.drawRect((int)(xp * 8),(int)(yp * 8), 8, 8, ColorPalette.getColor(135));
 		
 	}
 
 	@Override
 	protected void update() {
 		if (KeyManager.KEY_LEFT.isPressed()) {
-			velocity.x -= 1.50f;
+			velocity.x -= 1.50f/8;
 			facing = EntityFacing.LEFT;
 		} else if (KeyManager.KEY_RIGHT.isPressed()) {
-			velocity.x += 1.50f;
+			velocity.x += 1.50f/8;
 			facing = EntityFacing.RIGHT;
 		}
 		
 		if (KeyManager.KEY_UP.isPressed() && onGround) {
-			velocity.y = -15.00f;
+			velocity.y = -15.00f/8;
 		}
 		
-//		velocity.y += 2.00f;
+		velocity.y += 2.00f/8;
 		
-		velocity.x *= 0.85f;
-		velocity.y *= 0.95f;
+		velocity.x *= 0.85f/8;
+		velocity.y *= 0.95f/8;
 		
 		move(velocity.x, velocity.y);
 	}
