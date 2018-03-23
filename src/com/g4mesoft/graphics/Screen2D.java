@@ -15,7 +15,7 @@ public class Screen2D {
 	private final int height;
 	
 	private final ColorPalette palette;
-	private final SpriteSheet tileSheet;
+	private final SpriteSheet sheet;
 	
 	public Screen2D(int[] pixels, int width, int height) {
 		this.pixels = pixels;
@@ -30,7 +30,7 @@ public class Screen2D {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		tileSheet = new SpriteSheet(tileSheetImage);
+		sheet = new SpriteSheet(tileSheetImage);
 	}
 	
 	public void clear(int color) {
@@ -41,51 +41,35 @@ public class Screen2D {
 		pixels[xp + yp * width] = palette.palette[color & 0xFF];
 	}
 	
-	public void render(float dt) {
-		drawSprite(tileSheet, 0, 0, 0, 0, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 0, 1, 0, 8, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 1, 0, 8, 0, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 1, 1, 8, 8, 0, ColorPalette.getColors(-1, 511, 522, 151));
-
-		drawSprite(tileSheet, 1, 0, 16, 0, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 1, 1, 16, 8, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 2, 0, 24, 0, 0, ColorPalette.getColors(-1, 511, 522, 151));
-		drawSprite(tileSheet, 2, 1, 24, 8, 0, ColorPalette.getColors(-1, 511, 522, 151));
+	public void drawRect(int x0, int y0, int w, int h, int color) {
+		if (color >= ColorPalette.NUM_VISIBLE_COLORS)
+			return;
+		for (int yy = y0; yy < y0 + w; yy++) {
+			if (yy < 0 || yy >= height) continue;
+			int pi = x0 + yy * width;
+			for (int xx = x0; xx < x0 + h; xx++, pi++	) {
+				if (xx < 0 || xx >= width) continue;
+				pixels[pi] = palette.palette[color];
+			}
+		}
 	}
 	
-	public void drawSprite(SpriteSheet sheet, int xt, int yt, int xo, int yo, int flags, int colors) {
-		int si = (xt << 3) + (yt << 3) * sheet.width;
+	public void drawSprite(int x, int y, int xt, int yt, int colors) {
+		int x0 = x << 3;
+		int y0 = y << 3;
+		int sx = xt << 3;
+		int sy = yt << 3;
 		
-		int x0 = xo;
-		int y0 = yo;
-		int x1 = xo + 8;
-		int y1 = yo + 8;
-		
-		if (x0 < 0) {
-			x0 -= xo;
-			si -= xo;
-		} else if (x1 > width) {
-			x1 = width;
-		}
-		if (y0 < 0) {
-			y0 -= yo;
-			si -= yo * sheet.width;
-		} else if (y1 > width) {
-			y1 = width;
-		}
-
-		int bi = x0 + y0 * width;
-		for (int y = y0; y < y1; y++) {
-			int bic = bi;
-			int sic = si;
-			for (int x = x0; x < x1; x++) {
-				int col = (colors >> (sheet.pixels[si++] << 3)) & 0xFF;
-				if (col < ColorPalette.NUM_VISIBLE_COLORS)
-					pixels[bi] = palette.palette[col];
-				bi++;
+		for (int yy = y0; yy < y0 + 8; yy++, sy++) {
+			if (yy < 0 || yy >= height) continue;
+			int pi = x0 + yy * width;
+			int si = sx + sy * width;
+			for (int xx = x0; xx < x0 + 8; xx++, sx++, pi++, si++) {
+				if (xx < 0 || xx >= width) continue;
+				int colIndex = (colors >>> (sheet.pixels[si] << 3)) & 0xFF;
+				if (colIndex < ColorPalette.NUM_VISIBLE_COLORS)
+					pixels[pi] = palette.palette[colIndex];
 			}
-			bi = bic + width;
-			si = sic + sheet.width;
 		}
 	}
 }
