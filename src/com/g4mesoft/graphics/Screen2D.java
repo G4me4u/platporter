@@ -44,10 +44,10 @@ public class Screen2D {
 	public void drawRect(int x0, int y0, int w, int h, int color) {
 		if (color >= ColorPalette.NUM_VISIBLE_COLORS)
 			return;
-		for (int yy = y0; yy < y0 + w; yy++) {
+		for (int yy = y0; yy < y0 + h; yy++) {
 			if (yy < 0 || yy >= height) continue;
 			int pi = x0 + yy * width;
-			for (int xx = x0; xx < x0 + h; xx++, pi++	) {
+			for (int xx = x0; xx < x0 + w; xx++, pi++	) {
 				if (xx < 0 || xx >= width) continue;
 				pixels[pi] = palette.palette[color];
 			}

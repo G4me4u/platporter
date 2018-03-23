@@ -14,6 +14,7 @@ import com.g4mesoft.input.key.KeyInputListener;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.server.ServerNetworkManager;
+import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.util.ScheduledTaskManager;
 
 public class PlatPorter extends Application {
@@ -35,6 +36,8 @@ public class PlatPorter extends Application {
 	
 	private boolean client;
 	
+	private PPWorld world;
+
 	public PlatPorter(boolean client) {
 		super(client ? CLIENT_DISPLAY_CONFIG : SERVER_DISPLAY_CONFIG);
 		this.client = client;
@@ -51,7 +54,9 @@ public class PlatPorter extends Application {
 		screen = new Screen2D(pixels, WIDTH, HEIGHT);
 
 		taskManager = new ScheduledTaskManager();
-
+		
+		world = new PPWorld(this);
+		
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
@@ -81,6 +86,7 @@ public class PlatPorter extends Application {
 		taskManager.update();
 		
 		networkManager.update();
+		world.update();
 		
 		KeyInputListener.getInstance().updateKeys();
 	}
@@ -91,7 +97,8 @@ public class PlatPorter extends Application {
 			return;
 		
 		screen.clear(ColorPalette.getColor(0));
-		screen.render(dt);
+		
+		world.render(screen, dt);
 		
 		Graphics g = renderer.getGraphics();
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
@@ -106,14 +113,6 @@ public class PlatPorter extends Application {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		PlatPorter server = new PlatPorter(false);
-		Thread thread = new Thread(() -> {
-			server.start();
-		});
-		thread.setDaemon(true);
-		thread.start();
-
 		new PlatPorter(true).start();
-		server.stopRunning();
 	}
 }
