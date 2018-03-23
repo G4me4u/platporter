@@ -60,8 +60,6 @@ public class Screen2D {
 		int sx = xt << 3;
 		int sy = yt << 3;
 
-		System.out.println("Next");
-		
 		for (int yy = y0; yy < y0 + 8; yy++, sy++) {
 			if (yy < 0 || yy >= height) continue;
 			int pi = x0 + yy * width;
