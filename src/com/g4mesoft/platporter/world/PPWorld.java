@@ -101,8 +101,8 @@ public class PPWorld extends World {
 		int xt1 = (int)(body.x1 / 8.0f);
 		int yt1 = (int)(body.y1 / 8.0f);
 		
-		for (int yt = yt0; yt < yt1; yt++) {
-			for (int xt = xt0; xt < xt1; xt++) {
+		for (int yt = yt0; yt <= yt1; yt++) {
+			for (int xt = xt0; xt <= xt1; xt++) {
 				Tile tile = getTile(xt, yt);
 				colliders.add(tile.getBoundingBox(this, xt, yt));
 			}
