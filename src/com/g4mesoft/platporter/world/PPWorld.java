@@ -76,9 +76,9 @@ public class PPWorld extends World {
 	
 	public int getTileIndex(int xt, int yt) {
 		if (xt < 0 || xt >= WORLD_WIDTH) 
-			return Tile.AIR_TILE.index;
+			return Tile.PLATFORM_TILE.index;
 		if (yt < 0 || yt >= WORLD_HEIGHT) 
-			return Tile.AIR_TILE.index;
+			return Tile.PLATFORM_TILE.index;
 		return tiles[xt + yt * WORLD_WIDTH];
 	}
 	
@@ -101,10 +101,10 @@ public class PPWorld extends World {
 	public List<AABB> getTileColliders(AABB body) {
 		List<AABB> colliders = new ArrayList<AABB>();
 		
-		int xt0 = (int)body.x0;
-		int yt0 = (int)body.y0;
-		int xt1 = (int)body.x1;
-		int yt1 = (int)body.y1;
+		int xt0 = (int)body.x0 - 1;
+		int yt0 = (int)body.y0 - 1;
+		int xt1 = (int)body.x1 + 1;
+		int yt1 = (int)body.y1 + 1;
 		
 		for (int yt = yt0; yt <= yt1; yt++) {
 			for (int xt = xt0; xt <= xt1; xt++) {

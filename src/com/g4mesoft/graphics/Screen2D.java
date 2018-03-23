@@ -59,12 +59,14 @@ public class Screen2D {
 		int y0 = y << 3;
 		int sx = xt << 3;
 		int sy = yt << 3;
+
+		System.out.println("Next");
 		
 		for (int yy = y0; yy < y0 + 8; yy++, sy++) {
 			if (yy < 0 || yy >= height) continue;
 			int pi = x0 + yy * width;
-			int si = sx + sy * width;
-			for (int xx = x0; xx < x0 + 8; xx++, sx++, pi++, si++) {
+			int si = sx + sy * sheet.width;
+			for (int xx = x0; xx < x0 + 8; xx++, pi++, si++) {
 				if (xx < 0 || xx >= width) continue;
 				int colIndex = (colors >>> (sheet.pixels[si] << 3)) & 0xFF;
 				if (colIndex < ColorPalette.NUM_VISIBLE_COLORS)

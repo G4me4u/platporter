@@ -8,6 +8,6 @@ public class PlatformTile extends Tile {
 
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
-		screen.drawRect(xt << 3, yt << 3, 8, 8, ColorPalette.getColor(551));
+		screen.drawSprite(xt, yt, 0, 0, ColorPalette.getColors(555, 505, 550, 55));
 	}
 }

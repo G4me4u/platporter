@@ -7,7 +7,7 @@ import com.sun.glass.events.KeyEvent;
 
 public class KeyManager {
 
-	public static final KeyInput KEY_UP = registerKey("up", KeyEvent.VK_UP);
+	public static final KeyInput KEY_UP = registerKey("up", KeyEvent.VK_UP, KeyEvent.VK_SPACE);
 	public static final KeyInput KEY_RIGHT = registerKey("right", KeyEvent.VK_RIGHT);
 	public static final KeyInput KEY_DOWN = registerKey("down", KeyEvent.VK_DOWN);
 	public static final KeyInput KEY_LEFT = registerKey("left", KeyEvent.VK_LEFT);
