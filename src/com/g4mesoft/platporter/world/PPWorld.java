@@ -30,9 +30,14 @@ public class PPWorld extends World {
 
 		for (int yt = 10; yt < 16; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+				if (yt == 10 && xt > 2)
+					continue;
 				setTile(xt, yt, Tile.PLATFORM_TILE);
 			}
 		}
+		
+		for (int xt = 3; xt < WORLD_WIDTH; xt++)
+			setTile(xt, 5, Tile.PLATFORM_TILE);
 		
 		addEntity(new PlayerEntity(this));
 	}
@@ -96,10 +101,10 @@ public class PPWorld extends World {
 	public List<AABB> getTileColliders(AABB body) {
 		List<AABB> colliders = new ArrayList<AABB>();
 		
-		int xt0 = (int)(body.x0 / 8.0f);
-		int yt0 = (int)(body.y0 / 8.0f);
-		int xt1 = (int)(body.x1 / 8.0f);
-		int yt1 = (int)(body.y1 / 8.0f);
+		int xt0 = (int)body.x0;
+		int yt0 = (int)body.y0;
+		int xt1 = (int)body.x1;
+		int yt1 = (int)body.y1;
 		
 		for (int yt = yt0; yt <= yt1; yt++) {
 			for (int xt = xt0; xt <= xt1; xt++) {

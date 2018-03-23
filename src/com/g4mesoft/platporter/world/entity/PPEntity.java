@@ -33,10 +33,8 @@ public abstract class PPEntity extends LivingEntity {
 			xm = aabb.clipX(body, xm);
 		body.move(xm, 0);
 
-		for (AABB aabb : tileHitboxes) {
+		for (AABB aabb : tileHitboxes)
 			ym = aabb.clipY(body, ym);
-			System.out.println(ym);
-		}
 		body.move(0, ym);
 		
 		onGround = oym > 0.0f && ym != oym;

@@ -24,21 +24,21 @@ public class PlayerEntity extends PPEntity {
 	@Override
 	protected void update() {
 		if (KeyManager.KEY_LEFT.isPressed()) {
-			velocity.x -= 1.50f/8;
+			velocity.x -= 1.50f / 8.0f;
 			facing = EntityFacing.LEFT;
 		} else if (KeyManager.KEY_RIGHT.isPressed()) {
-			velocity.x += 1.50f/8;
+			velocity.x += 1.50f / 8.0f;
 			facing = EntityFacing.RIGHT;
 		}
 		
 		if (KeyManager.KEY_UP.isPressed() && onGround) {
-			velocity.y = -15.00f/8;
+			velocity.y = -15.00f / 8.0f;
 		}
 		
-		velocity.y += 2.00f/8;
+		velocity.y += 2.00f / 8.0f;
 		
-		velocity.x *= 0.85f/8;
-		velocity.y *= 0.95f/8;
+		velocity.x *= 0.85f;
+		velocity.y *= 0.95f;
 		
 		move(velocity.x, velocity.y);
 	}
