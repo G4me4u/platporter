@@ -21,6 +21,8 @@
 *.tar.gz
 *.rar
 
+!lib/g4mengine.jar
+
 # eclipse specific git ignore
 *.pydevproject
 .project
