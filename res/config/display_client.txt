@@ -1,8 +1,10 @@
 displayVisible=true
 
 title=PlatPorter v0.1
-preferredWidth=512
-preferredHeight=512
-resizable=false
+preferredWidth=520
+preferredHeight=520
+minimumWidth=130
+minimumHeight=130
+resizable=true
 centered=true
 displayMode=normal

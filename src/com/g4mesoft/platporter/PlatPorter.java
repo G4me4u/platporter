@@ -1,5 +1,6 @@
 package com.g4mesoft.platporter;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -22,9 +23,8 @@ public class PlatPorter extends Application {
 	private static final String CLIENT_DISPLAY_CONFIG = "/config/display_client.txt";
 	private static final String SERVER_DISPLAY_CONFIG = "/config/display_server.txt";
 	
-	private static final int WIDTH = 128;
-	private static final int HEIGHT = 128;
-	private static final int SCALE = 4;
+	private static final int SIZE = 128;
+	private static final int BORDER = 2;
 	
 	private NetworkManager networkManager;
 	
@@ -49,9 +49,9 @@ public class PlatPorter extends Application {
 		
 		KeyInputListener.getInstance().registerDisplay(getDisplay());
 		
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_RGB);
 		pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		screen = new Screen2D(pixels, WIDTH, HEIGHT);
+		screen = new Screen2D(pixels, SIZE, SIZE);
 
 		taskManager = new ScheduledTaskManager();
 		
@@ -101,7 +101,19 @@ public class PlatPorter extends Application {
 		world.render(screen, dt);
 		
 		Graphics g = renderer.getGraphics();
-		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+
+		int width = getDisplay().getWidth();
+		int height = getDisplay().getHeight();
+
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, width, height);
+		
+		int scale = Math.max(Math.min(width, height) / (SIZE + BORDER), 1);
+		int size = SIZE * scale;
+		int x0 = (width - size) >> 1;
+		int y0 = (height - size) >> 1;
+
+		g.drawImage(image, x0, y0, size, size, null);
 	}
 	
 	public ScheduledTaskManager getTaskManager() {

@@ -72,4 +72,8 @@ public class Screen2D {
 			}
 		}
 	}
+
+	public ColorPalette getPalette() {
+		return palette;
+	}
 }
