@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 public class Screen2D {
 
 	private static final String TILE_SHEET_LOCATION = "/assets/tilesheet.png";
+	public static final int MIRROR_X = 1;
+	public static final int MIRROR_Y = 2;
 	
 	private final int[] pixels;
 	private final int width;
@@ -55,16 +57,26 @@ public class Screen2D {
 	}
 	
 	public void drawSprite(int x, int y, int xt, int yt, int colors) {
-		int x0 = x << 3;
-		int y0 = y << 3;
+		drawSprite(x, y, xt, yt, colors, 0);
+	}
+
+	public void drawSprite(int x, int y, int xt, int yt, int colors, int flags) {
 		int sx = xt << 3;
 		int sy = yt << 3;
 
-		for (int yy = y0; yy < y0 + 8; yy++, sy++) {
+		boolean mirrorX = (flags & MIRROR_X) != 0;
+		boolean mirrorY = (flags & MIRROR_Y) != 0;
+		
+		int sax = mirrorX ? -1 : 1;
+		int say = mirrorY ? -1 : 1;
+		
+		if (mirrorY) 
+			sy += 7;
+		for (int yy = y; yy < y + 8; yy++, sy += say) {
 			if (yy < 0 || yy >= height) continue;
-			int pi = x0 + yy * width;
-			int si = sx + sy * sheet.width;
-			for (int xx = x0; xx < x0 + 8; xx++, pi++, si++) {
+			int pi = x + yy * width;
+			int si = sx + sy * sheet.width + (mirrorX ? 7 : 0);
+			for (int xx = x; xx < x + 8; xx++, pi++, si += sax) {
 				if (xx < 0 || xx >= width) continue;
 				int colIndex = (colors >>> (sheet.pixels[si] << 3)) & 0xFF;
 				if (colIndex < ColorPalette.NUM_VISIBLE_COLORS)
