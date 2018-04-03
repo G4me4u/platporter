@@ -6,5 +6,5 @@ preferredHeight=520
 minimumWidth=130
 minimumHeight=130
 resizable=true
-centered=true
+centered=true½
 displayMode=normal
