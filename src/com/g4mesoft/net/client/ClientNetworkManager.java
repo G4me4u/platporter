@@ -138,6 +138,7 @@ public class ClientNetworkManager extends NetworkManager {
 	public void handlePositionPacket(S01PositionPacket positionPacket) {
 		PPWorld world = platPorter.getWorld();
 		PPEntity entity = world.getEntity(positionPacket.entityUUID);
-		entity.setPosition(positionPacket.x, positionPacket.y, positionPacket.facing);
+		if (entity != null && positionPacket.facing != null)
+			entity.setPosition(positionPacket.x, positionPacket.y, positionPacket.facing);
 	}
 }
