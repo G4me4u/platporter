@@ -2,11 +2,11 @@ package com.g4mesoft.platporter.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.world.entity.PPEntity;
-import com.g4mesoft.platporter.world.entity.PlayerEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.World;
 import com.g4mesoft.world.entity.Entity;
@@ -38,8 +38,6 @@ public class PPWorld extends World {
 		
 		for (int xt = 3; xt < WORLD_WIDTH; xt++)
 			setTile(xt, 5, Tile.PLATFORM_TILE);
-		
-		addEntity(new PlayerEntity(this));
 	}
 	
 	public void setData(int xt, int yt, byte data) {
@@ -88,7 +86,6 @@ public class PPWorld extends World {
 				((PPEntity)entity).render(screen, dt);
 		}
 		
-		// TODO: improve rendering function
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				Tile tile = getTile(xt, yt);
@@ -115,6 +112,21 @@ public class PPWorld extends World {
 		}
 		
 		return colliders;
+	}
+	
+	public boolean removeEntity(UUID entityUUID) {
+		if (entityUUID == null)
+			return false;
+		
+		for (Entity entity : entities) {
+			if (entity instanceof PPEntity) {
+				if (entityUUID.equals(((PPEntity)entity).getUUID())) {
+					return removeEntity(entity) != null;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override

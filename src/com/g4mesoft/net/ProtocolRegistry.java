@@ -6,6 +6,8 @@ public final class ProtocolRegistry extends NetworkRegistry<Protocol> {
 
 	private ProtocolRegistry() {
 		addEntry(HandshakeProtocol.class);
+		
+		addEntry(AddPlayerProtocol.class);
 	}
 	
 	public static ProtocolRegistry getInstance() {

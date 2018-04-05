@@ -14,6 +14,9 @@ import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.platporter.PlatPorter;
+import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.entity.player.ClientPlayerEntity;
+import com.g4mesoft.platporter.world.entity.player.NetworkPlayerEntity;
 
 public class ClientNetworkManager extends NetworkManager {
 
@@ -98,11 +101,24 @@ public class ClientNetworkManager extends NetworkManager {
 		
 		lastServerPong = uptime;
 		platPorter.getTaskManager().addTask(new PingTask(this), PING_INTERVAL);
-	}
 	
+		PPWorld world = platPorter.getWorld();
+		world.addEntity(new ClientPlayerEntity(world, clientUUID));
+	}
+
 	public void processPong(S00PongPacket pongPacket) {
 		if (connected)
 			lastServerPong = uptime;
+	}
+
+	public void addNetworkPlayer(UUID playerUUID) {
+		PPWorld world = platPorter.getWorld();
+		world.addEntity(new NetworkPlayerEntity(world, playerUUID));
+	}
+
+	public void removeNetworkPlayer(UUID playerUUID) {
+		PPWorld world = platPorter.getWorld();
+		world.removeEntity(playerUUID);
 	}
 	
 	public boolean isConnected() {

@@ -1,7 +1,7 @@
 package com.g4mesoft.platporter.world.entity;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.math.Vec2f;
@@ -15,9 +15,14 @@ public abstract class PPEntity extends LivingEntity {
 	protected boolean onGround;
 	protected Vec2f velocity;
 	protected EntityFacing facing;
+
+	protected final UUID entityUUID;
 	
-	protected PPEntity(PPWorld world) {
+	protected PPEntity(PPWorld world, UUID entityUUID) {
 		super(world);
+		
+		this.entityUUID = entityUUID;
+		
 		velocity = new Vec2f(0, 0);
 		facing = EntityFacing.RIGHT;
 	}
@@ -49,5 +54,9 @@ public abstract class PPEntity extends LivingEntity {
 	@Override
 	protected AABB createBody() {
 		return new AABB(0.0f, 0.0f, 1.0f, 1.0f);
+	}
+	
+	public UUID getUUID() {
+		return entityUUID;
 	}
 }

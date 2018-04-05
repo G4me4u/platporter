@@ -60,7 +60,7 @@ public class PlatPorter extends Application {
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("169.254.7.62", 25565));
+				clientNetworkManager.connect(new InetSocketAddress("10.0.16.134", 25565));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
@@ -118,6 +118,10 @@ public class PlatPorter extends Application {
 	
 	public ScheduledTaskManager getTaskManager() {
 		return taskManager;
+	}
+
+	public PPWorld getWorld() {
+		return world;
 	}
 	
 	public boolean isClient() {

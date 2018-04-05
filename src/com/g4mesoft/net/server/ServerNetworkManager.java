@@ -11,10 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.g4mesoft.net.AddPlayerProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
+import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00PingPacket;
+import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.platporter.PlatPorter;
 
@@ -124,6 +127,16 @@ public class ServerNetworkManager extends NetworkManager {
 		client.setLastPingTime(uptime);
 
 		connectedClients.put(clientUUID, client);
+
+		int protocolId = ProtocolRegistry.getInstance().getId(AddPlayerProtocol.class);
+		AddPlayerProtocol addPlayerProtocol = (AddPlayerProtocol)getProtocol(protocolId);
+		for (UUID otherClientUUID : connectedClients.keySet()) {
+			if (clientUUID.equals(otherClientUUID))
+				continue;
+			addPlayerProtocol.addPlayer(otherClientUUID, clientUUID);
+			addPlayerProtocol.addPlayer(clientUUID, otherClientUUID);
+		}
+		
 		return client;
 	}
 	
@@ -138,6 +151,10 @@ public class ServerNetworkManager extends NetworkManager {
 		System.out.println("Received ping from: " + client.getClientUUID());
 	}
 
+	public void handlePositionPacket(C01PositionPacket positionPacket) {
+		
+	}
+	
 	public Map<UUID, ClientConnection> getConnectedClients() {
 		return connectedClients;
 	}
