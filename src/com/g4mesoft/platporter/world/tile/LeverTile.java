@@ -3,6 +3,7 @@ package com.g4mesoft.platporter.world.tile;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.world.phys.AABB;
 
 public class LeverTile extends Tile {
 
@@ -13,7 +14,6 @@ public class LeverTile extends Tile {
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
 		boolean onWall = isOnWall(world, xt, yt);
-		boolean flip = (world.getData(xt, yt) & FLIP_MASK) != 0;
 
 		int sx = onWall ? 0 : 1;
 		
@@ -21,12 +21,12 @@ public class LeverTile extends Tile {
 		if (onWall) {
 			if (isTurnedOn(world, xt, yt))
 				flags |= Screen2D.MIRROR_Y;
-			if (flip)
+			if (isFlipped(world, xt, yt))
 				flags |= Screen2D.MIRROR_X;
 		} else {
 			if (isTurnedOn(world, xt, yt))
 				flags |= Screen2D.MIRROR_X;
-			if (flip)
+			if (isFlipped(world, xt, yt))
 				flags |= Screen2D.MIRROR_Y;
 		}
 		
@@ -39,5 +39,31 @@ public class LeverTile extends Tile {
 	
 	public boolean isOnWall(PPWorld world, int xt, int yt) {
 		return (world.getData(xt, yt) & ON_WALL_MASK) != 0;
+	}
+	
+	public boolean isFlipped(PPWorld world, int xt, int yt) {
+		return (world.getData(xt, yt) & FLIP_MASK) != 0;
+	}
+	
+	@Override
+	public AABB getBoundingBox(PPWorld world, int xt, int yt) {
+		if (isOnWall(world, xt, yt)) {
+			if (isFlipped(world, xt, yt)) {
+				return new AABB(xt + 0.75f, yt + 0.25f, xt + 1.0f, yt + 0.75f);
+			} else {
+				return new AABB(xt, yt + 0.25f, xt + 0.25f, yt + 0.75f);
+			}
+		} else {
+			if (isFlipped(world, xt, yt)) {
+				return new AABB(xt + 0.25f, yt, xt + 0.75f, yt + 0.25f);
+			} else {
+				return new AABB(xt + 0.25f, yt + 0.75f, xt + 0.75f, yt + 1.0f);
+			}
+		}
+	}
+	
+	@Override
+	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
+		return true;
 	}
 }
