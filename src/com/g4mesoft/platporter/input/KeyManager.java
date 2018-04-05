@@ -14,6 +14,8 @@ public class KeyManager {
 
 	public static final KeyInput KEY_INTERACT = registerKey("interact", KeyEvent.VK_SPACE);
 
+	public static final KeyInput KEY_TOGGLE_HITBOX = registerKey("toggle_hitbox", KeyEvent.VK_H);
+
 	private static KeyInput registerKey(String name, int... keyCodes) {
 		KeyInput key = new KeySingleInput(name, keyCodes);
 		KeyInputListener.getInstance().addKey(key);

@@ -8,9 +8,11 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
+import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.World;
@@ -23,6 +25,7 @@ public class PPWorld extends World {
 	private static final int WORLD_HEIGHT = 16;
 	private static final int NUM_LEVELS = 16;
 	
+	private boolean viewHitboxes;
 	public final PlatPorter platPorter;
 	
 	private final int[] tiles;
@@ -114,6 +117,14 @@ public class PPWorld extends World {
 		return tiles[xt + yt * WORLD_WIDTH];
 	}
 	
+	@Override
+	public void update() {
+		super.update();
+		
+		if (KeyManager.KEY_TOGGLE_HITBOX.isClicked())
+			viewHitboxes = !viewHitboxes;
+	}
+	
 	public void render(Screen2D screen, float dt) {
 		renderTiles(screen, dt, true);
 
@@ -123,6 +134,25 @@ public class PPWorld extends World {
 		}
 		
 		renderTiles(screen, dt, false);
+		
+		if (viewHitboxes)
+			renderHitboxes(screen, dt);
+	}
+	
+	public void renderHitboxes(Screen2D screen, float dt) {
+		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
+			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+				Tile tile = getTile(xt, yt);
+				if (tile.hasHitbox(this, xt, yt)) {
+					AABB hitbox = tile.getBoundingBox(this, xt, yt);
+					int x0 = Math.round(hitbox.x0 * 8.0f);
+					int y0 = Math.round(hitbox.y0 * 8.0f);
+					int x1 = Math.round(hitbox.x1 * 8.0f);
+					int y1 = Math.round(hitbox.y1 * 8.0f);
+					screen.drawRect(x0, y0, x1 - x0, y1 - y0, ColorPalette.getColor(500));
+				}
+			}
+		}
 	}
 	
 	private void renderTiles(Screen2D screen, float dt, boolean background) {

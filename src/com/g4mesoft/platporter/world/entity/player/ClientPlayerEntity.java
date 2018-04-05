@@ -53,7 +53,7 @@ public class ClientPlayerEntity extends PlayerEntity {
 			client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
 		}
 	
-		if (KeyManager.KEY_INTERACT.isClicked()) {
+		if (KeyManager.KEY_TOGGLE_HITBOX.isClicked()) {
 			int xi;
 			if (facing == EntityFacing.LEFT) {
 				xi = (int)(body.x0 - 0.25f);
