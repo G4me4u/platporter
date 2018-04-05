@@ -123,8 +123,4 @@ public class PlatPorter extends Application {
 	public boolean isClient() {
 		return client;
 	}
-	
-	public static void main(String[] args) throws Exception {
-		new PlatPorter(true).start();
-	}
 }
