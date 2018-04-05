@@ -84,8 +84,9 @@ public abstract class NetworkManager implements Closeable {
 	}
 	
 	protected void processAllPackets() {
-		PacketLinkedList packets = packetsToProcess[packetsToProcessIndex];
+		int oldPacketsToProcessIndex = packetsToProcessIndex;
 		packetsToProcessIndex ^= 1;
+		PacketLinkedList packets = packetsToProcess[oldPacketsToProcessIndex];
 
 		while (packets.size() > 0)
 			packets.poll().packet.processPacket(this);
