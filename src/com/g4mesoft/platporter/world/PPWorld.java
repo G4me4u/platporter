@@ -1,8 +1,13 @@
 package com.g4mesoft.platporter.world;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.PlatPorter;
@@ -16,31 +21,52 @@ public class PPWorld extends World {
 
 	private static final int WORLD_WIDTH = 16;
 	private static final int WORLD_HEIGHT = 16;
+	private static final int NUM_LEVELS = 16;
 	
 	public final PlatPorter platPorter;
 	
 	private final int[] tiles;
 	private final byte[] data;
+
+	private final int[] levels;
 	
 	public PPWorld(PlatPorter platPorter) {
 		this.platPorter = platPorter;
 	
 		tiles = new int[WORLD_WIDTH * WORLD_HEIGHT];
 		data = new byte[WORLD_WIDTH * WORLD_HEIGHT];
-
-		for (int yt = 10; yt < 16; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
-				if (yt == 10 && xt > 2)
-					continue;
-				setTile(xt, yt, Tile.PLATFORM_TILE);
+	
+		levels = new int[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
+		BufferedImage levelImage = null;
+		try {
+			levelImage = ImageIO.read(PPWorld.class.getResource("/assets/levels.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		parseLevels(levelImage);
+		
+		loadLevel(1);
+	}
+	
+	private void parseLevels(BufferedImage levelImage) {
+		for (int x = 0; x < WORLD_WIDTH; x++) {
+			for (int y = 0; y < WORLD_HEIGHT * NUM_LEVELS; y++) {
+				int i = x + y * WORLD_WIDTH;
+				levels[i] = Tile.parseTile(levelImage.getRGB(x, y)).index;
 			}
 		}
-		
-		for (int xt = 3; xt < WORLD_WIDTH; xt++)
-			setTile(xt, 5, Tile.PLATFORM_TILE);
-
-		for (int yt = 5; yt < 11; yt++)
-			setTile(3, yt, Tile.LADDER_TILE);
+	}
+	
+	private void loadLevel(int index) {
+		int ti = WORLD_WIDTH * WORLD_HEIGHT;
+		int li = ti * (index + 1);
+		while (ti != 0) {
+			ti--;
+			li--;
+			
+			tiles[ti] = levels[li];
+			data[ti] = 0;
+		}
 	}
 	
 	public void setData(int xt, int yt, byte data) {
