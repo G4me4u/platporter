@@ -47,7 +47,7 @@ public class PPWorld extends World {
 		}
 		parseLevels(levelImage);
 		
-		loadLevel(0);
+		loadLevel(1);
 	}
 	
 	private void parseLevels(BufferedImage levelImage) {
