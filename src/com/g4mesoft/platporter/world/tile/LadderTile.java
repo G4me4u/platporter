@@ -12,12 +12,12 @@ public class LadderTile extends Tile {
 	}
 	
 	@Override
-	public boolean isBackgroundLayer() {
+	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
 		return true;
 	}
 	
 	@Override
-	public boolean hasHitbox() {
+	public boolean hasHitbox(PPWorld world, int xt, int yt) {
 		return false;
 	}
 }

@@ -3,6 +3,7 @@ package com.g4mesoft.platporter.world.tile;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.world.phys.AABB;
@@ -13,8 +14,11 @@ public class Tile {
 	private static int nextTileId = 0;
 
 	public static final Tile AIR_TILE = new AirTile();
+	public static final Tile ERROR_TILE = new SolidTile(0, 0, ColorPalette.getColors(222, 333, 444, -1));
 	public static final Tile PLATFORM_TILE = new PlatformTile();
 	public static final Tile LADDER_TILE = new LadderTile();
+	public static final Tile DOOR_TILE = new DoorTile();
+	public static final Tile LEVER_TILE = new LeverTile();
 	
 	private static final Map<Integer, Tile> ID_TO_TILE;
 	
@@ -31,11 +35,11 @@ public class Tile {
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
 	}
 
-	public boolean hasHitbox() {
+	public boolean hasHitbox(PPWorld world, int xt, int yt) {
 		return true;
 	}
 	
-	public boolean isBackgroundLayer() {
+	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
 		return false;
 	}
 	
@@ -46,9 +50,12 @@ public class Tile {
 	static {
 		ID_TO_TILE = new HashMap<Integer, Tile>(nextTileId);
 		
-		ID_TO_TILE.put(0xFFFFFF, AIR_TILE);
-		ID_TO_TILE.put(0xCF5400, PLATFORM_TILE);
-		ID_TO_TILE.put(0xFF7F00, LADDER_TILE);
+		ID_TO_TILE.put(0xFFFF, AIR_TILE);
+		ID_TO_TILE.put(0xFF00, ERROR_TILE);
+		ID_TO_TILE.put(0xCF54, PLATFORM_TILE);
+		ID_TO_TILE.put(0xFF7F, LADDER_TILE);
+		ID_TO_TILE.put(0xC61C, DOOR_TILE);
+		ID_TO_TILE.put(0x90FF, LEVER_TILE);
 	}
 	
 	public static Tile parseTile(int id) {

@@ -1,7 +1,6 @@
 package com.g4mesoft.platporter.world;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,8 @@ public class PPWorld extends World {
 	private final int[] tiles;
 	private final byte[] data;
 
-	private final int[] levels;
+	private final int[] levelsTiles;
+	private final byte[] levelsData;
 	
 	public PPWorld(PlatPorter platPorter) {
 		this.platPorter = platPorter;
@@ -36,7 +36,9 @@ public class PPWorld extends World {
 		tiles = new int[WORLD_WIDTH * WORLD_HEIGHT];
 		data = new byte[WORLD_WIDTH * WORLD_HEIGHT];
 	
-		levels = new int[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
+		levelsTiles = new int[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
+		levelsData = new byte[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
+
 		BufferedImage levelImage = null;
 		try {
 			levelImage = ImageIO.read(PPWorld.class.getResource("/assets/levels.png"));
@@ -45,14 +47,16 @@ public class PPWorld extends World {
 		}
 		parseLevels(levelImage);
 		
-		loadLevel(1);
+		loadLevel(0);
 	}
 	
 	private void parseLevels(BufferedImage levelImage) {
 		for (int x = 0; x < WORLD_WIDTH; x++) {
 			for (int y = 0; y < WORLD_HEIGHT * NUM_LEVELS; y++) {
 				int i = x + y * WORLD_WIDTH;
-				levels[i] = Tile.parseTile(levelImage.getRGB(x, y)).index;
+				int rgb = levelImage.getRGB(x, y);
+				levelsTiles[i] = Tile.parseTile((rgb >>> 8) & 0xFFFF).index;
+				levelsData[i] = (byte)rgb;
 			}
 		}
 	}
@@ -64,8 +68,8 @@ public class PPWorld extends World {
 			ti--;
 			li--;
 			
-			tiles[ti] = levels[li];
-			data[ti] = 0;
+			tiles[ti] = levelsTiles[li];
+			data[ti] = levelsData[li];
 		}
 	}
 	
@@ -124,7 +128,7 @@ public class PPWorld extends World {
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				Tile tile = getTile(xt, yt);
-				if (tile != Tile.AIR_TILE && tile.isBackgroundLayer() == background)
+				if (tile != Tile.AIR_TILE && tile.isBackgroundLayer(this, xt, yt) == background)
 					tile.render(this, screen, xt, yt);
 			}
 		}
@@ -141,7 +145,7 @@ public class PPWorld extends World {
 		for (int yt = yt0; yt <= yt1; yt++) {
 			for (int xt = xt0; xt <= xt1; xt++) {
 				Tile tile = getTile(xt, yt);
-				if (tile.hasHitbox())
+				if (tile.hasHitbox(this, xt, yt))
 					colliders.add(tile.getBoundingBox(this, xt, yt));
 			}
 		}
