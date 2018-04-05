@@ -139,20 +139,27 @@ public class PPWorld extends World {
 			renderHitboxes(screen, dt);
 	}
 	
-	public void renderHitboxes(Screen2D screen, float dt) {
+	private void renderHitboxes(Screen2D screen, float dt) {
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				Tile tile = getTile(xt, yt);
-				if (tile.hasHitbox(this, xt, yt)) {
-					AABB hitbox = tile.getBoundingBox(this, xt, yt);
-					int x0 = Math.round(hitbox.x0 * 8.0f);
-					int y0 = Math.round(hitbox.y0 * 8.0f);
-					int x1 = Math.round(hitbox.x1 * 8.0f);
-					int y1 = Math.round(hitbox.y1 * 8.0f);
-					screen.drawRect(x0, y0, x1 - x0, y1 - y0, ColorPalette.getColor(500));
-				}
+				if (tile.hasHitbox(this, xt, yt))
+					drawHitbox(screen, tile.getBoundingBox(this, xt, yt), ColorPalette.getColor(500));
 			}
 		}
+		
+		for (Entity ent : entities) {
+			if (ent instanceof PPEntity)
+				drawHitbox(screen, ((PPEntity)ent).getBody(), ColorPalette.getColor(5));
+		}
+	}
+	
+	private void drawHitbox(Screen2D screen, AABB hitbox, int color) {
+		int x0 = Math.round(hitbox.x0 * 8.0f);
+		int y0 = Math.round(hitbox.y0 * 8.0f);
+		int x1 = Math.round(hitbox.x1 * 8.0f);
+		int y1 = Math.round(hitbox.y1 * 8.0f);
+		screen.drawRect(x0, y0, x1 - x0, y1 - y0, color);
 	}
 	
 	private void renderTiles(Screen2D screen, float dt, boolean background) {

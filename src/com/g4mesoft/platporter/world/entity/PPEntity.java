@@ -39,8 +39,10 @@ public abstract class PPEntity extends LivingEntity {
 	
 	@Override
 	protected void update() {
-		if (posUpdated)
+		if (posUpdated) {
+			body.move(newPos.x - pos.x, newPos.y - pos.y);
 			pos.set(newPos);
+		}
 			
 		PPWorld world = (PPWorld)this.world;
 
