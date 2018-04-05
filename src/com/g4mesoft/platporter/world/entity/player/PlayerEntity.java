@@ -36,6 +36,7 @@ public class PlayerEntity extends PPEntity {
 
 	@Override
 	protected void update() {
+		super.update();
 	}
 	
 	@Override

@@ -32,7 +32,7 @@ public class PPWorld extends World {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				if (yt == 10 && xt > 2)
 					continue;
-				setTile(xt, yt, Tile.PLATFORM_TILE);
+				setTile(xt, yt, Tile.LADDER_TILE);
 			}
 		}
 		
@@ -106,7 +106,7 @@ public class PPWorld extends World {
 		for (int yt = yt0; yt <= yt1; yt++) {
 			for (int xt = xt0; xt <= xt1; xt++) {
 				Tile tile = getTile(xt, yt);
-				if (tile != Tile.AIR_TILE)
+				if (tile.hasHitbox())
 					colliders.add(tile.getBoundingBox(this, xt, yt));
 			}
 		}

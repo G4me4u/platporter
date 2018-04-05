@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.math.Vec2f;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.entity.EntityFacing;
 import com.g4mesoft.world.entity.LivingEntity;
 import com.g4mesoft.world.phys.AABB;
@@ -13,6 +14,8 @@ import com.g4mesoft.world.phys.AABB;
 public abstract class PPEntity extends LivingEntity {
 
 	protected boolean onGround;
+	protected boolean onLadder;
+	
 	protected Vec2f velocity;
 	protected EntityFacing facing;
 
@@ -27,7 +30,13 @@ public abstract class PPEntity extends LivingEntity {
 		facing = EntityFacing.RIGHT;
 	}
 	
-	public abstract void render(Screen2D screen, float dt);
+	@Override
+	protected void update() {
+		PPWorld world = (PPWorld)this.world;
+
+		Tile footTile = world.getTile((int)(body.x0 + body.x1) >>> 1, (int)(body.y1 - 0.0625f));
+		onLadder = footTile == Tile.LADDER_TILE;
+	}
 	
 	public void move(float xm, float ym) {
 		float oxm = xm;
@@ -50,6 +59,8 @@ public abstract class PPEntity extends LivingEntity {
 		
 		pos.add(xm, ym);
 	}
+
+	public abstract void render(Screen2D screen, float dt);
 
 	@Override
 	protected AABB createBody() {

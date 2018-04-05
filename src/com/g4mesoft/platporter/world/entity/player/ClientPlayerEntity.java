@@ -27,12 +27,16 @@ public class ClientPlayerEntity extends PlayerEntity {
 			facing = EntityFacing.RIGHT;
 		}
 		
-		if (KeyManager.KEY_UP.isPressed() && onGround) {
-			velocity.y = -0.5f;
-			velocity.x *= 1.5f;
+		if (onLadder) {
+			velocity.y = 0.0f;
+		} else {
+			if (KeyManager.KEY_JUMP.isPressed() && onGround) {
+				velocity.y = -0.5f;
+				velocity.x *= 1.5f;
+			}
+	
+			velocity.y += 0.08f;
 		}
-
-		velocity.y += 0.08f;
 		
 		velocity.x *= 0.85f;
 		velocity.y *= 0.95f;
