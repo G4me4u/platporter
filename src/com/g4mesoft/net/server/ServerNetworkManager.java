@@ -45,10 +45,19 @@ public class ServerNetworkManager extends NetworkManager {
 			if (uptime - client.getLastPingTime() > MAX_PING_INTERVAL)
 				disconnectClient(client);
 		}
+
 		
 		if (!clientsToDisconnect.isEmpty()) {
-			for (ClientConnection client : clientsToDisconnect)
-				connectedClients.remove(client.getClientUUID());
+			int protocolId = ProtocolRegistry.getInstance().getId(AddPlayerProtocol.class);
+			AddPlayerProtocol addPlayerProtocol = (AddPlayerProtocol)getProtocol(protocolId);
+
+			for (ClientConnection client : clientsToDisconnect) {
+				UUID clientUUID = client.getClientUUID();
+				connectedClients.remove(clientUUID);
+				
+				for (UUID otherClientUUID : connectedClients.keySet())
+					addPlayerProtocol.removePlayer(otherClientUUID, clientUUID);
+			}
 			clientsToDisconnect.clear();
 		}
 	}

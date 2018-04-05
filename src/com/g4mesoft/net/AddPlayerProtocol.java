@@ -32,8 +32,10 @@ public class AddPlayerProtocol extends Protocol {
 		switch (action) {
 		case ADD_PLAYER_ACTION:
 			client.addNetworkPlayer(playerUUID);
+			break;
 		case REMOVE_PLAYER_ACTION:
 			client.removeNetworkPlayer(playerUUID);
+			break;
 		}
 	}
 	
