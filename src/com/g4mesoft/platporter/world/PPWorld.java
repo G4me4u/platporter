@@ -32,12 +32,15 @@ public class PPWorld extends World {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				if (yt == 10 && xt > 2)
 					continue;
-				setTile(xt, yt, Tile.LADDER_TILE);
+				setTile(xt, yt, Tile.PLATFORM_TILE);
 			}
 		}
 		
 		for (int xt = 3; xt < WORLD_WIDTH; xt++)
 			setTile(xt, 5, Tile.PLATFORM_TILE);
+
+		for (int yt = 5; yt < 11; yt++)
+			setTile(3, yt, Tile.LADDER_TILE);
 	}
 	
 	public void setData(int xt, int yt, byte data) {
@@ -81,15 +84,21 @@ public class PPWorld extends World {
 	}
 	
 	public void render(Screen2D screen, float dt) {
+		renderTiles(screen, dt, true);
+
 		for (Entity entity : entities) {
 			if (entity instanceof PPEntity)
 				((PPEntity)entity).render(screen, dt);
 		}
 		
+		renderTiles(screen, dt, false);
+	}
+	
+	private void renderTiles(Screen2D screen, float dt, boolean background) {
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				Tile tile = getTile(xt, yt);
-				if (tile != Tile.AIR_TILE)
+				if (tile != Tile.AIR_TILE && tile.isBackgroundLayer() == background)
 					tile.render(this, screen, xt, yt);
 			}
 		}
