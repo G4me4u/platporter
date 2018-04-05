@@ -3,7 +3,6 @@ package com.g4mesoft.platporter.world.entity.player;
 import java.util.UUID;
 
 import com.g4mesoft.net.NetworkManager;
-import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.PPWorld;
@@ -28,9 +27,15 @@ public class ClientPlayerEntity extends PlayerEntity {
 		}
 		
 		if (onLadder) {
-			velocity.y = 0.0f;
+			if (KeyManager.KEY_UP.isPressed()) {
+				velocity.y -= 0.025f;
+			} else if (KeyManager.KEY_DOWN.isPressed()) {
+				velocity.y += 0.025f;
+			} else {
+				velocity.y = 0.0f;
+			}
 		} else {
-			if (KeyManager.KEY_JUMP.isPressed() && onGround) {
+			if (KeyManager.KEY_UP.isPressed() && onGround) {
 				velocity.y = -0.5f;
 				velocity.x *= 1.5f;
 			}
@@ -38,8 +43,8 @@ public class ClientPlayerEntity extends PlayerEntity {
 			velocity.y += 0.08f;
 		}
 		
-		velocity.x *= 0.85f;
-		velocity.y *= 0.95f;
+		velocity.x *= getHorizontalFriction();
+		velocity.y *= getVerticalFriction();
 
 		move(velocity.x, velocity.y);
 
@@ -54,5 +59,13 @@ public class ClientPlayerEntity extends PlayerEntity {
 			NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
 			client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
 		}
+	}
+	
+	public float getHorizontalFriction() {
+		return onLadder ? 0.75f : 0.85f;
+	}
+
+	public float getVerticalFriction() {
+		return onLadder ? 0.85f : 0.95f;
 	}
 }

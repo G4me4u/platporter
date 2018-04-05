@@ -30,6 +30,10 @@ public class Tile {
 		return true;
 	}
 	
+	public boolean isBackgroundLayer() {
+		return false;
+	}
+	
 	public AABB getBoundingBox(PPWorld world, int xt, int yt) {
 		return new AABB(xt, yt, xt + 1.0f, yt + 1.0f);
 	}

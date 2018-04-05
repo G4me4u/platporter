@@ -11,6 +11,12 @@ public class LadderTile extends Tile {
 		screen.drawSprite(xt * 8, yt * 8, 0, 1, ColorPalette.getColors(222, 333, 444, -1));
 	}
 	
+	@Override
+	public boolean isBackgroundLayer() {
+		return true;
+	}
+	
+	@Override
 	public boolean hasHitbox() {
 		return false;
 	}

@@ -14,6 +14,8 @@ import com.g4mesoft.world.phys.AABB;
 public abstract class PPEntity extends LivingEntity {
 
 	protected boolean onGround;
+	
+	protected boolean wasOnLadder;
 	protected boolean onLadder;
 	
 	protected Vec2f velocity;
@@ -34,7 +36,8 @@ public abstract class PPEntity extends LivingEntity {
 	protected void update() {
 		PPWorld world = (PPWorld)this.world;
 
-		Tile footTile = world.getTile((int)(body.x0 + body.x1) >>> 1, (int)(body.y1 - 0.0625f));
+		Tile footTile = world.getTile((int)(body.x0 + body.x1) >>> 1, (int)(body.y1 + 0.0625f));
+		wasOnLadder = onLadder;
 		onLadder = footTile == Tile.LADDER_TILE;
 	}
 	
