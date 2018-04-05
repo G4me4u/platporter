@@ -9,6 +9,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
@@ -181,6 +182,16 @@ public class PPWorld extends World {
 		}
 		
 		return null;
+	}
+	
+	public void interactWithTile(int xt, int yt, PPEntity entity) {
+		Tile tile = getTile(xt, yt);
+		tile.interactWith(this, xt, yt, entity);
+	
+		NetworkManager manager = platPorter.getNetworkManager();
+		if (manager.isClient()) {
+			// TODO: create action protocol
+		}
 	}
 	
 	@Override

@@ -54,17 +54,17 @@ public abstract class PPEntity extends LivingEntity {
 		float oym = ym;
 		
 		List<AABB> tileHitboxes = ((PPWorld)world).getTileColliders(body.expand(xm, ym));
-		for (AABB aabb : tileHitboxes) 
-			xm = aabb.clipX(body, xm);
-		body.move(xm, 0);
-		if (xm != oxm)
-			velocity.x = 0;
-
 		for (AABB aabb : tileHitboxes)
 			ym = aabb.clipY(body, ym);
 		body.move(0, ym);
 		if (ym != oym)
 			velocity.y = 0;
+
+		for (AABB aabb : tileHitboxes) 
+			xm = aabb.clipX(body, xm);
+		body.move(xm, 0);
+		if (xm != oxm)
+			velocity.x = 0;
 		
 		onGround = oym > 0.0f && ym != oym;
 		

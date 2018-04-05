@@ -56,13 +56,13 @@ public class Screen2D {
 		}
 	}
 	
-	public void drawSprite(int x, int y, int xt, int yt, int colors) {
-		drawSprite(x, y, xt, yt, colors, 0);
+	public void drawSprite(int x, int y, int sx, int sy, int colors) {
+		drawSprite(x, y, sx, sy, colors, 0);
 	}
 
-	public void drawSprite(int x, int y, int xt, int yt, int colors, int flags) {
-		int sx = xt << 3;
-		int sy = yt << 3;
+	public void drawSprite(int x, int y, int sx, int sy, int colors, int flags) {
+		sx <<= 3;
+		sy <<= 3;
 
 		boolean mirrorX = (flags & MIRROR_X) != 0;
 		boolean mirrorY = (flags & MIRROR_Y) != 0;
