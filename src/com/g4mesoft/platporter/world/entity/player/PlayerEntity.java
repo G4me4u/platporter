@@ -29,7 +29,7 @@ public class PlayerEntity extends PPEntity {
 			flags |= Screen2D.MIRROR_X;
 		screen.drawSprite(xp, yp, (animTimer >> 2) % 3, 3, ColorPalette.getColors(225, 410, 115,  -1), flags);
 		
-		if (velocity.y < 0.0f)
+		if (pos.y - prevPos.y < -0.1f)
 			flags |= Screen2D.MIRROR_Y;
 		screen.drawSprite(xp, yp, 0, 2, ColorPalette.getColors( -1, 141, 555,  -1), flags);
 	}
@@ -37,6 +37,13 @@ public class PlayerEntity extends PPEntity {
 	@Override
 	protected void update() {
 		super.update();
+		
+		float speedX = Math.abs(pos.x - prevPos.x);
+		if (speedX < 0.01f) {
+			animTimer = 0;
+		} else {
+			animTimer += (int)(speedX * 32.0f);
+		}
 	}
 	
 	@Override

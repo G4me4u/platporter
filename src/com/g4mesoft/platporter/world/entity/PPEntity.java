@@ -21,6 +21,9 @@ public abstract class PPEntity extends LivingEntity {
 	protected Vec2f velocity;
 	protected EntityFacing facing;
 
+	protected Vec2f newPos;
+	protected boolean posUpdated;
+	
 	protected final UUID entityUUID;
 	
 	protected PPEntity(PPWorld world, UUID entityUUID) {
@@ -28,12 +31,17 @@ public abstract class PPEntity extends LivingEntity {
 		
 		this.entityUUID = entityUUID;
 		
-		velocity = new Vec2f(0, 0);
+		velocity = new Vec2f();
 		facing = EntityFacing.RIGHT;
+		
+		newPos = new Vec2f();
 	}
 	
 	@Override
 	protected void update() {
+		if (posUpdated)
+			pos.set(newPos);
+			
 		PPWorld world = (PPWorld)this.world;
 
 		Tile footTile = world.getTile((int)(body.x0 + body.x1) >>> 1, (int)(body.y1 + 0.0625f));
@@ -75,7 +83,8 @@ public abstract class PPEntity extends LivingEntity {
 	}
 
 	public void setPosition(float x, float y, EntityFacing facing) {
-		pos.set(x, y);
+		posUpdated = true;
+		newPos.set(x, y);
 		this.facing = facing;
 	}
 }

@@ -17,11 +17,6 @@ public class ClientPlayerEntity extends PlayerEntity {
 
 	@Override
 	protected void update() {
-		super.update();
-		
-		if (!world.isClient())
-			return;
-		
 		if (KeyManager.KEY_LEFT.isPressed()) {
 			velocity.x -= 0.02f;
 			facing = EntityFacing.LEFT;
@@ -52,15 +47,12 @@ public class ClientPlayerEntity extends PlayerEntity {
 
 		move(velocity.x, velocity.y);
 
-		float speedX = Math.abs(velocity.x);
-		if (speedX < 0.01f) {
-			animTimer = 0;
-		} else {
-			animTimer += (int)(speedX * 32.0f);
+		super.update();
+
+		if (world.isClient()) {
+			NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
+			client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
 		}
-		
-		NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
-		client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
 	
 		if (KeyManager.KEY_INTERACT.isClicked()) {
 			int xi;
