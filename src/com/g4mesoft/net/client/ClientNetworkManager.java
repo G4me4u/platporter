@@ -122,6 +122,13 @@ public class ClientNetworkManager extends NetworkManager {
 		PPWorld world = platPorter.getWorld();
 		world.removeEntity(playerUUID);
 	}
+
+	public void handlePositionPacket(S01PositionPacket positionPacket) {
+		PPWorld world = platPorter.getWorld();
+		PPEntity entity = world.getEntity(positionPacket.entityUUID);
+		if (entity != null && positionPacket.facing != null)
+			entity.setPosition(positionPacket.x, positionPacket.y, positionPacket.facing);
+	}
 	
 	public boolean isConnected() {
 		return connected;
@@ -133,12 +140,5 @@ public class ClientNetworkManager extends NetworkManager {
 	
 	public UUID getServerUUID() {
 		return serverUUID;
-	}
-
-	public void handlePositionPacket(S01PositionPacket positionPacket) {
-		PPWorld world = platPorter.getWorld();
-		PPEntity entity = world.getEntity(positionPacket.entityUUID);
-		if (entity != null && positionPacket.facing != null)
-			entity.setPosition(positionPacket.x, positionPacket.y, positionPacket.facing);
 	}
 }
