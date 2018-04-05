@@ -41,6 +41,6 @@ public class PlayerEntity extends PPEntity {
 	
 	@Override
 	protected AABB createBody() {
-		return new AABB(0.125f, 0.25f, 0.875f, 1.0f);
+		return new AABB(0.12f, 0.255f, 0.87f, 1.0f);
 	}
 }

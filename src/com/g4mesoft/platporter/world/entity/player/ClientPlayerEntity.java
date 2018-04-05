@@ -6,6 +6,7 @@ import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.entity.EntityFacing;
 
 public class ClientPlayerEntity extends PlayerEntity {
@@ -17,6 +18,9 @@ public class ClientPlayerEntity extends PlayerEntity {
 	@Override
 	protected void update() {
 		super.update();
+		
+		if (!world.isClient())
+			return;
 		
 		if (KeyManager.KEY_LEFT.isPressed()) {
 			velocity.x -= 0.02f;
@@ -55,9 +59,20 @@ public class ClientPlayerEntity extends PlayerEntity {
 			animTimer += (int)(speedX * 32.0f);
 		}
 		
-		if (world.isClient()) {
-			NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
-			client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
+		NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
+		client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
+	
+		if (KeyManager.KEY_INTERACT.isClicked()) {
+			int xi;
+			if (facing == EntityFacing.LEFT) {
+				xi = (int)(body.x0 - 0.25f);
+			} else {
+				xi = (int)(body.x1 + 0.25f);
+			}
+			int yi = (int)(body.y0 + body.y1) >>> 1;
+			
+			Tile interactTile = ((PPWorld)world).getTile(xi, yi);
+			interactTile.interactWith((PPWorld)world, xi, yi, this);
 		}
 	}
 	

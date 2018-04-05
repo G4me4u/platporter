@@ -3,6 +3,7 @@ package com.g4mesoft.platporter.world.tile;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.world.phys.AABB;
 
 public class LeverTile extends Tile {
@@ -10,6 +11,12 @@ public class LeverTile extends Tile {
 	private static final int LEVER_ON_MASK = 0x01;
 	private static final int ON_WALL_MASK = 0x02;
 	private static final int FLIP_MASK = 0x04;
+	
+	@Override
+	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
+		int data = world.getData(xt, yt) & 0xFF;
+		world.setData(xt, yt, (byte)(data ^ LEVER_ON_MASK));
+	}
 	
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
