@@ -10,7 +10,7 @@ public class LeverTile extends Tile {
 
 	private static final int LEVER_ON_MASK = 0x01;
 	private static final int ON_WALL_MASK = 0x02;
-	private static final int FLIP_MASK = 0x04;
+	private static final int MIRROR_MASK = 0x04;
 	
 	@Override
 	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
@@ -49,7 +49,7 @@ public class LeverTile extends Tile {
 	}
 	
 	public boolean isFlipped(PPWorld world, int xt, int yt) {
-		return (world.getData(xt, yt) & FLIP_MASK) != 0;
+		return (world.getData(xt, yt) & MIRROR_MASK) != 0;
 	}
 	
 	@Override
