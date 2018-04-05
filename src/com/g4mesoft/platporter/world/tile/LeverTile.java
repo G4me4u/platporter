@@ -28,12 +28,12 @@ public class LeverTile extends Tile {
 		if (onWall) {
 			if (isTurnedOn(world, xt, yt))
 				flags |= Screen2D.MIRROR_Y;
-			if (isFlipped(world, xt, yt))
+			if (isMirrored(world, xt, yt))
 				flags |= Screen2D.MIRROR_X;
 		} else {
 			if (isTurnedOn(world, xt, yt))
 				flags |= Screen2D.MIRROR_X;
-			if (isFlipped(world, xt, yt))
+			if (isMirrored(world, xt, yt))
 				flags |= Screen2D.MIRROR_Y;
 		}
 		
@@ -48,20 +48,20 @@ public class LeverTile extends Tile {
 		return (world.getData(xt, yt) & ON_WALL_MASK) != 0;
 	}
 	
-	public boolean isFlipped(PPWorld world, int xt, int yt) {
+	public boolean isMirrored(PPWorld world, int xt, int yt) {
 		return (world.getData(xt, yt) & MIRROR_MASK) != 0;
 	}
 	
 	@Override
 	public AABB getBoundingBox(PPWorld world, int xt, int yt) {
 		if (isOnWall(world, xt, yt)) {
-			if (isFlipped(world, xt, yt)) {
+			if (isMirrored(world, xt, yt)) {
 				return new AABB(xt + 0.75f, yt + 0.25f, xt + 1.0f, yt + 0.75f);
 			} else {
 				return new AABB(xt, yt + 0.25f, xt + 0.25f, yt + 0.75f);
 			}
 		} else {
-			if (isFlipped(world, xt, yt)) {
+			if (isMirrored(world, xt, yt)) {
 				return new AABB(xt + 0.25f, yt, xt + 0.75f, yt + 0.25f);
 			} else {
 				return new AABB(xt + 0.25f, yt + 0.75f, xt + 0.75f, yt + 1.0f);
