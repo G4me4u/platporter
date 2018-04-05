@@ -61,9 +61,4 @@ public class LeverTile extends Tile {
 			}
 		}
 	}
-	
-	@Override
-	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
-		return true;
-	}
 }
