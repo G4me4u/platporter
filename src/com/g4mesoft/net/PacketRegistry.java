@@ -6,6 +6,7 @@ import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.net.packet.protocol.ProtocolAcknowledgePacket;
 import com.g4mesoft.net.packet.protocol.ProtocolDataPacket;
 import com.g4mesoft.net.packet.server.S00PongPacket;
+import com.g4mesoft.net.packet.server.S01PositionPacket;
 
 public final class PacketRegistry extends NetworkRegistry<Packet> {
 
@@ -23,6 +24,7 @@ public final class PacketRegistry extends NetworkRegistry<Packet> {
 		
 		// Gameplay
 		addEntry(C01PositionPacket.class);
+		addEntry(S01PositionPacket.class);
 	}
 	
 	public static PacketRegistry getInstance() {
