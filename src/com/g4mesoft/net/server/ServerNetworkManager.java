@@ -19,7 +19,9 @@ import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00PingPacket;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.net.packet.server.S00PongPacket;
+import com.g4mesoft.net.packet.server.S01PositionPacket;
 import com.g4mesoft.platporter.PlatPorter;
+import com.g4mesoft.world.entity.EntityFacing;
 
 public class ServerNetworkManager extends NetworkManager {
 
@@ -161,7 +163,16 @@ public class ServerNetworkManager extends NetworkManager {
 	}
 
 	public void handlePositionPacket(C01PositionPacket positionPacket) {
+		UUID entityUUID = positionPacket.senderUUID;
+		float x = positionPacket.x;
+		float y = positionPacket.y;
+		EntityFacing facing = positionPacket.facing;
 		
+		for (UUID clientUUID : connectedClients.keySet()) {
+			if (clientUUID.equals(entityUUID))
+				continue;
+			addPacketToSend(new S01PositionPacket(entityUUID, x, y, facing), clientUUID);
+		}
 	}
 	
 	public Map<UUID, ClientConnection> getConnectedClients() {

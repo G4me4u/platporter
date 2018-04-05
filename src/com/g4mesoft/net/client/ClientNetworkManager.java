@@ -13,8 +13,10 @@ import com.g4mesoft.net.Protocol;
 import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.server.S00PongPacket;
+import com.g4mesoft.net.packet.server.S01PositionPacket;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.entity.player.ClientPlayerEntity;
 import com.g4mesoft.platporter.world.entity.player.NetworkPlayerEntity;
 
@@ -131,5 +133,11 @@ public class ClientNetworkManager extends NetworkManager {
 	
 	public UUID getServerUUID() {
 		return serverUUID;
+	}
+
+	public void handlePositionPacket(S01PositionPacket positionPacket) {
+		PPWorld world = platPorter.getWorld();
+		PPEntity entity = world.getEntity(positionPacket.entityUUID);
+		entity.setPosition(positionPacket.x, positionPacket.y, positionPacket.facing);
 	}
 }

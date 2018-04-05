@@ -17,7 +17,7 @@ public class PPWorld extends World {
 	private static final int WORLD_WIDTH = 16;
 	private static final int WORLD_HEIGHT = 16;
 	
-	private final PlatPorter platPorter;
+	public final PlatPorter platPorter;
 	
 	private final int[] tiles;
 	private final byte[] data;
@@ -127,6 +127,21 @@ public class PPWorld extends World {
 		}
 		
 		return false;
+	}
+	
+	public PPEntity getEntity(UUID entityUUID) {
+		if (entityUUID == null)
+			return null;
+		
+		for (Entity entity : entities) {
+			if (entity instanceof PPEntity) {
+				PPEntity ent = (PPEntity)entity;
+				if (entityUUID.equals(ent.getUUID()))
+					return ent;
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override

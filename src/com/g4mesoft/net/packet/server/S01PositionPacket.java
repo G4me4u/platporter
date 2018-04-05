@@ -1,21 +1,25 @@
-package com.g4mesoft.net.packet.client;
+package com.g4mesoft.net.packet.server;
+
+import java.util.UUID;
 
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.PacketByteBuffer;
+import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.packet.Packet;
-import com.g4mesoft.net.server.ServerNetworkManager;
 import com.g4mesoft.world.entity.EntityFacing;
 
-public class C01PositionPacket extends Packet {
-	
+public class S01PositionPacket extends Packet {
+
+	public UUID entityUUID;
 	public float x;
 	public float y;
 	public EntityFacing facing;
 	
-	public C01PositionPacket() {
+	public S01PositionPacket() {
 	}
 	
-	public C01PositionPacket(float x, float y, EntityFacing facing) {
+	public S01PositionPacket(UUID entityUUID, float x, float y, EntityFacing facing) {
+		this.entityUUID = entityUUID;
 		this.x = x;
 		this.y = y;
 		this.facing = facing;
@@ -23,6 +27,7 @@ public class C01PositionPacket extends Packet {
 
 	@Override
 	public void read(PacketByteBuffer buffer) {
+		entityUUID = buffer.getUUID();
 		x = buffer.getFloat();
 		y = buffer.getFloat();
 		facing = EntityFacing.fromIndex(buffer.getInt());
@@ -30,6 +35,7 @@ public class C01PositionPacket extends Packet {
 
 	@Override
 	public void write(PacketByteBuffer buffer) {
+		buffer.putUUID(entityUUID);
 		buffer.putFloat(x);
 		buffer.putFloat(y);
 		buffer.putInt(facing == null ? -1 : facing.getIndex());
@@ -37,14 +43,13 @@ public class C01PositionPacket extends Packet {
 
 	@Override
 	public void processPacket(NetworkManager manager) {
-		if (manager.isServer())
-			((ServerNetworkManager)manager).handlePositionPacket(this);
+		if (manager.isClient())
+			((ClientNetworkManager)manager).handlePositionPacket(this);
 	}
 
 	@Override
 	public boolean checkSize(int bytesToRead) {
-		// float float int
-		return bytesToRead == 12;
+		// uuid float float int
+		return bytesToRead == 28;
 	}
-
 }

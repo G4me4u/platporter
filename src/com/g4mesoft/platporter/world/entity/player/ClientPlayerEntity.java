@@ -2,6 +2,9 @@ package com.g4mesoft.platporter.world.entity.player;
 
 import java.util.UUID;
 
+import com.g4mesoft.net.NetworkManager;
+import com.g4mesoft.net.client.ClientNetworkManager;
+import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.world.entity.EntityFacing;
@@ -41,6 +44,11 @@ public class ClientPlayerEntity extends PlayerEntity {
 			animTimer = 0;
 		} else {
 			animTimer += (int)(speedX * 32.0f);
+		}
+		
+		if (world.isClient()) {
+			NetworkManager client = ((PPWorld)world).platPorter.getNetworkManager();
+			client.addPacketToSend(new C01PositionPacket(pos.x, pos.y, facing));
 		}
 	}
 }

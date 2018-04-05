@@ -59,4 +59,9 @@ public abstract class PPEntity extends LivingEntity {
 	public UUID getUUID() {
 		return entityUUID;
 	}
+
+	public void setPosition(float x, float y, EntityFacing facing) {
+		pos.set(x, y);
+		this.facing = facing;
+	}
 }

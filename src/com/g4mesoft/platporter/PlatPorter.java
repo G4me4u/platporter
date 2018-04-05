@@ -119,6 +119,10 @@ public class PlatPorter extends Application {
 	public ScheduledTaskManager getTaskManager() {
 		return taskManager;
 	}
+	
+	public NetworkManager getNetworkManager() {
+		return networkManager;
+	}
 
 	public PPWorld getWorld() {
 		return world;
