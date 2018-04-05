@@ -21,6 +21,8 @@ public class Tile {
 	public static final Tile LADDER_TILE = new LadderTile();
 	public static final Tile DOOR_TILE = new DoorTile();
 	public static final Tile LEVER_TILE = new LeverTile();
+	public static final Tile BEAM_STAND_TILE = new BeamStandTile();
+	public static final Tile BEAM_TILE = new BeamTile();
 	
 	private static final Map<Integer, Tile> ID_TO_TILE;
 	
@@ -61,6 +63,8 @@ public class Tile {
 		ID_TO_TILE.put(0xFF7F, LADDER_TILE);
 		ID_TO_TILE.put(0xC61C, DOOR_TILE);
 		ID_TO_TILE.put(0x90FF, LEVER_TILE);
+		ID_TO_TILE.put(0x461F, BEAM_STAND_TILE);
+		ID_TO_TILE.put(0x434E, BEAM_TILE);
 	}
 	
 	public static Tile parseTile(int id) {
