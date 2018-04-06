@@ -1,0 +1,39 @@
+Air Tile:
+	- Base color: FFFFFF
+Error Tile:
+	- Base color: FF0000
+Ladder Tile:
+	- Base color: FF7F00
+Door Tile:
+	- Base color: C61C00
+	- Open/Close bit: 0x01 (1st bit)
+	- Mirror bit: 0x02 (2nd bit)
+Lever Tile:
+	- Base color: 90FF00
+	- Turn on bit: 0x01 (1st bit)
+	- On wall bit: 0x02 (2nd bit)
+	- Opposite wall bit: 0x04 (4th bit)
+Platform Tile:
+	- Base color: CF54
+	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+	- Y-offset (in sprite sheet): 0x08 | 0x04 (3rd and 4th bit) (0x12)
+	- Mirror y-axis bit: 0x16 (5th bit)
+	- Mirror x-axis bit: 0x32 (6th bit)
+Orb Tile (not implemented yet):
+	- Base color: 002600
+	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+Change level Tile (not implemented yet):
+	- Base color: 7F7F
+	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+Beam Stand Tile (when using, always fit with the one that has flipped bit two (| 0x02)):
+	- Base color: 461F00
+	- On wall bit: 0x01
+	- Mirror stand bit: 0x02
+	- Mirror beam dir bit: 0x04
+	- Beam animation time offset bit: 0x16 |0x08 (4th and 5th bit) (0x24)
+Beam Tile:
+	- Base color: 434E00
+	- Horizontal bit: 0x01 (1st bit)
+	- Animation time offset bit: 0x02 | 0x04 (1st and 2nd bit) (0x06)
+	- Opposite flow dir bit: 0x08
+	
