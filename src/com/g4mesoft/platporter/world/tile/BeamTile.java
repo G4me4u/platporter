@@ -34,7 +34,7 @@ public class BeamTile extends Tile {
 		}
 		
 		
-		int sx = (int)(world.worldTime / 5L + (3 - ((world.getData(xt, yt) & TIME_MASK) >> 1))) % 4 + 4;
+		int sx = (int)(world.worldTime / 5L + ((world.getData(xt, yt) & TIME_MASK) >> 1)) % 4 + 4;
 		screen.drawSprite(xt * 8, yt * 8, sx, sy, ColorPalette.getColors(541, 213, 123, -1), flags);
 	}
 	
