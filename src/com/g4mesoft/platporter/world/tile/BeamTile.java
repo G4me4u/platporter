@@ -7,7 +7,7 @@ import com.g4mesoft.platporter.world.PPWorld;
 public class BeamTile extends Tile {
 	private static final int ON_WALL_MASK = 0x01;
 	private static final int MIRROR_MASK = 0x08;
-	private static final int TIME_MASK = 0x02 | 0x04;
+	private static final int TIME_MASK = 0x06;
 	
 	
 	@Override

@@ -9,7 +9,7 @@ public class BeamStandTile extends Tile {
 	private static final int ON_WALL_MASK = 0x01;
 	private static final int MIRROR_STAND_MASK = 0x02;
 	private static final int MIRROR_BEAM_MASK = 0x04;
-	private static final int BEAM_TIME_MASK = 0x08 | 0x016;
+	private static final int BEAM_TIME_MASK = 0x24;
 	
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
