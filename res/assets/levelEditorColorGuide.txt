@@ -19,10 +19,10 @@ Platform Tile:
 	- Y-offset (in sprite sheet): 0x08 | 0x04 (3rd and 4th bit) (0x12)
 	- Mirror y-axis bit: 0x16 (5th bit)
 	- Mirror x-axis bit: 0x32 (6th bit)
-Orb Tile (not implemented yet):
+Orb Tile:
 	- Base color: 002600
-	- X-offset: 0x02 | 0x01 (1st and 2nd bit) (0x03)
-Change level Tile (not implemented yet):
+	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+Change level Tile:
 	- Base color: 7F7F
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
 Beam Stand Tile (when using, always fit with the one that has flipped bit two (| 0x02)):
