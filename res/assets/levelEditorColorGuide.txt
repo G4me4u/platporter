@@ -21,7 +21,7 @@ Platform Tile:
 	- Mirror x-axis bit: 0x32 (6th bit)
 Orb Tile (not implemented yet):
 	- Base color: 002600
-	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+	- X-offset: 0x02 | 0x01 (1st and 2nd bit) (0x03)
 Change level Tile (not implemented yet):
 	- Base color: 7F7F
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
