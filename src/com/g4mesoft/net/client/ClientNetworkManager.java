@@ -66,6 +66,10 @@ public class ClientNetworkManager extends NetworkManager {
 
 		if (socket.isConnected())
 			socket.disconnect();
+		
+		ClientNetworkGameEvent disconnectEvent = 
+				new ClientNetworkGameEvent(this, ClientNetworkGameEvent.DISCONNECTED, "disconnected");
+		platPorter.getEventManager().handleEvent(disconnectEvent);
 	}
 
 	@Override
@@ -116,6 +120,10 @@ public class ClientNetworkManager extends NetworkManager {
 	
 		PPWorld world = platPorter.getWorld();
 		world.addEntity(new ClientPlayerEntity(world, clientUUID));
+	
+		ClientNetworkGameEvent connectedEvent = 
+				new ClientNetworkGameEvent(this, ClientNetworkGameEvent.CONNECTED, "connected");
+		platPorter.getEventManager().handleEvent(connectedEvent);
 	}
 
 	public void processPong(S00PongPacket pongPacket) {
