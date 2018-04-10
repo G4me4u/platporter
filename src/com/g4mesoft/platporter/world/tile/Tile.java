@@ -22,7 +22,7 @@ public class Tile {
 	public static final Tile DOOR_TILE = new DoorTile();
 	public static final Tile LEVER_TILE = new LeverTile();
 	public static final Tile BEAM_STAND_TILE = new BeamStandTile();
-	public static final Tile BEAM_TILE = new BeamTile();
+	public static final Tile BEAM_TILE = new BeamLaserTile();
 	public static final Tile ORB_TILE = new OrbTile();
 	public static final Tile STAGE_CLEAR_TILE = new StageClearTile();
 	public static final Tile BARRIER_TILE = new BarrierTile();
