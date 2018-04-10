@@ -16,6 +16,7 @@ import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.server.ServerNetworkManager;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.util.GameEventManager;
 import com.g4mesoft.util.ScheduledTaskManager;
 
 public class PlatPorter extends Application {
@@ -33,6 +34,7 @@ public class PlatPorter extends Application {
 	private Screen2D screen;
 	
 	private ScheduledTaskManager taskManager;
+	private GameEventManager eventManager;
 	
 	private boolean client;
 	
@@ -54,6 +56,7 @@ public class PlatPorter extends Application {
 		screen = new Screen2D(pixels, SIZE, SIZE);
 
 		taskManager = new ScheduledTaskManager();
+		eventManager = new GameEventManager();
 		
 		world = new PPWorld(this);
 		
@@ -120,6 +123,10 @@ public class PlatPorter extends Application {
 	
 	public ScheduledTaskManager getTaskManager() {
 		return taskManager;
+	}
+
+	public GameEventManager getEventManager() {
+		return eventManager;
 	}
 	
 	public NetworkManager getNetworkManager() {
