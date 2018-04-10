@@ -37,6 +37,8 @@ public class ServerNetworkManager extends NetworkManager {
 	
 		connectedClients = new HashMap<UUID, ClientConnection>();
 		clientsToDisconnect = new ArrayList<ClientConnection>();
+	
+		System.out.println("Server started on ip: " + socket.getLocalSocketAddress());
 	}
 
 	@Override
@@ -47,7 +49,6 @@ public class ServerNetworkManager extends NetworkManager {
 			if (uptime - client.getLastPingTime() > MAX_PING_INTERVAL)
 				disconnectClient(client);
 		}
-
 		
 		if (!clientsToDisconnect.isEmpty()) {
 			int protocolId = ProtocolRegistry.getInstance().getId(AddPlayerProtocol.class);
@@ -118,6 +119,7 @@ public class ServerNetworkManager extends NetworkManager {
 
 	public void disconnectClient(ClientConnection client) {
 		System.out.println("Disconnecting client: " + client.getClientUUID());
+		
 		if (client == null || !connectedClients.containsKey(client.getClientUUID()))
 			return;
 		if (clientsToDisconnect.contains(client))
@@ -147,6 +149,8 @@ public class ServerNetworkManager extends NetworkManager {
 			addPlayerProtocol.addPlayer(otherClientUUID, clientUUID);
 			addPlayerProtocol.addPlayer(clientUUID, otherClientUUID);
 		}
+		
+		System.out.println("Client with id: " + clientUUID + " connected.");
 		
 		return client;
 	}
