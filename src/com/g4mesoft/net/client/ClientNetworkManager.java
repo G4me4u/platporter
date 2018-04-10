@@ -131,14 +131,14 @@ public class ClientNetworkManager extends NetworkManager {
 			lastServerPong = uptime;
 	}
 
-	public void addNetworkPlayer(UUID playerUUID) {
+	public void addNetworkEntity(UUID playerUUID) {
 		PPWorld world = platPorter.getWorld();
 		world.addEntity(new NetworkPlayerEntity(world, playerUUID));
 	}
 
-	public void removeNetworkPlayer(UUID playerUUID) {
+	public void removeNetworkEntity(UUID entityUUID) {
 		PPWorld world = platPorter.getWorld();
-		world.removeEntity(playerUUID);
+		world.removeEntity(entityUUID);
 	}
 
 	public void handlePositionPacket(S01PositionPacket positionPacket) {

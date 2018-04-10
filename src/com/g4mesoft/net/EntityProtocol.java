@@ -5,14 +5,14 @@ import java.util.UUID;
 
 import com.g4mesoft.net.client.ClientNetworkManager;
 
-public class AddPlayerProtocol extends Protocol {
+public class EntityProtocol extends Protocol {
 
-	private final static byte REMOVE_PLAYER_ACTION = 0x00;
-	private final static byte ADD_PLAYER_ACTION = 0x01;
+	private final static byte REMOVE_ENTITY_ACTION = 0x00;
+	private final static byte ADD_ENTITY_ACTION = 0x01;
 	
 	private final PacketByteBuffer sendBuffer;
 	
-	public AddPlayerProtocol(NetworkManager manager) {
+	public EntityProtocol(NetworkManager manager) {
 		super(manager);
 		
 		sendBuffer = new PacketByteBuffer();
@@ -30,29 +30,29 @@ public class AddPlayerProtocol extends Protocol {
 		
 		ClientNetworkManager client = (ClientNetworkManager)manager;
 		switch (action) {
-		case ADD_PLAYER_ACTION:
-			client.addNetworkPlayer(playerUUID);
+		case ADD_ENTITY_ACTION:
+			client.addNetworkEntity(playerUUID);
 			break;
-		case REMOVE_PLAYER_ACTION:
-			client.removeNetworkPlayer(playerUUID);
+		case REMOVE_ENTITY_ACTION:
+			client.removeNetworkEntity(playerUUID);
 			break;
 		}
 	}
 	
-	public void addPlayer(UUID receiverUUID, UUID playerUUID) {
-		handlePlayer(receiverUUID, playerUUID, false);
+	public void addEntity(UUID receiverUUID, UUID playerUUID) {
+		handleEntity(receiverUUID, playerUUID, ADD_ENTITY_ACTION);
 	}
 
-	public void removePlayer(UUID receiverUUID, UUID playerUUID) {
-		handlePlayer(receiverUUID, playerUUID, true);
+	public void removeEntity(UUID receiverUUID, UUID playerUUID) {
+		handleEntity(receiverUUID, playerUUID, REMOVE_ENTITY_ACTION);
 	}
 	
-	private void handlePlayer(UUID receiverUUID, UUID playerUUID, boolean remove) {
+	private void handleEntity(UUID receiverUUID, UUID playerUUID, byte action) {
 		if (manager.isClient())
 			return;
 		
 		sendBuffer.reset();
-		sendBuffer.putByte(remove ? REMOVE_PLAYER_ACTION : ADD_PLAYER_ACTION);
+		sendBuffer.putByte(action);
 		sendBuffer.putUUID(playerUUID);
 		sendData(receiverUUID, sendBuffer);
 	}

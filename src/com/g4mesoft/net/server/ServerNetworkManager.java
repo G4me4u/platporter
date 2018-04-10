@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.g4mesoft.net.AddPlayerProtocol;
+import com.g4mesoft.net.EntityProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.ProtocolRegistry;
@@ -51,15 +51,15 @@ public class ServerNetworkManager extends NetworkManager {
 		}
 		
 		if (!clientsToDisconnect.isEmpty()) {
-			int protocolId = ProtocolRegistry.getInstance().getId(AddPlayerProtocol.class);
-			AddPlayerProtocol addPlayerProtocol = (AddPlayerProtocol)getProtocol(protocolId);
+			int protocolId = ProtocolRegistry.getInstance().getId(EntityProtocol.class);
+			EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(protocolId);
 
 			for (ClientConnection client : clientsToDisconnect) {
 				UUID clientUUID = client.getClientUUID();
 				connectedClients.remove(clientUUID);
 				
 				for (UUID otherClientUUID : connectedClients.keySet())
-					addPlayerProtocol.removePlayer(otherClientUUID, clientUUID);
+					addPlayerProtocol.removeEntity(otherClientUUID, clientUUID);
 			}
 			clientsToDisconnect.clear();
 		}
@@ -141,13 +141,13 @@ public class ServerNetworkManager extends NetworkManager {
 
 		connectedClients.put(clientUUID, client);
 
-		int protocolId = ProtocolRegistry.getInstance().getId(AddPlayerProtocol.class);
-		AddPlayerProtocol addPlayerProtocol = (AddPlayerProtocol)getProtocol(protocolId);
+		int protocolId = ProtocolRegistry.getInstance().getId(EntityProtocol.class);
+		EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(protocolId);
 		for (UUID otherClientUUID : connectedClients.keySet()) {
 			if (clientUUID.equals(otherClientUUID))
 				continue;
-			addPlayerProtocol.addPlayer(otherClientUUID, clientUUID);
-			addPlayerProtocol.addPlayer(clientUUID, otherClientUUID);
+			addPlayerProtocol.addEntity(otherClientUUID, clientUUID);
+			addPlayerProtocol.addEntity(clientUUID, otherClientUUID);
 		}
 		
 		System.out.println("Client with id: " + clientUUID + " connected.");
