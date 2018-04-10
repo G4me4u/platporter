@@ -64,13 +64,15 @@ public class ClientNetworkManager extends NetworkManager {
 		connected = false;
 		handshaking = false;
 
-		socket.disconnect();
+		if (socket.isConnected())
+			socket.disconnect();
 	}
 
 	@Override
 	public void update() {
 		super.update();
-		if (connected && (uptime - lastServerPong > MAX_PONG_INTERVAL))
+		
+		if (connected && (uptime - lastServerPong > MAX_PONG_INTERVAL) || !socket.isConnected())
 			disconnect();
 	}
 
@@ -88,6 +90,14 @@ public class ClientNetworkManager extends NetworkManager {
 		} catch (IOException se) {
 			se.printStackTrace();
 			return false;
+		} catch (NullPointerException npe) {
+			// This exception is thrown when the server
+			// is closed, and the client tries to send
+			// a packet. But if the exception was thrown
+			// for another reason, we should still print
+			// it.
+			if (socket.isConnected())
+				npe.printStackTrace();
 		}
 		return true;
 	}
