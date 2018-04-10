@@ -25,6 +25,7 @@ public class Tile {
 	public static final Tile BEAM_TILE = new BeamTile();
 	public static final Tile ORB_TILE = new OrbTile();
 	public static final Tile STAGE_CLEAR_TILE = new StageClearTile();
+	public static final Tile BARRIER_TILE = new BarrierTile();
 	
 	private static final Map<Integer, Tile> ID_TO_TILE;
 	
@@ -69,6 +70,7 @@ public class Tile {
 		ID_TO_TILE.put(0x434E, BEAM_TILE);
 		ID_TO_TILE.put(0x0026, ORB_TILE);
 		ID_TO_TILE.put(0x7F7F, STAGE_CLEAR_TILE);
+		ID_TO_TILE.put(0x0000, BARRIER_TILE);
 	}
 	
 	public static Tile parseTile(int id) {
