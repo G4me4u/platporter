@@ -2,6 +2,7 @@ package com.g4mesoft.platporter.world.entity.player;
 
 import java.util.UUID;
 
+import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.platporter.input.KeyManager;
@@ -38,13 +39,12 @@ public class ClientPlayerEntity extends PlayerEntity {
 				velocity.x *= 1.5f;
 			}
 	
-			velocity.y += 0.08f;
+			if (!inLaser)
+				velocity.y += 0.08f;
 		}
-		
+
 		velocity.x *= getHorizontalFriction();
 		velocity.y *= getVerticalFriction();
-
-		move(velocity.x, velocity.y);
 
 		super.update();
 
@@ -66,11 +66,13 @@ public class ClientPlayerEntity extends PlayerEntity {
 		}
 	}
 	
-	public float getHorizontalFriction() {
-		return onLadder ? 0.75f : 0.85f;
+	@Override
+	public int getBodyColor() {
+		return ColorPalette.getColors(225, 410, 115,  -1);
 	}
 
-	public float getVerticalFriction() {
-		return onLadder ? 0.85f : 0.95f;
+	@Override
+	public int getEyeColor() {
+		return ColorPalette.getColors( -1, 141, 555,  -1);
 	}
 }

@@ -9,7 +9,7 @@ import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.world.entity.EntityFacing;
 import com.g4mesoft.world.phys.AABB;
 
-public class PlayerEntity extends PPEntity {
+public abstract class PlayerEntity extends PPEntity {
 	
 	protected int animTimer;
 	
@@ -27,11 +27,11 @@ public class PlayerEntity extends PPEntity {
 		int flags = 0;
 		if (facing == EntityFacing.RIGHT)
 			flags |= Screen2D.MIRROR_X;
-		screen.drawSprite(xp, yp, (animTimer >> 2) % 3, 3, ColorPalette.getColors(225, 410, 115,  -1), flags);
+		screen.drawSprite(xp, yp, (animTimer >> 2) % 3, 3, getBodyColor(), flags);
 		
 		if (pos.y - prevPos.y < -0.1f)
 			flags |= Screen2D.MIRROR_Y;
-		screen.drawSprite(xp, yp, 0, 2, ColorPalette.getColors( -1, 141, 555,  -1), flags);
+		screen.drawSprite(xp, yp, 0, 2, getEyeColor(), flags);
 	}
 
 	@Override
@@ -45,6 +45,10 @@ public class PlayerEntity extends PPEntity {
 			animTimer += (int)(speedX * 32.0f);
 		}
 	}
+	
+	public abstract int getEyeColor();
+
+	public abstract int getBodyColor();
 	
 	@Override
 	protected AABB createBody() {

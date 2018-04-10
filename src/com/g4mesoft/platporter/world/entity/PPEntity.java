@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.math.Vec2f;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.tile.BeamTile;
 import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.entity.EntityFacing;
 import com.g4mesoft.world.entity.LivingEntity;
@@ -17,6 +18,9 @@ public abstract class PPEntity extends LivingEntity {
 	
 	protected boolean wasOnLadder;
 	protected boolean onLadder;
+	
+	protected boolean wasInLaser;
+	protected boolean inLaser;
 	
 	protected Vec2f velocity;
 	protected EntityFacing facing;
@@ -43,12 +47,46 @@ public abstract class PPEntity extends LivingEntity {
 			body.move(newPos.x - pos.x, newPos.y - pos.y);
 			pos.set(newPos);
 		}
-			
+
+		velocity.x *= getHorizontalFriction();
+		velocity.y *= getVerticalFriction();
+		move(velocity.x, velocity.y);
+		
 		PPWorld world = (PPWorld)this.world;
 
-		Tile footTile = world.getTile((int)(body.x0 + body.x1) >>> 1, (int)(body.y1 + 0.0625f));
+		int xf = (int)(body.x0 + body.x1) >>> 1;
+		int yf = (int)(body.y1 + 0.0625f);
+		Tile footTile = world.getTile(xf, yf);
 		wasOnLadder = onLadder;
 		onLadder = footTile == Tile.LADDER_TILE;
+		
+		int xc = (int)(body.x0 + body.x1) >>> 1;
+		int yc = (int)(body.y0 + body.y1) >>> 1;
+		Tile centerTile = world.getTile(xc, yc);
+		wasInLaser = inLaser;
+		inLaser = centerTile instanceof BeamTile;
+		
+		if (inLaser) {
+			EntityFacing laserFacing = ((BeamTile)centerTile).getFacing(world, xc, yc);
+			switch (laserFacing) {
+			case UP:
+			case DOWN:
+				velocity.y = laserFacing.getOffset().y * 0.3f;
+				break;
+			case RIGHT:
+			case LEFT:
+				velocity.x = laserFacing.getOffset().x * 0.3f;
+				break;
+			}
+		}
+	}
+	
+	public float getHorizontalFriction() {
+		return onLadder ? 0.75f : 0.85f;
+	}
+
+	public float getVerticalFriction() {
+		return onLadder ? 0.85f : 0.95f;
 	}
 	
 	public void move(float xm, float ym) {
