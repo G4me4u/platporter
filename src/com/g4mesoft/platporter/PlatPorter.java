@@ -63,7 +63,7 @@ public class PlatPorter extends Application {
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("10.0.16.104", 25565));
+				clientNetworkManager.connect(new InetSocketAddress("192.168.43.19", 25565));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();

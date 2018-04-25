@@ -82,7 +82,7 @@ public abstract class PPEntity extends LivingEntity {
 	}
 	
 	public float getHorizontalFriction() {
-		return onLadder ? 0.75f : 0.91f;
+		return onLadder ? 0.75f : 0.85f;
 	}
 
 	public float getVerticalFriction() {
