@@ -1,9 +1,10 @@
 package com.g4mesoft.platporter.input;
 
+import java.awt.event.KeyEvent;
+
 import com.g4mesoft.input.key.KeyInput;
 import com.g4mesoft.input.key.KeyInputListener;
 import com.g4mesoft.input.key.KeySingleInput;
-import com.sun.glass.events.KeyEvent;
 
 public class KeyManager {
 
