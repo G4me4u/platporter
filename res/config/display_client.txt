@@ -8,3 +8,4 @@ minimumHeight=130
 resizable=true
 centered=true
 displayMode=normal
+icon=/assets/icon.png
