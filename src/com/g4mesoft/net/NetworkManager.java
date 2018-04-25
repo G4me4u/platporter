@@ -1,5 +1,6 @@
 package com.g4mesoft.net;
 
+import java.io.Closeable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
@@ -10,7 +11,6 @@ import java.util.UUID;
 
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.platporter.PlatPorter;
-import com.sun.xml.internal.ws.Closeable;
 
 public abstract class NetworkManager implements Closeable {
 
