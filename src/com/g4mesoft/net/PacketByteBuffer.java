@@ -55,8 +55,8 @@ public class PacketByteBuffer {
 	}
 
 	public void putBytes(byte[] data, int pos, int length) {
-		if (this.pos + length >= this.data.length)
-			setCapacity(pos + length + 1);
+		if (this.pos + length > this.data.length)
+			setCapacity(this.pos + length);
 		
 		System.arraycopy(data, pos, this.data, this.pos, length);
 		this.pos += length;
