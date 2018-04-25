@@ -33,6 +33,7 @@ public abstract class PlayerEntity extends PPEntity {
 			flags |= Screen2D.MIRROR_Y;
 		screen.drawSprite(xp, yp, 0, 2, getEyeColor(), flags);
 	}
+	
 
 	@Override
 	protected void update() {

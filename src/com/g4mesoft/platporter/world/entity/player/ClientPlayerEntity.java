@@ -43,9 +43,6 @@ public class ClientPlayerEntity extends PlayerEntity {
 				velocity.y += 0.08f;
 		}
 
-		velocity.x *= getHorizontalFriction();
-		velocity.y *= getVerticalFriction();
-
 		super.update();
 
 		if (world.isClient()) {
