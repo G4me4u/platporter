@@ -148,6 +148,10 @@ public abstract class NetworkManager implements Closeable {
 		return true;
 	}
 	
+	public Protocol getProtocol(Class<? extends Protocol> clazz) {
+		return getProtocol(ProtocolRegistry.getInstance().getId(clazz));
+	}
+	
 	public Protocol getProtocol(int protocolId) {
 		Protocol protocol = idToProtocol.get(protocolId);
 		if (protocol == null) {

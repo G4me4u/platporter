@@ -2,7 +2,6 @@ package com.g4mesoft.platporter.world.entity.player;
 
 import java.util.UUID;
 
-import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;

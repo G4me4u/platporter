@@ -1,18 +1,12 @@
 package com.g4mesoft.platporter.world;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.imageio.ImageIO;
-
-import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
-import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.world.World;
@@ -21,18 +15,17 @@ import com.g4mesoft.world.phys.AABB;
 
 public class PPWorld extends World {
 
-	private static final int WORLD_WIDTH = 16;
-	private static final int WORLD_HEIGHT = 16;
-	private static final int NUM_LEVELS = 16;
+	public static final int WORLD_WIDTH = 16;
+	public static final int WORLD_HEIGHT = 16;
+	public static final int NUM_LEVELS = 16;
 	
-	private boolean viewHitboxes;
 	public final PlatPorter platPorter;
 	
-	private final int[] tiles;
-	private final byte[] data;
+	protected final int[] tiles;
+	protected final byte[] data;
 
-	private final int[] levelsTiles;
-	private final byte[] levelsData;
+	protected final int[] levelsTiles;
+	protected final byte[] levelsData;
 	
 	public PPWorld(PlatPorter platPorter) {
 		this.platPorter = platPorter;
@@ -42,39 +35,6 @@ public class PPWorld extends World {
 	
 		levelsTiles = new int[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
 		levelsData = new byte[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
-
-		BufferedImage levelImage = null;
-		try {
-			levelImage = ImageIO.read(PPWorld.class.getResource("/assets/levels.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		parseLevels(levelImage);
-		
-		loadLevel(1);
-	}
-	
-	private void parseLevels(BufferedImage levelImage) {
-		for (int x = 0; x < WORLD_WIDTH; x++) {
-			for (int y = 0; y < WORLD_HEIGHT * NUM_LEVELS; y++) {
-				int i = x + y * WORLD_WIDTH;
-				int rgb = levelImage.getRGB(x, y);
-				levelsTiles[i] = Tile.parseTile((rgb >>> 8) & 0xFFFF).index;
-				levelsData[i] = (byte)rgb;
-			}
-		}
-	}
-	
-	private void loadLevel(int index) {
-		int ti = WORLD_WIDTH * WORLD_HEIGHT;
-		int li = ti * (index + 1);
-		while (ti != 0) {
-			ti--;
-			li--;
-			
-			tiles[ti] = levelsTiles[li];
-			data[ti] = levelsData[li];
-		}
 	}
 	
 	public void setData(int xt, int yt, byte data) {
@@ -120,56 +80,9 @@ public class PPWorld extends World {
 	@Override
 	public void update() {
 		super.update();
-		
-		if (KeyManager.KEY_TOGGLE_HITBOX.isClicked())
-			viewHitboxes = !viewHitboxes;
 	}
 	
 	public void render(Screen2D screen, float dt) {
-		renderTiles(screen, dt, true);
-
-		for (Entity entity : entities) {
-			if (entity instanceof PPEntity)
-				((PPEntity)entity).render(screen, dt);
-		}
-		
-		renderTiles(screen, dt, false);
-		
-		if (viewHitboxes)
-			renderHitboxes(screen, dt);
-	}
-	
-	private void renderHitboxes(Screen2D screen, float dt) {
-		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
-				Tile tile = getTile(xt, yt);
-				if (tile.hasHitbox(this, xt, yt))
-					drawHitbox(screen, tile.getBoundingBox(this, xt, yt), ColorPalette.getColor(500));
-			}
-		}
-		
-		for (Entity ent : entities) {
-			if (ent instanceof PPEntity)
-				drawHitbox(screen, ((PPEntity)ent).getBody(), ColorPalette.getColor(5));
-		}
-	}
-	
-	private void drawHitbox(Screen2D screen, AABB hitbox, int color) {
-		int x0 = Math.round(hitbox.x0 * 8.0f);
-		int y0 = Math.round(hitbox.y0 * 8.0f);
-		int x1 = Math.round(hitbox.x1 * 8.0f);
-		int y1 = Math.round(hitbox.y1 * 8.0f);
-		screen.drawRect(x0, y0, x1 - x0, y1 - y0, color);
-	}
-	
-	private void renderTiles(Screen2D screen, float dt, boolean background) {
-		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
-				Tile tile = getTile(xt, yt);
-				if (tile != Tile.AIR_TILE && tile.isBackgroundLayer(this, xt, yt) == background)
-					tile.render(this, screen, xt, yt);
-			}
-		}
 	}
 	
 	public List<AABB> getTileColliders(AABB body) {
@@ -234,5 +147,19 @@ public class PPWorld extends World {
 	@Override
 	public boolean isClient() {
 		return platPorter.isClient();
+	}
+
+	public void setAllTiles(int[] tiles, byte[] data) {
+		if (tiles.length != data.length || tiles.length != this.tiles.length)
+			return;
+		
+		int i = 0;
+		for (int yt = 0; yt < WORLD_WIDTH; yt++) {
+			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+				setTileIndex(xt, yt, tiles[i]);
+				setData(xt, yt, data[i]);
+				i++;
+			}
+		}
 	}
 }

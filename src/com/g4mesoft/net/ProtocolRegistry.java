@@ -5,9 +5,12 @@ public final class ProtocolRegistry extends NetworkRegistry<Protocol> {
 	private static ProtocolRegistry instance;
 
 	private ProtocolRegistry() {
+		// Connect
 		addEntry(HandshakeProtocol.class);
 		
+		// World
 		addEntry(EntityProtocol.class);
+		addEntry(WorldProtocol.class);
 	}
 	
 	public static ProtocolRegistry getInstance() {

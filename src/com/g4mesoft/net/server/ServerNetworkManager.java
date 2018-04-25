@@ -14,7 +14,6 @@ import java.util.UUID;
 import com.g4mesoft.net.EntityProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
-import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.client.C00PingPacket;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
@@ -51,13 +50,16 @@ public class ServerNetworkManager extends NetworkManager {
 		}
 		
 		if (!clientsToDisconnect.isEmpty()) {
-			int protocolId = ProtocolRegistry.getInstance().getId(EntityProtocol.class);
-			EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(protocolId);
+			EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(EntityProtocol.class);
 
 			for (ClientConnection client : clientsToDisconnect) {
 				UUID clientUUID = client.getClientUUID();
 				connectedClients.remove(clientUUID);
-				
+
+				ServerNetworkGameEvent disconnectEvent = 	
+						new ServerNetworkGameEvent(this, "disconnected", ServerNetworkGameEvent.DISCONNECTED, client);
+				platPorter.getEventManager().handleEvent(disconnectEvent);
+			
 				for (UUID otherClientUUID : connectedClients.keySet())
 					addPlayerProtocol.removeEntity(otherClientUUID, clientUUID);
 			}
@@ -141,14 +143,17 @@ public class ServerNetworkManager extends NetworkManager {
 
 		connectedClients.put(clientUUID, client);
 
-		int protocolId = ProtocolRegistry.getInstance().getId(EntityProtocol.class);
-		EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(protocolId);
+		EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(EntityProtocol.class);
 		for (UUID otherClientUUID : connectedClients.keySet()) {
 			if (clientUUID.equals(otherClientUUID))
 				continue;
 			addPlayerProtocol.addEntity(otherClientUUID, clientUUID);
 			addPlayerProtocol.addEntity(clientUUID, otherClientUUID);
 		}
+		
+		ServerNetworkGameEvent connectEvent = 
+				new ServerNetworkGameEvent(this, "connected", ServerNetworkGameEvent.CONNECTED, client);
+		platPorter.getEventManager().handleEvent(connectEvent);
 		
 		System.out.println("Client with id: " + clientUUID + " connected.");
 		

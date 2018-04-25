@@ -15,7 +15,9 @@ import com.g4mesoft.input.key.KeyInputListener;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.server.ServerNetworkManager;
+import com.g4mesoft.platporter.world.ClientPPWorld;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.ServerPPWorld;
 import com.g4mesoft.util.GameEventManager;
 import com.g4mesoft.util.ScheduledTaskManager;
 
@@ -58,16 +60,16 @@ public class PlatPorter extends Application {
 		taskManager = new ScheduledTaskManager();
 		eventManager = new GameEventManager();
 		
-		world = new PPWorld(this);
-		
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("192.168.43.19", 25565));
+				clientNetworkManager.connect(new InetSocketAddress("10.64.194.136", 25565));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
 			}
+
+			world = new ClientPPWorld(this);
 		} else {
 			try {
 				networkManager = new ServerNetworkManager(25565, this);
@@ -76,6 +78,8 @@ public class PlatPorter extends Application {
 			}
 			
 			setDebug(false);
+
+			world = new ServerPPWorld(this);
 		}
 	}
 	

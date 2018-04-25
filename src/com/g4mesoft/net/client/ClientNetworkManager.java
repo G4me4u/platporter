@@ -10,7 +10,6 @@ import com.g4mesoft.net.HandshakeProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.Protocol;
-import com.g4mesoft.net.ProtocolRegistry;
 import com.g4mesoft.net.packet.Packet;
 import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.net.packet.server.S01PositionPacket;
@@ -47,7 +46,7 @@ public class ClientNetworkManager extends NetworkManager {
 
 		handshaking = true;
 
-		Protocol protocol = getProtocol(ProtocolRegistry.getInstance().getId(HandshakeProtocol.class));
+		Protocol protocol = getProtocol(HandshakeProtocol.class);
 		if (protocol != null) {
 			((HandshakeProtocol)protocol).handshakeServer();
 			return true;
