@@ -109,6 +109,20 @@ public class PlatPorter extends Application {
 		
 		world.render(screen, dt);
 		
+		screen.drawText("abcdefghijklmnop", 0, 0, ColorPalette.getColors(552, -1, -1, -1));
+		screen.drawText("qrstuvwxyz123456", 0, 8, ColorPalette.getColors(552, -1, -1, -1));
+		screen.drawText("7890.,!?=+-*/\\<>", 0, 16, ColorPalette.getColors(552, -1, -1, -1));
+		screen.drawText("(){}[]'\"%@:;#$&^", 0, 24, ColorPalette.getColors(552, -1, -1, -1));
+
+		
+		screen.drawText("Hello, my name", 8, 40, ColorPalette.getColors(525, -1, -1, -1));
+		screen.drawText("is Christian.", 8, 48, ColorPalette.getColors(525, -1, -1, -1));
+		screen.drawText("What is yours?", 8, 56, ColorPalette.getColors(525, -1, -1, -1));
+		
+		screen.drawText("SCREAM 1234!", 8, 72, ColorPalette.getColors(500, -1, -1, -1));
+
+		screen.drawText("Testing the 3242", 0, 88, ColorPalette.getColors(40, -1, -1, -1));
+		
 		Graphics g = renderer.getGraphics();
 
 		int width = getDisplay().getWidth();

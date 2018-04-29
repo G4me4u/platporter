@@ -12,6 +12,8 @@ public class Screen2D {
 	public static final int MIRROR_X = 1;
 	public static final int MIRROR_Y = 2;
 	
+	private static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyz1234567890.,!?=+-*/\\<>(){}[]'\"%@:;#$&";
+	
 	private final int[] pixels;
 	private final int width;
 	private final int height;
@@ -82,6 +84,41 @@ public class Screen2D {
 				if (colIndex < ColorPalette.NUM_VISIBLE_COLORS)
 					pixels[pi] = palette.palette[colIndex];
 			}
+		}
+	}
+	
+	public void drawText(String msg, int x, int y, int colors) {
+		int len = msg.length();
+		if (len == 0)
+			return;
+
+		if (y < -7 || y >= height) 
+			return;
+		
+		for (int i = 0; i < len; i++) {
+			if (x >= width) 
+				return;
+			if (x < -7)
+				continue;
+
+			char c = msg.charAt(i);
+			
+			if (c != ' ') {
+				int index = FONT_CHARACTERS.indexOf(Character.toLowerCase(c));
+				
+				int sx;
+				int sy;
+				if (index != -1) {
+					sx = index % 16;
+					sy = index / 16 + 12;
+				} else {
+					sx = sy = 15;
+				}
+				
+	 			drawSprite(x, y, sx, sy, colors);
+			}
+
+ 			x += 8;
 		}
 	}
 
