@@ -56,8 +56,7 @@ public class ServerNetworkManager extends NetworkManager {
 				UUID clientUUID = client.getClientUUID();
 				connectedClients.remove(clientUUID);
 
-				ServerNetworkGameEvent disconnectEvent = 	
-						new ServerNetworkGameEvent(this, "disconnected", ServerNetworkGameEvent.DISCONNECTED, client);
+				ServerNetworkGameEvent disconnectEvent = new ServerNetworkGameEvent(this, ServerNetworkGameEvent.DISCONNECTED, client);
 				platPorter.getEventManager().handleEvent(disconnectEvent);
 			
 				for (UUID otherClientUUID : connectedClients.keySet())
@@ -151,8 +150,7 @@ public class ServerNetworkManager extends NetworkManager {
 			addPlayerProtocol.addEntity(clientUUID, otherClientUUID);
 		}
 		
-		ServerNetworkGameEvent connectEvent = 
-				new ServerNetworkGameEvent(this, "connected", ServerNetworkGameEvent.CONNECTED, client);
+		ServerNetworkGameEvent connectEvent = new ServerNetworkGameEvent(this, ServerNetworkGameEvent.CONNECTED, client);
 		platPorter.getEventManager().handleEvent(connectEvent);
 		
 		System.out.println("Client with id: " + clientUUID + " connected.");

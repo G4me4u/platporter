@@ -1,6 +1,8 @@
 package com.g4mesoft.net;
 
-public final class ProtocolRegistry extends NetworkRegistry<Protocol> {
+import com.g4mesoft.util.Registry;
+
+public final class ProtocolRegistry extends Registry<Protocol> {
 
 	private static ProtocolRegistry instance;
 

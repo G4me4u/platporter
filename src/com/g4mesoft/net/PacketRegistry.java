@@ -7,8 +7,9 @@ import com.g4mesoft.net.packet.protocol.ProtocolAcknowledgePacket;
 import com.g4mesoft.net.packet.protocol.ProtocolDataPacket;
 import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.net.packet.server.S01PositionPacket;
+import com.g4mesoft.util.Registry;
 
-public final class PacketRegistry extends NetworkRegistry<Packet> {
+public final class PacketRegistry extends Registry<Packet> {
 
 	private static PacketRegistry instance;
 

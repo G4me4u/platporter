@@ -18,6 +18,7 @@ import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.entity.player.ClientPlayerEntity;
 import com.g4mesoft.platporter.world.entity.player.NetworkPlayerEntity;
+import com.g4mesoft.util.GameEventManager;
 
 public class ClientNetworkManager extends NetworkManager {
 
@@ -66,9 +67,8 @@ public class ClientNetworkManager extends NetworkManager {
 		if (socket.isConnected())
 			socket.disconnect();
 		
-		ClientNetworkGameEvent disconnectEvent = 
-				new ClientNetworkGameEvent(this, ClientNetworkGameEvent.DISCONNECTED, "disconnected");
-		platPorter.getEventManager().handleEvent(disconnectEvent);
+		GameEventManager eventManager = platPorter.getEventManager();
+		eventManager.handleEvent(new ClientNetworkGameEvent(this, ClientNetworkGameEvent.DISCONNECTED));
 	}
 
 	@Override
@@ -120,9 +120,8 @@ public class ClientNetworkManager extends NetworkManager {
 		PPWorld world = platPorter.getWorld();
 		world.addEntity(new ClientPlayerEntity(world, clientUUID));
 	
-		ClientNetworkGameEvent connectedEvent = 
-				new ClientNetworkGameEvent(this, ClientNetworkGameEvent.CONNECTED, "connected");
-		platPorter.getEventManager().handleEvent(connectedEvent);
+		GameEventManager eventManager = platPorter.getEventManager();
+		eventManager.handleEvent(new ClientNetworkGameEvent(this, ClientNetworkGameEvent.CONNECTED));
 	}
 
 	public void processPong(S00PongPacket pongPacket) {
@@ -130,9 +129,9 @@ public class ClientNetworkManager extends NetworkManager {
 			lastServerPong = uptime;
 	}
 
-	public void addNetworkEntity(UUID playerUUID) {
+	public void addNetworkEntity(UUID entityUUID) {
 		PPWorld world = platPorter.getWorld();
-		world.addEntity(new NetworkPlayerEntity(world, playerUUID));
+		world.addEntity(new NetworkPlayerEntity(world, entityUUID));
 	}
 
 	public void removeNetworkEntity(UUID entityUUID) {

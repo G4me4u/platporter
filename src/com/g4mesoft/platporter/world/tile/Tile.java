@@ -7,7 +7,6 @@ import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
-import com.g4mesoft.world.World;
 import com.g4mesoft.world.phys.AABB;
 
 public class Tile {
@@ -40,6 +39,9 @@ public class Tile {
 	}
 
 	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
+	}
+	
+	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
 	}
 	
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {

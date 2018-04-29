@@ -1,16 +1,16 @@
-package com.g4mesoft.net;
+package com.g4mesoft.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class NetworkRegistry<T> {
+public abstract class Registry<T> {
 
 	protected final Map<Class<? extends T>, Integer> classToId;
 	protected final List<Class<? extends T>> classes;
 
-	public NetworkRegistry() {
+	public Registry() {
 		classToId = new HashMap<Class<? extends T>, Integer>();
 		classes = new ArrayList<Class<? extends T>>();
 	}

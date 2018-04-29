@@ -16,8 +16,9 @@ import com.g4mesoft.util.GameEventManager;
 
 public class ServerPPWorld extends PPWorld {
 
+	protected int currentLevel;
+
 	private final WorldProtocol worldProtocol;
-	private int level;
 	
 	public ServerPPWorld(PlatPorter platPorter) {
 		super(platPorter);
@@ -45,7 +46,8 @@ public class ServerPPWorld extends PPWorld {
 			e.printStackTrace();
 		}
 		parseLevels(levelImage);
-		loadLevel(0);
+		
+		loadLevel(1);
 	}
 
 	private void parseLevels(BufferedImage levelImage) {
@@ -60,6 +62,8 @@ public class ServerPPWorld extends PPWorld {
 	}
 	
 	private void loadLevel(int index) {
+		this.currentLevel = index;
+		
 		int ti = WORLD_WIDTH * WORLD_HEIGHT;
 		int li = ti * (index + 1);
 		while (ti != 0) {
@@ -70,15 +74,12 @@ public class ServerPPWorld extends PPWorld {
 			data[ti] = levelsData[li];
 		}
 		
-		// Send new world data to all
+		// Send new world data to all clients
 		worldProtocol.sendWorldTiles(tiles, data, null);
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		
-		if (worldTime % 60 == 0)
-			loadLevel((level++) % 5);
 	}
 }

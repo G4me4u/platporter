@@ -10,8 +10,8 @@ public class ServerNetworkGameEvent extends GameEvent {
 	private final int networkAction;
 	private final ClientConnection client;
 	
-	public ServerNetworkGameEvent(Object sender, String desc, int networkAction, ClientConnection client) {
-		super(sender, desc);
+	public ServerNetworkGameEvent(Object sender, int networkAction, ClientConnection client) {
+		super(sender);
 
 		switch (networkAction) {
 		case DISCONNECTED:
