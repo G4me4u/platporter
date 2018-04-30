@@ -6,6 +6,7 @@ import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.platporter.input.KeyManager;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.world.entity.EntityFacing;
 
@@ -37,6 +38,8 @@ public class ClientPlayerEntity extends PlayerEntity {
 			if (KeyManager.KEY_UP.isPressed() && onGround) {
 				velocity.y = -0.5f;
 				velocity.x *= 1.5f;
+				
+				Sounds.playSound(Sounds.JUMP_SOUND, 0.3f, 0.9f + RANDOM.nextFloat() * 0.2f);
 			}
 	
 			if (!inLaser)

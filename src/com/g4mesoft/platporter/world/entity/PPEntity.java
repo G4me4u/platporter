@@ -1,6 +1,7 @@
 package com.g4mesoft.platporter.world.entity;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import com.g4mesoft.graphics.Screen2D;
@@ -14,6 +15,8 @@ import com.g4mesoft.world.phys.AABB;
 
 public abstract class PPEntity extends LivingEntity {
 
+	protected static final Random RANDOM = new Random();
+	
 	protected boolean onGround;
 	
 	protected boolean wasOnLadder;

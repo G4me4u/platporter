@@ -15,6 +15,7 @@ import com.g4mesoft.input.key.KeyInputListener;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.net.server.ServerNetworkManager;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.ClientPPWorld;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.ServerPPWorld;
@@ -74,6 +75,8 @@ public class PlatPorter extends Application {
 			}
 
 			world = new ClientPPWorld(this);
+			
+			Sounds.loadAllSounds();
 		} else {
 			try {
 				networkManager = new ServerNetworkManager(25565, this);
