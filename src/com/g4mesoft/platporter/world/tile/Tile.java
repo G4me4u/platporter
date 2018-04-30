@@ -44,6 +44,9 @@ public class Tile {
 	
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
 	}
+
+	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
+	}
 	
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
 	}

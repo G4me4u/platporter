@@ -26,6 +26,18 @@ public class PreassurePlateTile extends Tile {
 	}
 	
 	@Override
+	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
+		byte data = world.getData(xt, yt);
+		world.setData(xt, yt, (byte)(data | ON_MASK));
+	}
+
+	@Override
+	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
+		byte data = world.getData(xt, yt);
+		world.setData(xt, yt, (byte)(data | ON_MASK));
+	}
+	
+	@Override
 	public AABB getBoundingBox(PPWorld world, int xt, int yt) {
 		return new AABB(xt + 0.125f, yt + 0.875f, xt + 0.875f, yt + 1.00f);
 	}
