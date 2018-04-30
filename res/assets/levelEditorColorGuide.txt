@@ -16,7 +16,7 @@ Lever Tile:
 	- Base color: 90FF00
 	- Turn on bit: 0x01 (1st bit)
 	- On wall bit: 0x02 (2nd bit)
-	- Opposite wall bit: 0x04 (4th bit)
+	- Opposite wall bit: 0x04 (3th bit)
 Preasure plate Tile:
 	- 00FF00
 	- Turn on bit: 0x01 (1st bit)
