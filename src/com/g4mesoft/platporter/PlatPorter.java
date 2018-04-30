@@ -41,6 +41,8 @@ public class PlatPorter extends Application {
 	private boolean client;
 	
 	private PPWorld world;
+	
+	private long connectionTimer;
 
 	public PlatPorter(boolean client) {
 		super(client ? CLIENT_DISPLAY_CONFIG : SERVER_DISPLAY_CONFIG);
@@ -63,7 +65,7 @@ public class PlatPorter extends Application {
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("87.58.145.111", 25565));
+				clientNetworkManager.connect(new InetSocketAddress("10.0.0.203", 25565));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
@@ -97,6 +99,9 @@ public class PlatPorter extends Application {
 		networkManager.update();
 		world.update();
 		
+		if (client && !((ClientNetworkManager)networkManager).isConnected())
+			connectionTimer++;
+		
 		KeyInputListener.getInstance().updateKeys();
 	}
 
@@ -107,21 +112,12 @@ public class PlatPorter extends Application {
 		
 		screen.clear(ColorPalette.getColor(0));
 		
-		world.render(screen, dt);
-		
-		screen.drawText("abcdefghijklmnop", 0, 0, ColorPalette.getColors(552, -1, -1, -1));
-		screen.drawText("qrstuvwxyz123456", 0, 8, ColorPalette.getColors(552, -1, -1, -1));
-		screen.drawText("7890.,!?=+-*/\\<>", 0, 16, ColorPalette.getColors(552, -1, -1, -1));
-		screen.drawText("(){}[]'\"%@:;#$&^", 0, 24, ColorPalette.getColors(552, -1, -1, -1));
-
-		
-		screen.drawText("Hello, my name", 8, 40, ColorPalette.getColors(525, -1, -1, -1));
-		screen.drawText("is Christian.", 8, 48, ColorPalette.getColors(525, -1, -1, -1));
-		screen.drawText("What is yours?", 8, 56, ColorPalette.getColors(525, -1, -1, -1));
-		
-		screen.drawText("SCREAM 1234!", 8, 72, ColorPalette.getColors(500, -1, -1, -1));
-
-		screen.drawText("Testing the 3242", 0, 88, ColorPalette.getColors(40, -1, -1, -1));
+		if (((ClientNetworkManager)networkManager).isConnected()) {
+			world.render(screen, dt);
+		} else {
+			int textColor = (connectionTimer & 16L) != 0L ? ColorPalette.getColor(555) : ColorPalette.getColor(222);
+			screen.drawText("Connecting...", SIZE / 2, SIZE / 2, textColor, Screen2D.CENTER_TEXT_X);
+		}
 		
 		Graphics g = renderer.getGraphics();
 

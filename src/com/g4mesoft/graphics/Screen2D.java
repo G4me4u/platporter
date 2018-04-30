@@ -13,6 +13,11 @@ public class Screen2D {
 	public static final int MIRROR_Y = 2;
 	
 	private static final String FONT_CHARACTERS = "abcdefghijklmnopqrstuvwxyz1234567890.,!?=+-*/\\<>(){}[]'\"%@:;#$&";
+	public static final int MIRROR_X_CHARS = 1;
+	public static final int MIRROR_Y_CHARS = 2;
+	public static final int CENTER_TEXT_X = 4;
+	public static final int CENTER_TEXT_Y = 8;
+	public static final int INVERSE_TEXT = 16;
 	
 	private final int[] pixels;
 	private final int width;
@@ -88,14 +93,37 @@ public class Screen2D {
 	}
 	
 	public void drawText(String msg, int x, int y, int colors) {
+		drawText(msg, x, y, colors, 0);
+	}
+	
+	public void drawText(String msg, int x, int y, int colors, int flags) {
 		int len = msg.length();
 		if (len == 0)
 			return;
 
+		if ((flags & CENTER_TEXT_X) != 0)
+			x -= len * 4;
+		if ((flags & CENTER_TEXT_Y) != 0)
+			y -= 4;
 		if (y < -7 || y >= height) 
 			return;
 		
-		for (int i = 0; i < len; i++) {
+		int i, ic;
+		if ((flags & INVERSE_TEXT) != 0) {
+			ic = -1;
+			i = len - 1;
+		} else {
+			ic = 1;
+			i = 0;
+		}
+
+		int spriteFlags = 0;
+		if ((flags & MIRROR_X_CHARS) != 0)
+			spriteFlags |= MIRROR_X;
+		if ((flags & MIRROR_Y_CHARS) != 0)
+			spriteFlags |= MIRROR_Y;
+		
+		for ( ; i < len && i >= 0; i += ic) {
 			if (x >= width) 
 				return;
 			if (x < -7)
@@ -115,7 +143,7 @@ public class Screen2D {
 					sx = sy = 15;
 				}
 				
-	 			drawSprite(x, y, sx, sy, colors);
+	 			drawSprite(x, y, sx, sy, colors, spriteFlags);
 			}
 
  			x += 8;
