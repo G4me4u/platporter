@@ -131,8 +131,6 @@ public class ServerPPWorld extends PPWorld {
 		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
 			return;
 		
-		System.out.println(activateId);
-		
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
 				Tile tile = getTile(xt, yt);
