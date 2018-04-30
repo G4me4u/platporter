@@ -19,6 +19,9 @@ public abstract class PPEntity extends LivingEntity {
 	protected boolean wasOnLadder;
 	protected boolean onLadder;
 	
+	protected int oldFootX;
+	protected int oldFootY;
+	
 	protected boolean wasInLaser;
 	protected boolean inLaser;
 	
@@ -32,6 +35,9 @@ public abstract class PPEntity extends LivingEntity {
 	
 	protected PPEntity(PPWorld world, UUID entityUUID) {
 		super(world);
+		
+		oldFootX = -1;
+		oldFootY = -1;
 		
 		this.entityUUID = entityUUID;
 		
@@ -59,6 +65,14 @@ public abstract class PPEntity extends LivingEntity {
 		Tile footTile = world.getTile(xf, yf);
 		wasOnLadder = onLadder;
 		onLadder = footTile == Tile.LADDER_TILE;
+
+		if (xf != oldFootX || yf != oldFootY) {
+			world.steppedOffTile(oldFootX, oldFootY, this);
+			world.steppedOnTile(xf, yf, this);
+
+			oldFootX = xf;
+			oldFootY = yf;
+		}
 		
 		int xc = (int)(body.x0 + body.x1) >>> 1;
 		int yc = (int)(body.y0 + body.y1) >>> 1;

@@ -84,9 +84,12 @@ public abstract class NetworkManager implements Closeable {
 	}
 	
 	protected void processAllPackets() {
-		int oldPacketsToProcessIndex = packetsToProcessIndex;
-		packetsToProcessIndex ^= 1;
-		PacketLinkedList packets = packetsToProcess[oldPacketsToProcessIndex];
+		PacketLinkedList packets;
+		synchronized (packetsToProcess) {
+			int oldPacketsToProcessIndex = packetsToProcessIndex;
+			packetsToProcessIndex ^= 1;
+			packets = packetsToProcess[oldPacketsToProcessIndex];
+		}
 
 		while (packets.size() > 0)
 			packets.poll().packet.processPacket(this);
@@ -140,8 +143,11 @@ public abstract class NetworkManager implements Closeable {
 		packet.setSenderUUID(senderUUID);
 		packet.read(receiveBuffer);
 		
-		if (confirmPacket(packet))
-			packetsToProcess[packetsToProcessIndex].add(new PacketEntry(packet, null));
+		if (confirmPacket(packet)) {
+			synchronized (packetsToProcess) {
+				packetsToProcess[packetsToProcessIndex].add(new PacketEntry(packet, null));
+			}
+		}
 	}
 	
 	protected boolean confirmPacket(Packet packet) {

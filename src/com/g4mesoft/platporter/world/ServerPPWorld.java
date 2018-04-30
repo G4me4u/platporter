@@ -127,6 +127,20 @@ public class ServerPPWorld extends PPWorld {
 	}
 	
 	@Override
+	public void steppedOnTile(int xt, int yt, PPEntity entity) {
+		super.steppedOnTile(xt, yt, entity);
+		
+		getTile(xt, yt).steppedOn(this, xt, yt, entity);
+	}
+
+	@Override
+	public void steppedOffTile(int xt, int yt, PPEntity entity) {
+		super.steppedOffTile(xt, yt, entity);
+		
+		getTile(xt, yt).steppedOff(this, xt, yt, entity);
+	}
+	
+	@Override
 	public void activateTile(int activateId, boolean state) {
 		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
 			return;

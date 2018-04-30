@@ -23,7 +23,6 @@ public class LeverTile extends Tile {
 		boolean on = (data & LEVER_ON_MASK) != 0;
 		
 		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
-		System.out.println(data);
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x02;
 			int activateId1 = (activateId >>> 2) & 0x02;

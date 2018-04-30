@@ -149,6 +149,12 @@ public class PPWorld extends World {
 	public void interactWithTile(int xt, int yt, PPEntity entity) {
 	}
 	
+	public void steppedOnTile(int xt, int yt, PPEntity entity) {
+	}
+
+	public void steppedOffTile(int xt, int yt, PPEntity entity) {
+	}
+	
 	@Override
 	public boolean isClient() {
 		return platPorter.isClient();
