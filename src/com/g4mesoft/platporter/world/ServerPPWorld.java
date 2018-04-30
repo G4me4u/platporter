@@ -56,7 +56,7 @@ public class ServerPPWorld extends PPWorld {
 		}
 		parseLevels(levelImage);
 		
-		loadLevel(1);
+		loadLevel(0);
 	}
 	
 	@Override
@@ -130,6 +130,8 @@ public class ServerPPWorld extends PPWorld {
 	public void activateTile(int activateId, boolean state) {
 		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
 			return;
+		
+		System.out.println(activateId);
 		
 		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
 			for (int xt = 0; xt < WORLD_WIDTH; xt++) {

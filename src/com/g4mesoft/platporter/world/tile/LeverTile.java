@@ -12,7 +12,7 @@ public class LeverTile extends Tile {
 	private static final int ON_WALL_MASK = 0x02;
 	private static final int MIRROR_MASK = 0x04;
 	
-	private static final int ACTIVATE_ID_MASK = 0x88;
+	private static final int ACTIVATE_ID_MASK = 0x78;
 	private static final int MULTI_ACTIVATE_MASK = 0x80;
 	
 	@Override
@@ -23,6 +23,7 @@ public class LeverTile extends Tile {
 		boolean on = (data & LEVER_ON_MASK) != 0;
 		
 		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
+		System.out.println(data);
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x02;
 			int activateId1 = (activateId >>> 2) & 0x02;
