@@ -2,15 +2,19 @@ package com.g4mesoft.platporter.world;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 
+import com.g4mesoft.math.Vec2i;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.WorldProtocol;
 import com.g4mesoft.net.server.ClientConnection;
 import com.g4mesoft.net.server.ServerNetworkGameEvent;
 import com.g4mesoft.net.server.ServerNetworkGameEventListener;
 import com.g4mesoft.platporter.PlatPorter;
+import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
 import com.g4mesoft.util.GameEventManager;
 
@@ -19,9 +23,13 @@ public class ServerPPWorld extends PPWorld {
 	protected int currentLevel;
 
 	private final WorldProtocol worldProtocol;
+
+	protected final Set<Vec2i> dirtyTiles;
 	
 	public ServerPPWorld(PlatPorter platPorter) {
 		super(platPorter);
+		
+		dirtyTiles = new HashSet<Vec2i>();
 
 		NetworkManager networkManager = platPorter.getNetworkManager();
 		worldProtocol = (WorldProtocol)networkManager.getProtocol(WorldProtocol.class);
@@ -48,6 +56,24 @@ public class ServerPPWorld extends PPWorld {
 		parseLevels(levelImage);
 		
 		loadLevel(1);
+	}
+	
+	@Override
+	public boolean setTileIndex(int xt, int yt, int tileIndex) {
+		if (super.setTileIndex(xt, yt, tileIndex)) {
+			dirtyTiles.add(new Vec2i(xt, yt));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean setData(int xt, int yt, byte data) {
+		if (super.setData(xt, yt, data)) {
+			dirtyTiles.add(new Vec2i(xt, yt));
+			return true;
+		}
+		return false;
 	}
 
 	private void parseLevels(BufferedImage levelImage) {
@@ -81,5 +107,21 @@ public class ServerPPWorld extends PPWorld {
 	@Override
 	public void update() {
 		super.update();
+		
+		for (Vec2i dirty : dirtyTiles) {
+			int xt = dirty.x;
+			int yt = dirty.y;
+			
+			// Send new tile state to all clients
+			worldProtocol.sendTile(xt, yt, getTileIndex(xt, yt), getData(xt, yt), null);
+		}
+		dirtyTiles.clear();
+	}
+	
+	@Override
+	public void interactWithTile(int xt, int yt, PPEntity entity) {
+		super.interactWithTile(xt, yt, entity);
+
+		getTile(xt, yt).interactWith(this, xt, yt, entity);
 	}
 }

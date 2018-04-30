@@ -20,6 +20,9 @@ import com.g4mesoft.net.packet.client.C01PositionPacket;
 import com.g4mesoft.net.packet.server.S00PongPacket;
 import com.g4mesoft.net.packet.server.S01PositionPacket;
 import com.g4mesoft.platporter.PlatPorter;
+import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.entity.PPEntity;
+import com.g4mesoft.platporter.world.entity.player.NetworkPlayerEntity;
 import com.g4mesoft.world.entity.EntityFacing;
 
 public class ServerNetworkManager extends NetworkManager {
@@ -149,6 +152,8 @@ public class ServerNetworkManager extends NetworkManager {
 			addPlayerProtocol.addEntity(otherClientUUID, clientUUID);
 			addPlayerProtocol.addEntity(clientUUID, otherClientUUID);
 		}
+		PPWorld world = platPorter.getWorld();
+		world.addEntity(new NetworkPlayerEntity(world, clientUUID));
 		
 		ServerNetworkGameEvent connectEvent = new ServerNetworkGameEvent(this, ServerNetworkGameEvent.CONNECTED, client);
 		platPorter.getEventManager().handleEvent(connectEvent);
@@ -165,8 +170,6 @@ public class ServerNetworkManager extends NetworkManager {
 		
 		client.setLastPingTime(uptime);
 		addPacketToSend(new S00PongPacket(), client.getClientUUID());
-	
-		System.out.println("Received ping from: " + client.getClientUUID());
 	}
 
 	public void handlePositionPacket(C01PositionPacket positionPacket) {
@@ -180,6 +183,11 @@ public class ServerNetworkManager extends NetworkManager {
 				continue;
 			addPacketToSend(new S01PositionPacket(entityUUID, x, y, facing), clientUUID);
 		}
+		
+		PPWorld world = platPorter.getWorld();
+		PPEntity entity = world.getEntity(entityUUID);
+		if (entity != null && facing != null)
+			entity.setPosition(x, y, facing);
 	}
 	
 	public Map<UUID, ClientConnection> getConnectedClients() {

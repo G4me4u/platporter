@@ -2,6 +2,9 @@ package com.g4mesoft.platporter.world;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.net.NetworkManager;
+import com.g4mesoft.net.WorldProtocol;
+import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.input.KeyManager;
 import com.g4mesoft.platporter.world.entity.PPEntity;
@@ -13,8 +16,13 @@ public class ClientPPWorld extends PPWorld {
 
 	protected boolean viewHitboxes;
 	
+	protected WorldProtocol worldProtocol;
+	
 	public ClientPPWorld(PlatPorter platPorter) {
 		super(platPorter);
+		
+		NetworkManager networkManager = platPorter.getNetworkManager();
+		worldProtocol = (WorldProtocol)networkManager.getProtocol(WorldProtocol.class);
 	}
 	
 	@Override
@@ -71,5 +79,14 @@ public class ClientPPWorld extends PPWorld {
 					tile.render(this, screen, xt, yt);
 			}
 		}
+	}
+	
+	@Override
+	public void interactWithTile(int xt, int yt, PPEntity entity) {
+		super.interactWithTile(xt, yt, entity);
+
+		ClientNetworkManager client = (ClientNetworkManager)platPorter.getNetworkManager();
+		if (client.getConnectionUUID().equals(entity.getUUID()))
+			worldProtocol.sendWorldInteractionEvent(xt, yt);
 	}
 }

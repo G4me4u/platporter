@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.g4mesoft.graphics.Screen2D;
-import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
@@ -26,7 +25,7 @@ public class PPWorld extends World {
 
 	protected final int[] levelsTiles;
 	protected final byte[] levelsData;
-	
+		
 	public PPWorld(PlatPorter platPorter) {
 		this.platPorter = platPorter;
 	
@@ -37,28 +36,41 @@ public class PPWorld extends World {
 		levelsData = new byte[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
 	}
 	
-	public void setData(int xt, int yt, byte data) {
+	public boolean setData(int xt, int yt, byte data) {
 		if (xt < 0 || xt >= WORLD_WIDTH) 
-			return;
+			return false;
 		if (yt < 0 || yt >= WORLD_HEIGHT) 
-			return;
-		this.data[xt + yt * WORLD_WIDTH] = data;
+			return false;
+		
+		int index = xt + yt * WORLD_WIDTH;
+		if (this.data[index] == data)
+			return false;
+		
+		this.data[index] = data;
+		
+		return true;
 	}
 	
 	public void setTile(int xt, int yt, Tile tile) {
-		setTileIndex(xt, yt, tile.index);
+		setTileIndex(xt, yt, tile == null ? Tile.AIR_TILE.index : tile.index);
 	}
 	
-	public void setTileIndex(int xt, int yt, int tileIndex) {
+	public boolean setTileIndex(int xt, int yt, int tileIndex) {
 		if (xt < 0 || xt >= WORLD_WIDTH) 
-			return;
+			return false;
 		if (yt < 0 || yt >= WORLD_HEIGHT) 
-			return;
+			return false;
+		
 		int index = xt + yt * WORLD_WIDTH;
+		if (tiles[index] == tileIndex)
+			return false;
+		
 		if (Tile.tiles[tileIndex] != null) {
 			tiles[index] = tileIndex;
 		} else tiles[index] = Tile.AIR_TILE.index;
 		data[index] = 0x00;
+		
+		return true;
 	}
 	
 	public byte getData(int xt, int yt) {
@@ -135,13 +147,6 @@ public class PPWorld extends World {
 	}
 	
 	public void interactWithTile(int xt, int yt, PPEntity entity) {
-		Tile tile = getTile(xt, yt);
-		tile.interactWith(this, xt, yt, entity);
-	
-		NetworkManager manager = platPorter.getNetworkManager();
-		if (manager.isClient()) {
-			// TODO: create action protocol
-		}
 	}
 	
 	@Override
