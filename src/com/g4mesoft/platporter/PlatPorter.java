@@ -62,10 +62,12 @@ public class PlatPorter extends Application {
 		taskManager = new ScheduledTaskManager();
 		eventManager = new GameEventManager();
 		
+		setMinimumFps(120);
+		
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("10.0.0.200", 25565));
+				clientNetworkManager.connect(new InetSocketAddress("10.64.193.197", 25565));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
@@ -116,7 +118,7 @@ public class PlatPorter extends Application {
 			world.render(screen, dt);
 		} else {
 			int textColor = (connectionTimer & 16L) != 0L ? ColorPalette.getColor(555) : ColorPalette.getColor(222);
-			screen.drawText("Connecting...", SIZE / 2, SIZE / 2, textColor, Screen2D.CENTER_TEXT_X);
+			screen.drawText("Connecting...", SIZE / 2, SIZE / 2, textColor, Screen2D.CENTER_TEXT_X | Screen2D.CENTER_TEXT_Y);
 		}
 		
 		Graphics g = renderer.getGraphics();

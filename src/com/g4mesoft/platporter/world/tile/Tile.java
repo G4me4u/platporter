@@ -48,6 +48,13 @@ public class Tile {
 	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
 	}
 	
+	public int getActivateId(PPWorld world, int xt, int yt) {
+		return -1;
+	}
+
+	public void toggleActivate(PPWorld world, int xt, int yt) {
+	}
+
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
 	}
 

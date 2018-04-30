@@ -12,10 +12,25 @@ public class LeverTile extends Tile {
 	private static final int ON_WALL_MASK = 0x02;
 	private static final int MIRROR_MASK = 0x04;
 	
+	private static final int ACTIVATE_ID_MASK = 0x88;
+	private static final int MULTI_ACTIVATE_MASK = 0x80;
+	
 	@Override
 	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
-		int data = world.getData(xt, yt) & 0xFF;
-		world.setData(xt, yt, (byte)(data ^ LEVER_ON_MASK));
+		byte data = world.getData(xt, yt);
+		world.setData(xt, yt, (byte)(data ^= LEVER_ON_MASK));
+		
+		boolean on = (data & LEVER_ON_MASK) != 0;
+		
+		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
+		if ((data & MULTI_ACTIVATE_MASK) != 0) {
+			int activateId0 = (activateId >>> 0) & 0x02;
+			int activateId1 = (activateId >>> 2) & 0x02;
+			world.activateTile(activateId0, on);
+			world.activateTile(activateId1, on);
+		} else {
+			world.activateTile(activateId, on);
+		}
 	}
 	
 	@Override

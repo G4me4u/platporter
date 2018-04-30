@@ -10,13 +10,9 @@ public class PreassurePlateTile extends Tile {
 
 	private static final int ON_MASK = 0x01;
 	
-	int sx;
-	
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
-		sx = 7;
-		if (isTurnedOn(world, xt, yt))
-			sx = 6;
+		int sx = isTurnedOn(world, xt, yt) ? 6 : 7;
 		
 		screen.drawSprite(xt * 8, yt * 8, sx, 4, ColorPalette.getColors(222, 111, 410, -1));
 	}
@@ -34,7 +30,7 @@ public class PreassurePlateTile extends Tile {
 	@Override
 	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
 		byte data = world.getData(xt, yt);
-		world.setData(xt, yt, (byte)(data | ON_MASK));
+		world.setData(xt, yt, (byte)(data & (~ON_MASK)));
 	}
 	
 	@Override

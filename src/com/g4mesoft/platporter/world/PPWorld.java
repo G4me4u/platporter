@@ -167,4 +167,7 @@ public class PPWorld extends World {
 			}
 		}
 	}
+
+	public void activateTile(int actionId, boolean state) {
+	}
 }

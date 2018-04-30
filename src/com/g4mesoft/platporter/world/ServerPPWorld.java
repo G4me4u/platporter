@@ -20,11 +20,12 @@ import com.g4mesoft.util.GameEventManager;
 
 public class ServerPPWorld extends PPWorld {
 
-	protected int currentLevel;
-
+	private static final int ACTIVATE_POOL_SIZE = 16;
+	
 	private final WorldProtocol worldProtocol;
-
 	protected final Set<Vec2i> dirtyTiles;
+
+	protected int currentLevel;
 	
 	public ServerPPWorld(PlatPorter platPorter) {
 		super(platPorter);
@@ -123,5 +124,20 @@ public class ServerPPWorld extends PPWorld {
 		super.interactWithTile(xt, yt, entity);
 
 		getTile(xt, yt).interactWith(this, xt, yt, entity);
+	}
+	
+	@Override
+	public void activateTile(int activateId, boolean state) {
+		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
+			return;
+		
+		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
+			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+				Tile tile = getTile(xt, yt);
+				int tileActivateId = tile.getActivateId(this, xt, yt);
+				if (tileActivateId == activateId)
+					tile.toggleActivate(this, xt, yt);
+			}
+		}
 	}
 }
