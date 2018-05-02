@@ -15,6 +15,7 @@ public class OrbTile extends Tile {
 			return;
 		
 		world.activateTile(0, 0, world.getData(xt, yt) & ACTION_ID_MASK);
+		world.setTile(xt, yt, AIR_TILE);
 	}
 	
 	@Override
