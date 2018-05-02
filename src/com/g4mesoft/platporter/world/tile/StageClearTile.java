@@ -3,9 +3,12 @@ package com.g4mesoft.platporter.world.tile;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.ServerPPWorld;
+import com.g4mesoft.platporter.world.entity.PPEntity;
 
 public class StageClearTile extends Tile {
-	private static final int TIME_MASK = 0x03;
+	
+	private static final int LEVEL_INDEX_MASK = 0x0F;
 	
 	@Override
 	public boolean hasHitbox(PPWorld world, int xt, int yt) {
@@ -18,9 +21,16 @@ public class StageClearTile extends Tile {
 	}
 	
 	@Override
+	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
+		if (world.isClient())
+			return;
+		
+		((ServerPPWorld)world).loadLevel(entity, world.getData(xt, yt) & LEVEL_INDEX_MASK);
+	}
+	
+	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {
 		int sy = 9;
-		byte data = world.getData(xt, yt);
 		int animTimer = (int)(world.worldTime) % 80 - 20;
 		
 		int sx = 0;

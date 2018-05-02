@@ -78,9 +78,9 @@ public class PPWorld extends World {
 	
 	public int getTileIndex(int xt, int yt) {
 		if (xt < 0 || xt >= WORLD_WIDTH) 
-			return Tile.PLATFORM_TILE.index;
+			return Tile.BARRIER_TILE.index;
 		if (yt < 0 || yt >= WORLD_HEIGHT) 
-			return Tile.PLATFORM_TILE.index;
+			return Tile.BARRIER_TILE.index;
 		return tiles[xt + yt * WORLD_WIDTH];
 	}
 	

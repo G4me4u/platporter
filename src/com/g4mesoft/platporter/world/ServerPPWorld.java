@@ -136,7 +136,7 @@ public class ServerPPWorld extends PPWorld {
 					numSpawnPoints[l]++;
 					if (spawnPoints[l] == null)
 						spawnPoints[l] = new Vec2f();
-					spawnPoints[l].set(x, y);
+					spawnPoints[l].add(x, y);
 				} else {
 					tiles[i] = Tile.parseTile(id).index;
 					data[i] = (byte)rgb;
@@ -155,7 +155,7 @@ public class ServerPPWorld extends PPWorld {
 		}
 	}
 	
-	private void loadLevel(PPEntity entity, int index) {
+	public void loadLevel(PPEntity entity, int index) {
 		// Send entity positions
 		float x = spawnPoints[index].x;
 		float y = spawnPoints[index].y;

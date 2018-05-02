@@ -37,8 +37,9 @@ public class ClientPPWorld extends PPWorld {
 		
 		PPEntity player = getEntity(client.getConnectionUUID());
 		if (player != null) {
-			int lx = (int)player.pos.x / LEVEL_SIZE;
-			int ly = (int)player.pos.y / LEVEL_SIZE;
+			AABB body = player.getBody();
+			int lx = (int)(body.x0 + body.x1) / (LEVEL_SIZE * 2);
+			int ly = (int)(body.y0 + body.y1) / (LEVEL_SIZE * 2);
 			tileOffsetX = Math.max(0, Math.min(WORLD_WIDTH, lx * LEVEL_SIZE));
 			tileOffsetY = Math.max(0, Math.min(WORLD_HEIGHT, ly * LEVEL_SIZE));
 		}
