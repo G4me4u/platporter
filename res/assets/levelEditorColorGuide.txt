@@ -1,3 +1,5 @@
+Player spawn point:
+	- Base color: C8C8
 Air Tile:
 	- Base color: FFFFFF
 Error Tile:
@@ -12,14 +14,19 @@ Door Tile:
 	- Base color: C61C00
 	- Open/Close bit: 0x01 (1st bit)
 	- Mirror bit: 0x02 (2nd bit)
+	- ID bits: 0xF0 (5th, 6th, 7th, and 8th bit)
 Lever Tile:
 	- Base color: 90FF00
 	- Turn on bit: 0x01 (1st bit)
 	- On wall bit: 0x02 (2nd bit)
 	- Opposite wall bit: 0x04 (3th bit)
+	- Multiple connections bit: 0x80 (8th bit)
+	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
 Preasure plate Tile:
 	- 00FF00
 	- Turn on bit: 0x01 (1st bit)
+	- Multiple connections bit: 0x80 (8th bit)
+	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
 Platform Tile:
 	- Base color: CF54
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
