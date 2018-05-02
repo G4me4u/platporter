@@ -23,6 +23,9 @@ public class Screen2D {
 	private final int width;
 	private final int height;
 	
+	private int xo;
+	private int yo;
+	
 	private final ColorPalette palette;
 	private final SpriteSheet sheet;
 	
@@ -47,12 +50,18 @@ public class Screen2D {
 	}
 	
 	public void setPixel(int xp, int yp, int color) {
+		xp += xo;
+		yp += yo;
 		pixels[xp + yp * width] = palette.palette[color & 0xFF];
 	}
 	
 	public void drawRect(int x0, int y0, int w, int h, int color) {
-		if (color >= ColorPalette.NUM_VISIBLE_COLORS)
+		if (color >= ColorPalette.NUM_VISIBLE_COLORS || color < 0)
 			return;
+
+		x0 += xo;
+		y0 += yo;
+		
 		for (int yy = y0; yy < y0 + h; yy++) {
 			if (yy < 0 || yy >= height) continue;
 			int pi = x0 + yy * width;
@@ -68,6 +77,9 @@ public class Screen2D {
 	}
 
 	public void drawSprite(int x, int y, int sx, int sy, int colors, int flags) {
+		x += xo;
+		y += yo;
+		
 		sx <<= 3;
 		sy <<= 3;
 
@@ -97,6 +109,9 @@ public class Screen2D {
 	}
 	
 	public void drawText(String msg, int x, int y, int colors, int flags) {
+		x += xo;
+		y += yo;
+		
 		int len = msg.length();
 		if (len == 0)
 			return;
@@ -152,5 +167,18 @@ public class Screen2D {
 
 	public ColorPalette getPalette() {
 		return palette;
+	}
+
+	public void setOffset(int xo, int yo) {
+		this.xo = xo;
+		this.yo = yo;
+	}
+	
+	public int getOffsetX() {
+		return xo;
+	}
+
+	public int getOffsetY() {
+		return yo;
 	}
 }

@@ -13,8 +13,7 @@ public class WorldProtocol extends Protocol {
 	private static final byte WORLD_EVENT = 0x01;
 
 	private static final byte SINGLE_TILE = 0x00;
-	// private static final byte MULTIPLE_TILES = 0x01;
-	private static final byte ALL_TILES = 0x02;
+	private static final byte TILE_REGION = 0x01;
 
 	private static final byte TILE_INTERACTION = 0x00;
 	
@@ -58,29 +57,27 @@ public class WorldProtocol extends Protocol {
 
 			manager.platPorter.getWorld().setTileIndex(xt, yt, buffer.getInt());
 			manager.platPorter.getWorld().setData(xt, yt, buffer.getByte());
-		case ALL_TILES:
+		case TILE_REGION:
 			if (buffer.remaining() < 8) // int int
 				return;
 			
-			int numTiles = buffer.getInt();
-			int numData = buffer.getInt();
+			int numToUpdate = buffer.getInt();
+			int indexOffset = buffer.getInt();
 
-			if (buffer.remaining() != numTiles * 4 + numData)
+			if (buffer.remaining() != numToUpdate * 5) // hole region
 				return;
 			
-			if (numTiles != numData)
-				return;
-			if (numTiles != PPWorld.WORLD_WIDTH * PPWorld.WORLD_HEIGHT)
+			if (indexOffset + numToUpdate > PPWorld.WORLD_WIDTH * PPWorld.WORLD_HEIGHT)
 				return;
 			
-			int[] tiles = new int[numTiles];
-			for (int i = 0; i < numTiles; i++)
+			int[] tiles = new int[numToUpdate];
+			byte[] data = new byte[numToUpdate];
+			for (int i = 0; i < numToUpdate; i++) {
 				tiles[i] = buffer.getInt();
-			byte[] data = new byte[numData];
-			for (int i = 0; i < numTiles; i++)
 				data[i] = buffer.getByte();
+			}
 			
-			manager.platPorter.getWorld().setAllTiles(tiles, data);
+			manager.platPorter.getWorld().setTileRegion(tiles, data, indexOffset);
 		default:
 			// Unspecified action
 			return;
@@ -133,20 +130,30 @@ public class WorldProtocol extends Protocol {
 	public void sendWorldTiles(int[] tiles, byte[] data, UUID receiverUUID) {
 		if (manager.isClient())
 			throw new IllegalStateException("Client cant send world data!");
+		if (tiles.length != data.length)
+			throw new IllegalArgumentException("Mismatch between tile indices and data array sizes!");
+		
+		int len = tiles.length;
+		while (len != 0) {
+			int numToSend = Math.min(len, 2 * PPWorld.LEVEL_SIZE * PPWorld.LEVEL_SIZE);
 
-		sendBuffer.reset();
-		
-		sendBuffer.putByte(WORLD_UPDATE);
-		sendBuffer.putByte(ALL_TILES);
-		
-		sendBuffer.putInt(tiles.length);
-		sendBuffer.putInt(data.length);
-		for (int tile : tiles)
-			sendBuffer.putInt(tile);
-		for (byte dat : data)
-			sendBuffer.putByte(dat);
-		
-		sendData(receiverUUID, sendBuffer);
+			sendBuffer.reset();
+			
+			sendBuffer.putByte(WORLD_UPDATE);
+			sendBuffer.putByte(TILE_REGION);
+			
+			sendBuffer.putInt(numToSend);
+			
+			int i = len - numToSend;
+			sendBuffer.putInt(i);
+			for ( ; i < len; i++) {
+				sendBuffer.putInt(tiles[i]);
+				sendBuffer.putByte(data[i]);
+			}
+			len -= numToSend;
+			
+			sendData(receiverUUID, sendBuffer);
+		}
 	}
 
 	public void sendWorldInteractionEvent(int xt, int yt) {

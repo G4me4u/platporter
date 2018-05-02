@@ -14,9 +14,10 @@ import com.g4mesoft.world.phys.AABB;
 
 public class PPWorld extends World {
 
-	public static final int WORLD_WIDTH = 16;
-	public static final int WORLD_HEIGHT = 16;
+	public static final int WORLD_WIDTH = 34;
+	public static final int WORLD_HEIGHT = 136;
 	public static final int NUM_LEVELS = 16;
+	public static final int LEVEL_SIZE = 17;
 	
 	public final PlatPorter platPorter;
 	
@@ -154,17 +155,17 @@ public class PPWorld extends World {
 		return platPorter.isClient();
 	}
 
-	public void setAllTiles(int[] tiles, byte[] data) {
-		if (tiles.length != data.length || tiles.length != this.tiles.length)
+	public void setTileRegion(int[] tiles, byte[] data, int indexOffset) {
+		if (tiles.length != data.length || tiles.length + indexOffset > this.tiles.length)
 			return;
 		
-		int i = 0;
-		for (int yt = 0; yt < WORLD_WIDTH; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
-				setTileIndex(xt, yt, tiles[i]);
-				setData(xt, yt, data[i]);
-				i++;
-			}
+		for (int i = 0; i < tiles.length; i++) {
+			int ii = i + indexOffset;
+			int xt = ii % WORLD_WIDTH;
+			int yt = ii / WORLD_WIDTH;
+
+			setTileIndex(xt, yt, tiles[i]);
+			setData(xt, yt, data[i]);
 		}
 	}
 
