@@ -6,9 +6,9 @@ import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.ServerPPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 
-public class StageClearTile extends Tile {
+public class StageEnterTile extends Tile {
 	
-	private static final int LEVEL_INDEX_MASK = 0x0F;
+	private static final int LEVEL_INDEX_MASK = 0x1F;
 	
 	@Override
 	public boolean hasHitbox(PPWorld world, int xt, int yt) {

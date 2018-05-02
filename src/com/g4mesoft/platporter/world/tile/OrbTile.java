@@ -9,15 +9,25 @@ import com.g4mesoft.platporter.world.entity.PPEntity;
 public class OrbTile extends Tile {
 	
 	private static final int ACTION_ID_MASK = 0x0F;
+	private static final int WIN_MASK = 0x10;
 	
 	@Override
 	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
 		if (world.isClient())
 			return;
 		
-		world.activateTile(0, 0, world.getData(xt, yt) & ACTION_ID_MASK);
-		world.setTile(xt, yt, STAGE_CLEAR_TILE);
-		((ServerPPWorld)world).loadLevel(entity, 0);
+		byte data = world.getData(xt, yt);
+		world.setTile(xt, yt, STAGE_ENTER_TILE);
+		if ((data & WIN_MASK) != 0) {
+			world.setData(xt, yt, (byte)PPWorld.WIN_LEVEL);
+			
+			for (PPEntity ent : world.getPPEntities())
+				((ServerPPWorld)world).loadLevel(ent, PPWorld.WIN_LEVEL);
+		} else {
+			int actionId = data & ACTION_ID_MASK;
+			world.activateTile(0, 0, actionId);
+			((ServerPPWorld)world).loadLevel(entity, 0);
+		}
 	}
 	
 	@Override

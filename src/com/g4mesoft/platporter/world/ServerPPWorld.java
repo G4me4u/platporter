@@ -156,6 +156,9 @@ public class ServerPPWorld extends PPWorld {
 	}
 	
 	public void loadLevel(PPEntity entity, int index) {
+		if (index < 0 || index >= NUM_LEVELS)
+			return;
+		
 		// Send entity positions
 		float x = spawnPoints[index].x;
 		float y = spawnPoints[index].y;

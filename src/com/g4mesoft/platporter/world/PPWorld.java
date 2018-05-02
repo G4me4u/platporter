@@ -14,13 +14,15 @@ import com.g4mesoft.world.phys.AABB;
 
 public class PPWorld extends World {
 
-	public static final int WORLD_WIDTH = 34;
-	public static final int WORLD_HEIGHT = 136;
-	
 	public static final int LEVELS_X = 2;
-	public static final int LEVELS_Y = 8;
+	public static final int LEVELS_Y = 9;
 	public static final int NUM_LEVELS = LEVELS_X * LEVELS_Y;
 	public static final int LEVEL_SIZE = 17;
+
+	public static final int WORLD_WIDTH = LEVELS_X * LEVEL_SIZE;
+	public static final int WORLD_HEIGHT = LEVELS_Y * LEVEL_SIZE;
+	
+	public static final int WIN_LEVEL = 16;
 	
 	public final PlatPorter platPorter;
 	
@@ -176,5 +178,14 @@ public class PPWorld extends World {
 	}
 
 	public void activateTile(int xt, int yt, int actionId) {
+	}
+
+	public List<PPEntity> getPPEntities() {
+		List<PPEntity> result = new ArrayList<PPEntity>();
+		for (Entity entity : getEntityList()) {
+			if (entity instanceof PPEntity)
+				result.add((PPEntity)entity);
+		}
+		return result;
 	}
 }
