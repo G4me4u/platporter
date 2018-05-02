@@ -243,8 +243,9 @@ public class ServerPPWorld extends PPWorld {
 
 		int y0 = ly * LEVEL_SIZE;
 
-		if (lx == 0 && ly == 0) {
-			activateTileRange(activateId, 0, y0, LEVEL_SIZE, y0 + LEVEL_SIZE);
+		if (ly == 0) {
+			int x0 = lx * LEVEL_SIZE;
+			activateTileRange(activateId, x0, y0, x0 + LEVEL_SIZE, y0 + LEVEL_SIZE);
 		} else {
 			for (int lxx = 0; lxx < LEVELS_X; lxx++) {
 				int x0 = lxx * LEVEL_SIZE;
