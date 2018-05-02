@@ -8,12 +8,12 @@ import com.g4mesoft.platporter.world.entity.PPEntity;
 public class BoostTile extends Tile {
 	
 	private static final int X_OFFSET_MASK = 0x01;
-	private static final int BOOST_INCREASE_MASK = 0x0E;
+	private static final int BOOST_GAIN_MASK = 0x0E;
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
-		int gain = ((world.getData(xt, yt) & BOOST_INCREASE_MASK) >>> 1) + 1;
-		entity.velocity.y = -0.62f * (float)gain;
+		float gain = ((world.getData(xt, yt) & BOOST_GAIN_MASK) >>> 1) * 0.5f + 1.0f;
+		entity.velocity.y = -0.62f * gain;
 	}
 	
 	@Override
