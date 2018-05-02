@@ -3,6 +3,7 @@ package com.g4mesoft.platporter.world.tile;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.ServerPPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 
 public class OrbTile extends Tile {
@@ -15,7 +16,8 @@ public class OrbTile extends Tile {
 			return;
 		
 		world.activateTile(0, 0, world.getData(xt, yt) & ACTION_ID_MASK);
-		world.setTile(xt, yt, AIR_TILE);
+		world.setTile(xt, yt, STAGE_CLEAR_TILE);
+		((ServerPPWorld)world).loadLevel(entity, 0);
 	}
 	
 	@Override
