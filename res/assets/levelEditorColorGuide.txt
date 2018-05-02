@@ -31,8 +31,8 @@ Platform Tile:
 	- Base color: CF54
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
 	- Y-offset (in sprite sheet): 0x08 | 0x04 (3rd and 4th bit) (0x0Ck)
-	- Mirror x-axis bit: 0x10 (5th bit)
-	- Mirror y-axis bit: 0x20 (6th bit)
+	- Mirror y-axis bit: 0x10 (5th bit)
+	- Mirror x-axis bit: 0x20 (6th bit)
 Orb Tile:
 	- Base color: 002600
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
