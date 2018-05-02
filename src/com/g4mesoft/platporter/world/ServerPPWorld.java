@@ -26,7 +26,7 @@ import com.g4mesoft.world.entity.EntityFacing;
 public class ServerPPWorld extends PPWorld {
 
 	private static final int ACTIVATE_POOL_SIZE = 16;
-	
+
 	private final ServerNetworkManager server;
 	
 	private final WorldProtocol worldProtocol;
@@ -61,8 +61,6 @@ public class ServerPPWorld extends PPWorld {
 			e.printStackTrace();
 		}
 		parseLevels(levelImage);
-		
-		loadLevel(1);
 	}
 	
 	private void handleEvents() {
@@ -123,50 +121,41 @@ public class ServerPPWorld extends PPWorld {
 	}
 
 	private void parseLevels(BufferedImage levelImage) {
-		for (int l = 0; l < NUM_LEVELS; l++) {
-			int numSpawnPoints = 0;
-			Vec2f spawnPoint = spawnPoints[l] = new Vec2f();
+		int[] numSpawnPoints = new int[NUM_LEVELS];
 			
-			for (int x = 0; x < WORLD_WIDTH; x++) {
-				for (int y = 0; y < WORLD_HEIGHT; y++) {
-					int yy = y + l * WORLD_HEIGHT;
-					int i = x + yy * WORLD_WIDTH;
-					int rgb = levelImage.getRGB(x, yy);
-					int id = (rgb >>> 8) & 0xFFFF;
-					if (id == 0xC8C8) {
-						numSpawnPoints++;
-						spawnPoint.set(x, y);
-					} else {
-						levelsTiles[i] = Tile.parseTile(id).index;
-						levelsData[i] = (byte)rgb;
-					}
+		for (int x = 0; x < WORLD_WIDTH; x++) {
+			for (int y = 0; y < WORLD_HEIGHT; y++) {
+				int i = x + y * WORLD_WIDTH;
+				int rgb = levelImage.getRGB(x, y);
+				int id = (rgb >>> 8) & 0xFFFF;
+				if (id == 0xC8C8) {
+					int lx = x / LEVEL_SIZE;
+					int ly = y / LEVEL_SIZE;
+					int l = lx + ly * 2;
+					
+					numSpawnPoints[l]++;
+					if (spawnPoints[l] == null)
+						spawnPoints[l] = new Vec2f();
+					spawnPoints[l].set(x, y);
+				} else {
+					tiles[i] = Tile.parseTile(id).index;
+					data[i] = (byte)rgb;
 				}
 			}
-			
-			if (numSpawnPoints != 0) {
-				spawnPoint.div(numSpawnPoints);
+		}
+		
+		for (int l = 0; l < NUM_LEVELS; l++) {
+			if (numSpawnPoints[l] != 0) {
+				spawnPoints[l].div(numSpawnPoints[l]);
 			} else {
-				spawnPoint.set(WORLD_WIDTH / 2.0f, WORLD_HEIGHT / 2.0f);
+				float xc = ((l % 2) + 0.5f) * LEVEL_SIZE;
+				float yc = ((l / 2) + 0.5f) * LEVEL_SIZE;
+				spawnPoints[l] = new Vec2f(xc, yc);
 			}
 		}
 	}
 	
-	private void loadLevel(int index) {
-		this.currentLevel = index;
-		
-		int ti = WORLD_WIDTH * WORLD_HEIGHT;
-		int li = WORLD_WIDTH * WORLD_HEIGHT * (index + 1);
-		while (ti != 0) {
-			ti--;
-			li--;
-			
-			tiles[ti] = levelsTiles[li];
-			data[ti] = levelsData[li];
-		}
-		
-		// Send new world data to all clients
-		worldProtocol.sendWorldTiles(tiles, data, null);
-		
+	private void loadLevel(PPEntity entity, int index) {
 		// Send entity positions
 		float x = spawnPoints[index].x;
 		float y = spawnPoints[index].y;

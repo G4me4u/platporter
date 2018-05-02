@@ -2,7 +2,6 @@ package com.g4mesoft.platporter.world;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
-import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.WorldProtocol;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
@@ -16,13 +15,17 @@ public class ClientPPWorld extends PPWorld {
 
 	protected boolean viewHitboxes;
 	
+	protected final ClientNetworkManager client;
 	protected WorldProtocol worldProtocol;
+	
+	protected int tileOffsetX;
+	protected int tileOffsetY;
 	
 	public ClientPPWorld(PlatPorter platPorter) {
 		super(platPorter);
 		
-		NetworkManager networkManager = platPorter.getNetworkManager();
-		worldProtocol = (WorldProtocol)networkManager.getProtocol(WorldProtocol.class);
+		client = (ClientNetworkManager)platPorter.getNetworkManager();
+		worldProtocol = (WorldProtocol)client.getProtocol(WorldProtocol.class);
 	}
 	
 	@Override
@@ -31,10 +34,22 @@ public class ClientPPWorld extends PPWorld {
 		
 		if (KeyManager.KEY_TOGGLE_HITBOX.isClicked())
 			viewHitboxes = !viewHitboxes;
+		
+		PPEntity player = getEntity(client.getConnectionUUID());
+		if (player != null) {
+			int lx = (int)player.pos.x / LEVEL_SIZE;
+			int ly = (int)player.pos.y / LEVEL_SIZE;
+			tileOffsetX = Math.max(0, Math.min(WORLD_WIDTH, lx * LEVEL_SIZE));
+			tileOffsetY = Math.max(0, Math.min(WORLD_HEIGHT, ly * LEVEL_SIZE));
+		}
 	}
 	
 	@Override
 	public void render(Screen2D screen, float dt) {
+		int xo = screen.getOffsetX();
+		int yo = screen.getOffsetY();
+		screen.setOffset(-tileOffsetX * 8, -tileOffsetY * 8);
+
 		renderTiles(screen, dt, true);
 
 		for (Entity entity : entities) {
@@ -46,11 +61,13 @@ public class ClientPPWorld extends PPWorld {
 		
 		if (viewHitboxes)
 			renderHitboxes(screen, dt);
+	
+		screen.setOffset(xo, yo);
 	}
 	
 	private void renderHitboxes(Screen2D screen, float dt) {
-		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+		for (int yt = tileOffsetY; yt < tileOffsetY + LEVEL_SIZE; yt++) {
+			for (int xt = tileOffsetX; xt < tileOffsetX + LEVEL_SIZE; xt++) {
 				Tile tile = getTile(xt, yt);
 				if (tile.hasHitbox(this, xt, yt))
 					drawHitbox(screen, tile.getBoundingBox(this, xt, yt), ColorPalette.getColor(500));
@@ -72,8 +89,8 @@ public class ClientPPWorld extends PPWorld {
 	}
 	
 	private void renderTiles(Screen2D screen, float dt, boolean background) {
-		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+		for (int yt = tileOffsetY; yt < tileOffsetY + LEVEL_SIZE; yt++) {
+			for (int xt = tileOffsetX; xt < tileOffsetX + LEVEL_SIZE; xt++) {
 				Tile tile = getTile(xt, yt);
 				if (tile != Tile.AIR_TILE && tile.isBackgroundLayer(this, xt, yt) == background)
 					tile.render(this, screen, xt, yt);
