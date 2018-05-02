@@ -11,7 +11,7 @@ public class BoostTile extends Tile {
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
-		entity.velocity.y = -1.0f;
+		entity.velocity.y = -0.62f;
 	}
 	
 	@Override
