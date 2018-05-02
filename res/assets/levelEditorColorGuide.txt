@@ -41,13 +41,13 @@ Change level Tile:
 	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
 Beam Stand Tile (when using, always fit with the one that has flipped bit two (| 0x02)):
 	- Base color: 461F00
-	- On wall bit: 0x01
-	- Mirror stand bit: 0x02
-	- Mirror beam dir bit: 0x04
+	- On wall bit: 0x01 (1st bit)
+	- Mirror stand bit: 0x02 (2nd bit)
+	- Mirror beam dir bit: 0x04 (3rd bit)
 	- Beam animation time offset bit: 0x10 |0x08 (4th and 5th bit) (0x24)
 Beam Tile:
 	- Base color: 434E00
 	- Horizontal bit: 0x01 (1st bit)
-	- Animation time offset bit: 0x02 | 0x04 (1st and 2nd bit) (0x06)
-	- Opposite flow dir bit: 0x08
+	- Animation time offset bit: 0x02 | 0x04 (2nd and 3rd bit) (0x06)
+	- Opposite flow dir bit: 0x08 (4th bit)
 	
