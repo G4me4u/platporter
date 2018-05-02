@@ -36,8 +36,8 @@ public class PreassurePlateTile extends Tile {
 	private void activateTiles(PPWorld world, byte data, boolean state) {
 		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
-			int activateId0 = (activateId >>> 0) & 0x02;
-			int activateId1 = (activateId >>> 2) & 0x02;
+			int activateId0 = (activateId >>> 0) & 0x03;
+			int activateId1 = (activateId >>> 2) & 0x03;
 			world.activateTile(activateId0, state);
 			world.activateTile(activateId1, state);
 		} else {
