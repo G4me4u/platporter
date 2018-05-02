@@ -107,4 +107,14 @@ public class ClientPPWorld extends PPWorld {
 		if (client.getConnectionUUID().equals(entity.getUUID()))
 			worldProtocol.sendWorldInteractionEvent(xt, yt);
 	}
+	
+	@Override
+	public void steppedOnTile(int xt, int yt, PPEntity entity) {
+		getTile(xt, yt).steppedOn(this, xt, yt, entity);
+	}
+
+	@Override
+	public void steppedOffTile(int xt, int yt, PPEntity entity) {
+		getTile(xt, yt).steppedOn(this, xt, yt, entity);
+	}
 }

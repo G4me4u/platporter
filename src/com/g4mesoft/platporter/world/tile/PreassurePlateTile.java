@@ -15,6 +15,9 @@ public class PreassurePlateTile extends Tile {
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
+		if (world.isClient())
+			return;
+		
 		byte data = world.getData(xt, yt);
 		if ((data & ON_MASK) != 0)
 			return;
@@ -25,6 +28,9 @@ public class PreassurePlateTile extends Tile {
 
 	@Override
 	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
+		if (world.isClient())
+			return;
+		
 		byte data = world.getData(xt, yt);
 		if ((data & ON_MASK) == 0)
 			return;
