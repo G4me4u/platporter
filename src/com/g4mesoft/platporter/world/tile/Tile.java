@@ -17,6 +17,7 @@ public class Tile {
 	public static final Tile AIR_TILE = new AirTile();
 	public static final Tile ERROR_TILE = new SolidTile(0, 0, ColorPalette.getColors(222, 333, 444, -1));
 	public static final Tile PLATFORM_TILE = new PlatformTile();
+	public static final Tile BOOST_TILE = new BoostTile();
 	public static final Tile LADDER_TILE = new LadderTile();
 	public static final Tile DOOR_TILE = new DoorTile();
 	public static final Tile LEVER_TILE = new LeverTile();
@@ -76,6 +77,7 @@ public class Tile {
 		ID_TO_TILE.put(0xFFFF, AIR_TILE);
 		ID_TO_TILE.put(0xFF00, ERROR_TILE);
 		ID_TO_TILE.put(0xCF54, PLATFORM_TILE);
+		ID_TO_TILE.put(0x1234, BOOST_TILE);
 		ID_TO_TILE.put(0xFF7F, LADDER_TILE);
 		ID_TO_TILE.put(0xC61C, DOOR_TILE);
 		ID_TO_TILE.put(0x90FF, LEVER_TILE);

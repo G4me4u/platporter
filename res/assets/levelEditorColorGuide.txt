@@ -23,7 +23,7 @@ Lever Tile:
 	- Multiple connections bit: 0x80 (8th bit)
 	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
 Preasure plate Tile:
-	- 00FF00
+	- Base color: 00FF00
 	- Turn on bit: 0x01 (1st bit)
 	- Multiple connections bit: 0x80 (8th bit)
 	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
@@ -50,4 +50,6 @@ Beam Tile:
 	- Horizontal bit: 0x01 (1st bit)
 	- Animation time offset bit: 0x02 | 0x04 (2nd and 3rd bit) (0x06)
 	- Opposite flow dir bit: 0x08 (4th bit)
+Boost Tile:
+	- Base color: 123400
 	
