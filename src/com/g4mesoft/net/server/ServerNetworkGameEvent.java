@@ -6,6 +6,7 @@ public class ServerNetworkGameEvent extends GameEvent {
 
 	public static final int DISCONNECTED = 0x01;
 	public static final int CONNECTED = 0x02;
+	public static final int FULLY_CONNECTED = 0x03;
 	
 	private final int networkAction;
 	private final ClientConnection client;
@@ -16,6 +17,7 @@ public class ServerNetworkGameEvent extends GameEvent {
 		switch (networkAction) {
 		case DISCONNECTED:
 		case CONNECTED:
+		case FULLY_CONNECTED:
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid network action!");

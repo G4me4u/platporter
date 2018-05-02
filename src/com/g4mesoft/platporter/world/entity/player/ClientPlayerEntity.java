@@ -39,7 +39,7 @@ public class ClientPlayerEntity extends PlayerEntity {
 				velocity.y = -0.5f;
 				velocity.x *= 1.5f;
 				
-				Sounds.playSound(Sounds.JUMP_SOUND, 0.3f, 0.9f + RANDOM.nextFloat() * 0.2f);
+				Sounds.playSound(Sounds.JUMP_SOUND, 1.0f, 0.9f + RANDOM.nextFloat() * 0.2f);
 			}
 	
 			if (!inLaser)

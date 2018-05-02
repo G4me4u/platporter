@@ -17,7 +17,6 @@ import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.entity.player.ClientPlayerEntity;
-import com.g4mesoft.platporter.world.entity.player.NetworkPlayerEntity;
 import com.g4mesoft.util.GameEventManager;
 
 public class ClientNetworkManager extends NetworkManager {
@@ -127,16 +126,6 @@ public class ClientNetworkManager extends NetworkManager {
 	public void processPong(S00PongPacket pongPacket) {
 		if (connected)
 			lastServerPong = uptime;
-	}
-
-	public void addNetworkEntity(UUID entityUUID) {
-		PPWorld world = platPorter.getWorld();
-		world.addEntity(new NetworkPlayerEntity(world, entityUUID));
-	}
-
-	public void removeNetworkEntity(UUID entityUUID) {
-		PPWorld world = platPorter.getWorld();
-		world.removeEntity(entityUUID);
 	}
 
 	public void handlePositionPacket(S01PositionPacket positionPacket) {

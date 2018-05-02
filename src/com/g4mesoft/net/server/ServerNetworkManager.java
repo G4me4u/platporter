@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.g4mesoft.net.EntityProtocol;
 import com.g4mesoft.net.NetworkManager;
 import com.g4mesoft.net.NetworkSide;
 import com.g4mesoft.net.packet.Packet;
@@ -53,17 +52,12 @@ public class ServerNetworkManager extends NetworkManager {
 		}
 		
 		if (!clientsToDisconnect.isEmpty()) {
-			EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(EntityProtocol.class);
-
 			for (ClientConnection client : clientsToDisconnect) {
 				UUID clientUUID = client.getClientUUID();
 				connectedClients.remove(clientUUID);
 
 				ServerNetworkGameEvent disconnectEvent = new ServerNetworkGameEvent(this, ServerNetworkGameEvent.DISCONNECTED, client);
 				platPorter.getEventManager().handleEvent(disconnectEvent);
-			
-				for (UUID otherClientUUID : connectedClients.keySet())
-					addPlayerProtocol.removeEntity(otherClientUUID, clientUUID);
 			}
 			clientsToDisconnect.clear();
 		}
@@ -145,13 +139,6 @@ public class ServerNetworkManager extends NetworkManager {
 
 		connectedClients.put(clientUUID, client);
 
-		EntityProtocol addPlayerProtocol = (EntityProtocol)getProtocol(EntityProtocol.class);
-		for (UUID otherClientUUID : connectedClients.keySet()) {
-			if (clientUUID.equals(otherClientUUID))
-				continue;
-			addPlayerProtocol.addEntity(otherClientUUID, clientUUID);
-			addPlayerProtocol.addEntity(clientUUID, otherClientUUID);
-		}
 		PPWorld world = platPorter.getWorld();
 		world.addEntity(new NetworkPlayerEntity(world, clientUUID));
 		
@@ -169,11 +156,23 @@ public class ServerNetworkManager extends NetworkManager {
 			return;
 		
 		client.setLastPingTime(uptime);
+		if (!client.isFullyConnected()) {
+			client.setFullyConnected();
+			ServerNetworkGameEvent connectEvent = new ServerNetworkGameEvent(this, ServerNetworkGameEvent.FULLY_CONNECTED, client);
+			platPorter.getEventManager().handleEvent(connectEvent);
+		}
+		
 		addPacketToSend(new S00PongPacket(), client.getClientUUID());
 	}
 
 	public void handlePositionPacket(C01PositionPacket positionPacket) {
 		UUID entityUUID = positionPacket.senderUUID;
+		
+		// Only update the position if the client is fully connected.
+		ClientConnection client = connectedClients.get(entityUUID);
+		if (client != null && !client.isFullyConnected())
+			return;
+		
 		float x = positionPacket.x;
 		float y = positionPacket.y;
 		EntityFacing facing = positionPacket.facing;
@@ -184,8 +183,7 @@ public class ServerNetworkManager extends NetworkManager {
 			addPacketToSend(new S01PositionPacket(entityUUID, x, y, facing), clientUUID);
 		}
 		
-		PPWorld world = platPorter.getWorld();
-		PPEntity entity = world.getEntity(entityUUID);
+		PPEntity entity = platPorter.getWorld().getEntity(entityUUID);
 		if (entity != null && facing != null)
 			entity.setPosition(x, y, facing);
 	}

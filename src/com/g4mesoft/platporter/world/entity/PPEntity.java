@@ -29,7 +29,7 @@ public abstract class PPEntity extends LivingEntity {
 	protected boolean inLaser;
 	
 	protected Vec2f velocity;
-	protected EntityFacing facing;
+	public EntityFacing facing;
 
 	protected Vec2f newPos;
 	protected boolean posUpdated;
@@ -55,6 +55,7 @@ public abstract class PPEntity extends LivingEntity {
 		if (posUpdated) {
 			body.move(newPos.x - pos.x, newPos.y - pos.y);
 			pos.set(newPos);
+			posUpdated = false;
 		}
 
 		velocity.x *= getHorizontalFriction();

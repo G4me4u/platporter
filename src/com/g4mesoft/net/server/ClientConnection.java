@@ -9,6 +9,7 @@ public class ClientConnection {
 	private final UUID clientUUID;
 	
 	private long lastPingTime;
+	private boolean fullyConnected;
 	
 	public ClientConnection(SocketAddress address, UUID clientUUID) {
 		this.address = address;
@@ -29,5 +30,13 @@ public class ClientConnection {
 	
 	public long getLastPingTime() {
 		return lastPingTime;
+	}
+
+	public void setFullyConnected() {
+		fullyConnected = true;
+	}
+	
+	public boolean isFullyConnected() {
+		return fullyConnected;
 	}
 }

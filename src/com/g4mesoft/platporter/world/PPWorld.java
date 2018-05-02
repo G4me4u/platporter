@@ -22,18 +22,12 @@ public class PPWorld extends World {
 	
 	protected final int[] tiles;
 	protected final byte[] data;
-
-	protected final int[] levelsTiles;
-	protected final byte[] levelsData;
 		
 	public PPWorld(PlatPorter platPorter) {
 		this.platPorter = platPorter;
 	
 		tiles = new int[WORLD_WIDTH * WORLD_HEIGHT];
 		data = new byte[WORLD_WIDTH * WORLD_HEIGHT];
-	
-		levelsTiles = new int[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
-		levelsData = new byte[WORLD_WIDTH * WORLD_HEIGHT * NUM_LEVELS];
 	}
 	
 	public boolean setData(int xt, int yt, byte data) {
@@ -134,7 +128,7 @@ public class PPWorld extends World {
 	public PPEntity getEntity(UUID entityUUID) {
 		if (entityUUID == null)
 			return null;
-		
+
 		for (Entity entity : entities) {
 			if (entity instanceof PPEntity) {
 				PPEntity ent = (PPEntity)entity;
