@@ -83,6 +83,7 @@ public abstract class PPEntity extends LivingEntity {
 		Tile centerTile = world.getTile(xc, yc);
 		wasInLaser = inLaser;
 		inLaser = centerTile instanceof BeamTile;
+		world.entityInsideTile(xc, yc, this);
 		
 		if (inLaser) {
 			EntityFacing laserFacing = ((BeamTile)centerTile).getFacing(world, xc, yc);

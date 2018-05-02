@@ -20,16 +20,14 @@ public class LeverTile extends Tile {
 		byte data = world.getData(xt, yt);
 		world.setData(xt, yt, (byte)(data ^= LEVER_ON_MASK));
 		
-		boolean on = (data & LEVER_ON_MASK) != 0;
-		
 		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x03;
 			int activateId1 = (activateId >>> 2) & 0x03;
-			world.activateTile(xt, yt, activateId0, on);
-			world.activateTile(xt, yt, activateId1, on);
+			world.activateTile(xt, yt, activateId0);
+			world.activateTile(xt, yt, activateId1);
 		} else {
-			world.activateTile(xt, yt, activateId, on);
+			world.activateTile(xt, yt, activateId);
 		}
 	}
 	

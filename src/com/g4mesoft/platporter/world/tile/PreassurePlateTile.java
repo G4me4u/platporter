@@ -23,7 +23,7 @@ public class PreassurePlateTile extends Tile {
 			return;
 		
 		world.setData(xt, yt, (byte)(data | ON_MASK));
-		activateTiles(world, xt, yt, data, true);
+		activateTiles(world, xt, yt, data);
 	}
 
 	@Override
@@ -36,18 +36,18 @@ public class PreassurePlateTile extends Tile {
 			return;
 		
 		world.setData(xt, yt, (byte)(data & (~ON_MASK)));
-		activateTiles(world, xt, yt, data, false);
+		activateTiles(world, xt, yt, data);
 	}
 	
-	private void activateTiles(PPWorld world, int xt, int yt, byte data, boolean state) {
+	private void activateTiles(PPWorld world, int xt, int yt, byte data) {
 		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x03;
 			int activateId1 = (activateId >>> 2) & 0x03;
-			world.activateTile(xt, yt, activateId0, state);
-			world.activateTile(xt, yt, activateId1, state);
+			world.activateTile(xt, yt, activateId0);
+			world.activateTile(xt, yt, activateId1);
 		} else {
-			world.activateTile(xt, yt, activateId, state);
+			world.activateTile(xt, yt, activateId);
 		}
 	}
 	

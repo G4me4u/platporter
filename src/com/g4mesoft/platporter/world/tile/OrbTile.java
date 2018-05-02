@@ -3,8 +3,19 @@ package com.g4mesoft.platporter.world.tile;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.platporter.world.PPWorld;
+import com.g4mesoft.platporter.world.entity.PPEntity;
 
 public class OrbTile extends Tile {
+	
+	private static final int ACTION_ID_MASK = 0x0F;
+	
+	@Override
+	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
+		if (world.isClient())
+			return;
+		
+		world.activateTile(0, 0, world.getData(xt, yt) & ACTION_ID_MASK);
+	}
 	
 	@Override
 	public void render(PPWorld world, Screen2D screen, int xt, int yt) {

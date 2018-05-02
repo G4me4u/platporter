@@ -230,7 +230,14 @@ public class ServerPPWorld extends PPWorld {
 	}
 	
 	@Override
-	public void activateTile(int xt, int yt, int activateId, boolean state) {
+	public void entityInsideTile(int xt, int yt, PPEntity entity) {
+		super.entityInsideTile(xt, yt, entity);
+		
+		getTile(xt, yt).entityInside(this, xt, yt, entity);
+	}
+	
+	@Override
+	public void activateTile(int xt, int yt, int activateId) {
 		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
 			return;
 

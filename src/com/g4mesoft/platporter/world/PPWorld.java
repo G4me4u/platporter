@@ -153,6 +153,9 @@ public class PPWorld extends World {
 	public void steppedOffTile(int xt, int yt, PPEntity entity) {
 	}
 	
+	public void entityInsideTile(int xt, int yt, PPEntity entity) {
+	}
+	
 	@Override
 	public boolean isClient() {
 		return platPorter.isClient();
@@ -172,6 +175,6 @@ public class PPWorld extends World {
 		}
 	}
 
-	public void activateTile(int xt, int yt, int actionId, boolean state) {
+	public void activateTile(int xt, int yt, int actionId) {
 	}
 }

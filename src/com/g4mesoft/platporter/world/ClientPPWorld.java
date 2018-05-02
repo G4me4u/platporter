@@ -110,11 +110,15 @@ public class ClientPPWorld extends PPWorld {
 	
 	@Override
 	public void steppedOnTile(int xt, int yt, PPEntity entity) {
+		super.steppedOnTile(xt, yt, entity);
+		
 		getTile(xt, yt).steppedOn(this, xt, yt, entity);
 	}
 
 	@Override
 	public void steppedOffTile(int xt, int yt, PPEntity entity) {
+		super.steppedOffTile(xt, yt, entity);
+
 		getTile(xt, yt).steppedOn(this, xt, yt, entity);
 	}
 }

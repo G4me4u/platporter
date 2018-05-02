@@ -49,6 +49,9 @@ public class Tile {
 	public void steppedOff(PPWorld world, int xt, int yt, PPEntity entity) {
 	}
 	
+	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
+	}
+	
 	public int getActivateId(PPWorld world, int xt, int yt) {
 		return -1;
 	}
