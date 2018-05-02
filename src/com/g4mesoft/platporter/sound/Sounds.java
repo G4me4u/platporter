@@ -30,6 +30,6 @@ public class Sounds {
 	
 	public static void playSound(int sound, float volume, float pitch) {
 		AudioSource audio = SoundManager.getInstance().playSound(JUMP_SOUND);
-		audio.setVolume(1.0f);
+		audio.setVolume(volume);
 	}
 }
