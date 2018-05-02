@@ -71,10 +71,7 @@ public class ServerPPWorld extends PPWorld {
 		eventManager.addEventListener(new ServerNetworkGameEventListener() {
 			@Override
 			public void clientDisconnected(ServerNetworkGameEvent event) { 
-				UUID clientUUID = event.getClient().getClientUUID();
-				removeEntity(clientUUID);
-				
-				entityProtocol.removeEntity(null, clientUUID);
+				removeEntity(event.getClient().getClientUUID());
 			}
 			
 			@Override
@@ -200,6 +197,15 @@ public class ServerPPWorld extends PPWorld {
 				entityProtocol.addEntity(clientUUID, ent.getUUID(), x, y, facing);
 			}
 		}
+	}
+	
+	@Override
+	public synchronized Entity removeEntity(Entity e) {
+		e = super.removeEntity(e);
+		
+		if (e instanceof PPEntity)
+			entityProtocol.removeEntity(null, ((PPEntity)e).getUUID());
+		return e;
 	}
 	
 	@Override
