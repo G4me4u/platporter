@@ -28,7 +28,7 @@ public abstract class PPEntity extends LivingEntity {
 	protected boolean wasInLaser;
 	protected boolean inLaser;
 	
-	protected Vec2f velocity;
+	public Vec2f velocity;
 	public EntityFacing facing;
 
 	protected Vec2f newPos;
