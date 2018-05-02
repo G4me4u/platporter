@@ -131,7 +131,7 @@ public class ServerPPWorld extends PPWorld {
 				if (id == 0xC8C8) {
 					int lx = x / LEVEL_SIZE;
 					int ly = y / LEVEL_SIZE;
-					int l = lx + ly * 2;
+					int l = lx + ly * LEVELS_X;
 					
 					numSpawnPoints[l]++;
 					if (spawnPoints[l] == null)
@@ -148,8 +148,8 @@ public class ServerPPWorld extends PPWorld {
 			if (numSpawnPoints[l] != 0) {
 				spawnPoints[l].div(numSpawnPoints[l]);
 			} else {
-				float xc = ((l % 2) + 0.5f) * LEVEL_SIZE;
-				float yc = ((l / 2) + 0.5f) * LEVEL_SIZE;
+				float xc = ((l % LEVELS_X) + 0.5f) * LEVEL_SIZE;
+				float yc = ((l / LEVELS_X) + 0.5f) * LEVEL_SIZE;
 				spawnPoints[l] = new Vec2f(xc, yc);
 			}
 		}
@@ -160,10 +160,7 @@ public class ServerPPWorld extends PPWorld {
 		float x = spawnPoints[index].x;
 		float y = spawnPoints[index].y;
 		EntityFacing facing = EntityFacing.RIGHT;
-		for (Entity ent : getEntityList()) {
-			if (ent instanceof PPEntity)
-				entityProtocol.setEntityPosition(null, ((PPEntity) ent).getUUID(), x, y, facing);
-		}
+		entityProtocol.setEntityPosition(null, ((PPEntity) entity).getUUID(), x, y, facing);
 	}
 	
 	@Override
@@ -233,12 +230,32 @@ public class ServerPPWorld extends PPWorld {
 	}
 	
 	@Override
-	public void activateTile(int activateId, boolean state) {
+	public void activateTile(int xt, int yt, int activateId, boolean state) {
 		if (activateId < 0 || activateId >= ACTIVATE_POOL_SIZE)
 			return;
-		
-		for (int yt = 0; yt < WORLD_HEIGHT; yt++) {
-			for (int xt = 0; xt < WORLD_WIDTH; xt++) {
+
+		int lx = xt / LEVEL_SIZE;
+		int ly = yt / LEVEL_SIZE;
+		if (lx < 0 || lx >= LEVELS_X)
+			return;
+		if (ly < 0 || ly >= LEVELS_Y)
+			return;
+
+		int y0 = ly * LEVEL_SIZE;
+
+		if (lx == 0 && ly == 0) {
+			activateTileRange(activateId, 0, y0, LEVEL_SIZE, y0 + LEVEL_SIZE);
+		} else {
+			for (int lxx = 0; lxx < LEVELS_X; lxx++) {
+				int x0 = lxx * LEVEL_SIZE;
+				activateTileRange(activateId, x0, y0, x0 + LEVEL_SIZE, y0 + LEVEL_SIZE);
+			}
+		}
+	}
+	
+	private void activateTileRange(int activateId, int xt0, int yt0, int xt1, int yt1) {
+		for (int yt = yt0; yt < yt1; yt++) {
+			for (int xt = xt0; xt < xt1; xt++) {
 				Tile tile = getTile(xt, yt);
 				int tileActivateId = tile.getActivateId(this, xt, yt);
 				if (tileActivateId == activateId)

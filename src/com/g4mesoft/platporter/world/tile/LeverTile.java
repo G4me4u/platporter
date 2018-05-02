@@ -26,10 +26,10 @@ public class LeverTile extends Tile {
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x03;
 			int activateId1 = (activateId >>> 2) & 0x03;
-			world.activateTile(activateId0, on);
-			world.activateTile(activateId1, on);
+			world.activateTile(xt, yt, activateId0, on);
+			world.activateTile(xt, yt, activateId1, on);
 		} else {
-			world.activateTile(activateId, on);
+			world.activateTile(xt, yt, activateId, on);
 		}
 	}
 	

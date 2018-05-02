@@ -16,7 +16,10 @@ public class PPWorld extends World {
 
 	public static final int WORLD_WIDTH = 34;
 	public static final int WORLD_HEIGHT = 136;
-	public static final int NUM_LEVELS = 16;
+	
+	public static final int LEVELS_X = 2;
+	public static final int LEVELS_Y = 8;
+	public static final int NUM_LEVELS = LEVELS_X * LEVELS_Y;
 	public static final int LEVEL_SIZE = 17;
 	
 	public final PlatPorter platPorter;
@@ -169,6 +172,6 @@ public class PPWorld extends World {
 		}
 	}
 
-	public void activateTile(int actionId, boolean state) {
+	public void activateTile(int xt, int yt, int actionId, boolean state) {
 	}
 }
