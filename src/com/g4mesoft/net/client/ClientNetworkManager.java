@@ -31,6 +31,7 @@ public class ClientNetworkManager extends NetworkManager {
 	
 	private boolean connected;
 	private boolean handshaking;
+	private boolean fullyConnected;
 	
 	private long lastServerPong;
 	
@@ -42,6 +43,7 @@ public class ClientNetworkManager extends NetworkManager {
 		this.serverAddress = serverAddress;
 		
 		connected = false;
+		fullyConnected = false;
 		socket.connect(serverAddress);
 
 		handshaking = true;
@@ -62,6 +64,7 @@ public class ClientNetworkManager extends NetworkManager {
 		serverAddress = null;
 		connected = false;
 		handshaking = false;
+		fullyConnected = false;
 
 		if (socket.isConnected())
 			socket.disconnect();
@@ -124,8 +127,14 @@ public class ClientNetworkManager extends NetworkManager {
 	}
 
 	public void processPong(S00PongPacket pongPacket) {
-		if (connected)
+		if (connected) {
 			lastServerPong = uptime;
+			if (!fullyConnected) {
+				fullyConnected = true;
+				GameEventManager eventManager = platPorter.getEventManager();
+				eventManager.handleEvent(new ClientNetworkGameEvent(this, ClientNetworkGameEvent.FULLY_CONNECTED));
+			}
+		}
 	}
 
 	public void handlePositionPacket(S01PositionPacket positionPacket) {

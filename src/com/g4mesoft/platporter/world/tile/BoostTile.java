@@ -2,6 +2,7 @@ package com.g4mesoft.platporter.world.tile;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 
@@ -12,8 +13,13 @@ public class BoostTile extends Tile {
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
+		if (!world.isClient())
+			return;
+		
 		float gain = ((world.getData(xt, yt) & BOOST_GAIN_MASK) >>> 1) * 0.5f + 1.0f;
-		entity.velocity.y = -0.62f * gain;
+		entity.velocity.y = -0.71f * gain;
+		
+		Sounds.playSound(Sounds.BOOST_TILE_SOUND, 1.0f);
 	}
 	
 	@Override

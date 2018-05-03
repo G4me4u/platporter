@@ -2,6 +2,7 @@ package com.g4mesoft.platporter.world.tile;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.ServerPPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
@@ -11,19 +12,11 @@ public class StageEnterTile extends Tile {
 	private static final int LEVEL_INDEX_MASK = 0x1F;
 	
 	@Override
-	public boolean hasHitbox(PPWorld world, int xt, int yt) {
-		return false;
-	}
-	
-	@Override
-	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
-		return true;
-	}
-	
-	@Override
 	public void interactWith(PPWorld world, int xt, int yt, PPEntity entity) {
-		if (world.isClient())
+		if (world.isClient()) {
+			Sounds.playSound(Sounds.LEVEL_ENTER_SOUND, 1.0f);
 			return;
+		}
 		
 		((ServerPPWorld)world).loadLevel(entity, world.getData(xt, yt) & LEVEL_INDEX_MASK);
 	}
@@ -46,5 +39,15 @@ public class StageEnterTile extends Tile {
 		}
 		
 		screen.drawSprite(xt * 8, yt * 8, sx, sy, ColorPalette.getColors(111, 333, 555, -1));
+	}
+	
+	@Override
+	public boolean hasHitbox(PPWorld world, int xt, int yt) {
+		return false;
+	}
+	
+	@Override
+	public boolean isBackgroundLayer(PPWorld world, int xt, int yt) {
+		return true;
 	}
 }

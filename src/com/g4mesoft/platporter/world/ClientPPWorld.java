@@ -3,11 +3,15 @@ package com.g4mesoft.platporter.world;
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
 import com.g4mesoft.net.WorldProtocol;
+import com.g4mesoft.net.client.ClientNetworkGameEvent;
+import com.g4mesoft.net.client.ClientNetworkGameEventListener;
 import com.g4mesoft.net.client.ClientNetworkManager;
 import com.g4mesoft.platporter.PlatPorter;
 import com.g4mesoft.platporter.input.KeyManager;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.platporter.world.tile.Tile;
+import com.g4mesoft.util.GameEventManager;
 import com.g4mesoft.world.entity.Entity;
 import com.g4mesoft.world.phys.AABB;
 
@@ -26,6 +30,27 @@ public class ClientPPWorld extends PPWorld {
 		
 		client = (ClientNetworkManager)platPorter.getNetworkManager();
 		worldProtocol = (WorldProtocol)client.getProtocol(WorldProtocol.class);
+	
+		handleEvents();
+	}
+	
+	private void handleEvents() {
+		GameEventManager eventManager = platPorter.getEventManager();
+		
+		eventManager.addEventListener(new ClientNetworkGameEventListener() {
+			@Override
+			public void clientFullyConnected(ClientNetworkGameEvent event) {
+				Sounds.playSound(Sounds.WORLD_ENTER_SOUND, 1.0f);
+			}
+			
+			@Override
+			public void clientDisconnected(ClientNetworkGameEvent event) {
+			}
+			
+			@Override
+			public void clientConnected(ClientNetworkGameEvent event) {
+			}
+		});
 	}
 	
 	@Override
@@ -102,6 +127,8 @@ public class ClientPPWorld extends PPWorld {
 	@Override
 	public void interactWithTile(int xt, int yt, PPEntity entity) {
 		super.interactWithTile(xt, yt, entity);
+		
+		getTile(xt, yt).interactWith(this, xt, yt, entity);
 
 		ClientNetworkManager client = (ClientNetworkManager)platPorter.getNetworkManager();
 		if (client.getConnectionUUID().equals(entity.getUUID()))
@@ -119,6 +146,13 @@ public class ClientPPWorld extends PPWorld {
 	public void steppedOffTile(int xt, int yt, PPEntity entity) {
 		super.steppedOffTile(xt, yt, entity);
 
-		getTile(xt, yt).steppedOn(this, xt, yt, entity);
+		getTile(xt, yt).steppedOff(this, xt, yt, entity);
+	}
+
+	@Override
+	public void entityInsideTile(int xt, int yt, PPEntity entity) {
+		super.entityInsideTile(xt, yt, entity);
+
+		getTile(xt, yt).entityInside(this, xt, yt, entity);
 	}
 }

@@ -158,6 +158,9 @@ public class PPWorld extends World {
 	public void entityInsideTile(int xt, int yt, PPEntity entity) {
 	}
 	
+	public void activateTile(int xt, int yt, int actionId) {
+	}
+	
 	@Override
 	public boolean isClient() {
 		return platPorter.isClient();
@@ -175,9 +178,6 @@ public class PPWorld extends World {
 			setTileIndex(xt, yt, tiles[i]);
 			setData(xt, yt, data[i]);
 		}
-	}
-
-	public void activateTile(int xt, int yt, int actionId) {
 	}
 
 	public List<PPEntity> getPPEntities() {

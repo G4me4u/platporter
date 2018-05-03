@@ -2,6 +2,7 @@ package com.g4mesoft.platporter.world.tile;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
 import com.g4mesoft.world.phys.AABB;
@@ -15,8 +16,10 @@ public class PreassurePlateTile extends Tile {
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
-		if (world.isClient())
+		if (world.isClient()) {
+			Sounds.playSound(Sounds.PRESSURE_PLATE_SOUND, 1.0f, 0.9f + (float)Math.random() * 0.2f);
 			return;
+		}
 		
 		byte data = world.getData(xt, yt);
 		if ((data & ON_MASK) != 0)

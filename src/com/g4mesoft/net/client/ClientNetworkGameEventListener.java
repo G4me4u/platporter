@@ -19,10 +19,15 @@ public abstract class ClientNetworkGameEventListener extends GameEventListener {
 		case ClientNetworkGameEvent.CONNECTED:
 			clientConnected(networkEvent);
 			break;
+		case ClientNetworkGameEvent.FULLY_CONNECTED:
+			clientFullyConnected(networkEvent);
+			break;
 		}
 	}
 	
 	public abstract void clientDisconnected(ClientNetworkGameEvent event);
 
 	public abstract void clientConnected(ClientNetworkGameEvent event);
+
+	public abstract void clientFullyConnected(ClientNetworkGameEvent event);
 }

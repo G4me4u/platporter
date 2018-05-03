@@ -2,6 +2,7 @@ package com.g4mesoft.platporter.world.tile;
 
 import com.g4mesoft.graphics.ColorPalette;
 import com.g4mesoft.graphics.Screen2D;
+import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.ServerPPWorld;
 import com.g4mesoft.platporter.world.entity.PPEntity;
@@ -13,11 +14,18 @@ public class OrbTile extends Tile {
 	
 	@Override
 	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
-		if (world.isClient())
-			return;
-		
 		byte data = world.getData(xt, yt);
 		world.setTile(xt, yt, STAGE_ENTER_TILE);
+
+		if (world.isClient()) {
+			if ((data & WIN_MASK) != 0) {
+				Sounds.playSound(Sounds.GAME_WON_SOUND, 1.0f);
+			} else {
+				Sounds.playSound(Sounds.LEVEL_WON_SOUND, 1.0f);
+			}
+			return;
+		}
+		
 		if ((data & WIN_MASK) != 0) {
 			world.setData(xt, yt, (byte)PPWorld.WIN_LEVEL);
 			
