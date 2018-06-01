@@ -11,8 +11,8 @@ public class PreassurePlateTile extends Tile {
 
 	private static final int ON_MASK = 0x01;
 	
-	private static final int ACTIVATE_ID_MASK = 0x78;
-	private static final int MULTI_ACTIVATE_MASK = 0x80;
+	private static final int MULTI_ACTIVATE_MASK = 0x08;
+	private static final int ACTIVATE_ID_MASK = 0xF0;
 	
 	@Override
 	public void steppedOn(PPWorld world, int xt, int yt, PPEntity entity) {
@@ -43,7 +43,7 @@ public class PreassurePlateTile extends Tile {
 	}
 	
 	private void activateTiles(PPWorld world, int xt, int yt, byte data) {
-		int activateId = (data & ACTIVATE_ID_MASK) >>> 3;
+		int activateId = (data & ACTIVATE_ID_MASK) >>> 4;
 		if ((data & MULTI_ACTIVATE_MASK) != 0) {
 			int activateId0 = (activateId >>> 0) & 0x03;
 			int activateId1 = (activateId >>> 2) & 0x03;
