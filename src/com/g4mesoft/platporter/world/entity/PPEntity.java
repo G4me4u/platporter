@@ -86,6 +86,7 @@ public abstract class PPEntity extends LivingEntity {
 		world.entityInsideTile(xc, yc, this);
 		
 		if (inLaser) {
+			onLadder = true;
 			EntityFacing laserFacing = ((BeamTile)centerTile).getFacing(world, xc, yc);
 			switch (laserFacing) {
 			case UP:
