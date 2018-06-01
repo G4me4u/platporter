@@ -9,8 +9,8 @@ import com.g4mesoft.platporter.world.entity.PPEntity;
 
 public class OrbTile extends Tile {
 	
-	private static final int ACTION_ID_MASK = 0x0F;
-	private static final int WIN_MASK = 0x10;
+	private static final int ACTION_ID_MASK = 0xF0;
+	private static final int WIN_MASK = 0x01;
 	
 	@Override
 	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
