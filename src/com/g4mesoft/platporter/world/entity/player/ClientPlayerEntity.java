@@ -35,6 +35,8 @@ public class ClientPlayerEntity extends PlayerEntity {
 				velocity.y = 0.0f;
 			}
 		} else {
+			if (wasOnLadder && KeyManager.KEY_UP.isPressed())
+				velocity.y -= 0.15f;
 			if (KeyManager.KEY_UP.isPressed() && onGround) {
 				velocity.y = -0.5f;
 				velocity.x *= 1.5f;
