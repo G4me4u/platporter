@@ -27,12 +27,11 @@ public class ClientPlayerEntity extends PlayerEntity {
 		}
 		
 		if (onLadder) {
-			if (inLaser) {
-			} else if (KeyManager.KEY_UP.isPressed()) {
+			if (KeyManager.KEY_UP.isPressed()) {
 				velocity.y -= 0.025f;
 			} else if (KeyManager.KEY_DOWN.isPressed()) {
 				velocity.y += 0.025f;
-			} else {
+			} else if (!inLaser) {
 				velocity.y = 0.0f;
 			}
 		} else {
