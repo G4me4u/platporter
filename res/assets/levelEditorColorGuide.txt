@@ -12,46 +12,50 @@ Ladder Tile:
 	- Base color: FF7F00
 Door Tile:
 	- Base color: C61C00
-	- Open/Close bit: 0x01 (1st bit)
-	- Mirror bit: 0x02 (2nd bit)
-	- ID bits: 0xF0 (5th, 6th, 7th, and 8th bit)
+	- Open/Close bit: 0x01 (1st bit) (1)
+	- Mirror bit: 0x02 (2nd bit) (2)
+	- ID bits: 0xF0 (5th, 6th, 7th, and 8th bit) (240)
 Lever Tile:
 	- Base color: 90FF00
-	- Turn on bit: 0x01 (1st bit)
-	- On wall bit: 0x02 (2nd bit)
-	- Opposite wall bit: 0x04 (3th bit)
-	- Multiple connections bit: 0x80 (8th bit)
-	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
+	- Turn on bit: 0x01 (1st bit) (1)
+	- On wall bit: 0x02 (2nd bit) (2)
+	- Opposite wall bit: 0x04 (3th bit) (4)
+	- Multiple connections bit: 0x08 (4th bit) (8)
+	- ID bits 0xF0 (5th, 6th, 7th and 8th bit) (240)
 Preasure plate Tile:
 	- Base color: 00FF00
-	- Turn on bit: 0x01 (1st bit)
-	- Multiple connections bit: 0x80 (8th bit)
-	- ID bits 0x78 (7th, 6th, 5th and 4th bit)
+	- Turn on bit: 0x01 (1st bit) (1)
+	- Multiple connections bit: 0x08 (4th bit) (8)
+	- ID bits 0xF0 (5th, 6th, 7th and 8th bit) (240)
 Platform Tile:
 	- Base color: CF54
-	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
-	- Y-offset (in sprite sheet): 0x08 | 0x04 (3rd and 4th bit) (0x0C)
-	- Mirror y-axis bit: 0x10 (5th bit)
-	- Mirror x-axis bit: 0x20 (6th bit)
+	- X-offset (in sprite sheet): 0x03 (1st and 2nd bit) (3)
+	- Y-offset (in sprite sheet): 0x0C (3rd and 4th bit) (12)
+	- Mirror y-axis bit: 0x10 (5th bit) (16)
+	- Mirror x-axis bit: 0x20 (6th bit) (32)
 Orb Tile:
 	- Base color: 002600
-	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
-Change level Tile:
+	- Won the game bit: 0x01 (Collecting a orb with this bit turned on sends you to a the "Secret" game won level) (1)
+	- End of level nr x bit: 0xF0 (5th, 6th, 7th and 8th bit) (should be the same as the id for the door en level select this tile shall toggle, remember triggering a door toggels it, not sets it to open) (240)
+Enter level Tile:
 	- Base color: 7F7F
-	- X-offset (in sprite sheet): 0x02 | 0x01 (1st and 2nd bit) (0x03)
+	- Level ID bits: 0x1F (1st, 2nd, 3rd, 4th and 5th bit) (31)
 Beam Stand Tile (when using, always fit with the one that has flipped bit two (| 0x02)):
 	- Base color: 461F00
-	- On wall bit: 0x01 (1st bit)
-	- Mirror stand bit: 0x02 (2nd bit)
-	- Mirror beam dir bit: 0x04 (3rd bit)
-	- Beam animation time offset bit: 0x10 |0x08 (4th and 5th bit) (0x24)
+	- On wall bit: 0x01 (1st bit) (1)
+	- Mirror stand bit: 0x02 (2nd bit) (2)
+	- Mirror beam dir bit: 0x04 (3rd bit) (4)
+	- Beam animation time offset bit: 0x18 (4th and 5th bit) (24)
 Beam Laser Tile:
 	- Base color: 434E00
-	- Horizontal bit: 0x01 (1st bit)
-	- Animation time offset bit: 0x02 | 0x04 (2nd and 3rd bit) (0x06)
-	- Opposite flow dir bit: 0x08 (4th bit)
+	- Horizontal bit: 0x01 (1st bit) (1)
+	- Animation time offset bit: 0x06 (2nd and 3rd bit) (6)
+	- Opposite flow dir bit: 0x08 (4th bit) (8)
 Boost Tile:
 	- Base color: 123400
-	- sprite wariant bit: 0x01 (1st bit)
-	- boost amount bits: 0x02 | 0x04 | 0x08 (2nd, 3rd and 4th bit) (0x0E)
+	- Sprite wariant bit: 0x01 (1st bit) (1)
+	- Boost amount bits: 0x06 (2nd and 3rd) (6)
+	- Turn off bit: 0x08 (4th bit) (8)
+	- ID Bits: 0xF0 (5th, 6th, 7th and 8th bit) (240)
+	
 	
