@@ -14,13 +14,14 @@ Door Tile:
 	- Base color: C61C00
 	- Open/Close bit: 0x01 (1st bit) (1)
 	- Mirror bit: 0x02 (2nd bit) (2)
+	- Requires multiple activations: 0x04 (3rd bit) (4)
 	- ID bits: 0xF0 (5th, 6th, 7th, and 8th bit) (240)
 Lever Tile:
 	- Base color: 90FF00
 	- Turn on bit: 0x01 (1st bit) (1)
 	- On wall bit: 0x02 (2nd bit) (2)
 	- Opposite wall bit: 0x04 (3th bit) (4)
-	- Multiple connections bit: 0x08 (4th bit) (8)
+	- Multiple connections bit: 0x08 (4th bit) (8) (If this is on there are two sets of id, the pari bit 5 and 6, and the pair bit 7 and 8)
 	- ID bits 0xF0 (5th, 6th, 7th and 8th bit) (240)
 Preasure plate Tile:
 	- Base color: 00FF00
@@ -36,7 +37,8 @@ Platform Tile:
 Orb Tile:
 	- Base color: 002600
 	- Won the game bit: 0x01 (Collecting a orb with this bit turned on sends you to a the "Secret" game won level) (1)
-	- End of level nr x bit: 0xF0 (5th, 6th, 7th and 8th bit) (should be the same as the id for the door en level select this tile shall toggle, remember triggering a door toggels it, not sets it to open) (240)
+	- Contains Door bit: 0x02 (Turning on this bit makes the orb not spawn a door when collected) (2)
+	- End of level nr x bit: 0xF0 (5th, 6th, 7th and 8th bit) (should be the same as the id for the door in level select this tile shall toggle, remember triggering a door toggels it, not sets it to open) (240)
 Enter level Tile:
 	- Base color: 7F7F
 	- Level ID bits: 0x1F (1st, 2nd, 3rd, 4th and 5th bit) (31)
