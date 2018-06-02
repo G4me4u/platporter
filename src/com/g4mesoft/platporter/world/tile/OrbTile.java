@@ -9,14 +9,19 @@ import com.g4mesoft.platporter.world.entity.PPEntity;
 
 public class OrbTile extends Tile {
 	
-	private static final int ACTION_ID_MASK = 0xF0;
 	private static final int WIN_MASK = 0x01;
+	private static final int HAS_DOOR_INSIDE_MASK = 0x02;
+	private static final int ACTION_ID_MASK = 0xF0;
 	
 	@Override
 	public void entityInside(PPWorld world, int xt, int yt, PPEntity entity) {
 		byte data = world.getData(xt, yt);
-		world.setTile(xt, yt, STAGE_ENTER_TILE);
-
+		if (((data & HAS_DOOR_INSIDE_MASK) != 0))
+			world.setTile(xt, yt, AIR_TILE);
+		else {
+			world.setTile(xt, yt, STAGE_ENTER_TILE);
+		}
+		
 		if (world.isClient()) {
 			if ((data & WIN_MASK) != 0) {
 				Sounds.playSound(Sounds.GAME_WON_SOUND, 1.0f);
