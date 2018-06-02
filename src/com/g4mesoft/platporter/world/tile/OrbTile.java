@@ -32,7 +32,7 @@ public class OrbTile extends Tile {
 			for (PPEntity ent : world.getPPEntities())
 				((ServerPPWorld)world).loadLevel(ent, PPWorld.WIN_LEVEL);
 		} else {
-			int actionId = data & ACTION_ID_MASK;
+			int actionId = (data & ACTION_ID_MASK) >>> 4;
 			world.activateTile(0, 0, actionId);
 			((ServerPPWorld)world).loadLevel(entity, 0);
 		}
