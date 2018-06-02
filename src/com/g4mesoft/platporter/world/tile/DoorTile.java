@@ -9,13 +9,17 @@ public class DoorTile extends Tile {
 
 	private static final int OPEN_MASK = 0x01;
 	private static final int FLIP_X_MASK = 0x02;
+	private static final int MULTIPLE_ACTIVATIONS_MASK = 0x04;
 	
 	private static final int ACTIVATE_ID_MASK = 0xF0;
 	
 	@Override
 	public void toggleActivate(PPWorld world, int xt, int yt) {
 		byte data = world.getData(xt, yt);
-		world.setData(xt, yt, (byte)(data ^ OPEN_MASK));
+		if ((data & MULTIPLE_ACTIVATIONS_MASK) != 0)
+			world.setData(xt, yt, (byte)(data ^ MULTIPLE_ACTIVATIONS_MASK));
+		else
+			world.setData(xt, yt, (byte)(data ^ OPEN_MASK));
 	}
 	
 	@Override
