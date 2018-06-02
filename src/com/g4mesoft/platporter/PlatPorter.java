@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Map;
 
 import com.g4mesoft.Application;
 import com.g4mesoft.graphic.Renderer2D;
@@ -19,6 +22,7 @@ import com.g4mesoft.platporter.sound.Sounds;
 import com.g4mesoft.platporter.world.ClientPPWorld;
 import com.g4mesoft.platporter.world.PPWorld;
 import com.g4mesoft.platporter.world.ServerPPWorld;
+import com.g4mesoft.util.FileUtil;
 import com.g4mesoft.util.GameEventManager;
 import com.g4mesoft.util.ScheduledTaskManager;
 
@@ -26,6 +30,7 @@ public class PlatPorter extends Application {
 
 	private static final String CLIENT_DISPLAY_CONFIG = "/config/display_client.txt";
 	private static final String SERVER_DISPLAY_CONFIG = "/config/display_server.txt";
+	private static final File IP_CONFIG = new File("res/config/ip_config.txt");
 	
 	private static final int SIZE = 128;
 	private static final int BORDER = 2;
@@ -64,11 +69,17 @@ public class PlatPorter extends Application {
 		eventManager = new GameEventManager();
 		
 		setMinimumFps(120);
+		Map<String, String> IPConfig = null;
+		try {
+			IPConfig = FileUtil.readConfigFile(IP_CONFIG, "=");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		if (client) {
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress("10.64.193.197", 25565));
+				clientNetworkManager.connect(new InetSocketAddress(IPConfig.get("ip"), Integer.valueOf(IPConfig.get("port"))));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
@@ -79,7 +90,7 @@ public class PlatPorter extends Application {
 			Sounds.loadAllSounds();
 		} else {
 			try {
-				networkManager = new ServerNetworkManager(25565, this);
+				networkManager = new ServerNetworkManager(Integer.valueOf(IPConfig.get("port")), this);
 			} catch (SocketException se) {
 				se.printStackTrace();
 			}
