@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class PlatPorter extends Application {
 
 	private static final String CLIENT_DISPLAY_CONFIG = "/config/display_client.txt";
 	private static final String SERVER_DISPLAY_CONFIG = "/config/display_server.txt";
-	private static final File IP_CONFIG = new File("res/config/ip_config.txt");
+	private static final String IP_CONFIG = "/config/ip_config.txt";
 	
 	private static final int SIZE = 128;
 	private static final int BORDER = 2;
@@ -69,17 +70,31 @@ public class PlatPorter extends Application {
 		eventManager = new GameEventManager();
 		
 		setMinimumFps(120);
-		Map<String, String> IPConfig = null;
+		
+		Map<String, String> ipConfig = null;
+		Reader ipConfigReader = null;
 		try {
-			IPConfig = FileUtil.readConfigFile(IP_CONFIG, "=");
+			ipConfigReader = new InputStreamReader(PlatPorter.class.getResourceAsStream(IP_CONFIG));
+			ipConfig = FileUtil.readConfigFile(ipConfigReader, "=");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new RuntimeException("IP Config file not found: " + IP_CONFIG, e);
+		} finally {
+			if (ipConfigReader != null) {
+				try {
+					ipConfigReader.close();
+				} catch (IOException e) {
+					// Nothing can be done here
+				}
+			}
 		}
 		
 		if (client) {
+			if (!ipConfig.containsKey("ip") || !ipConfig.containsKey("port"))
+				throw new RuntimeException(IP_CONFIG + " does not contain both ip and port parameters!");
+			
 			try {
 				ClientNetworkManager clientNetworkManager = new ClientNetworkManager(this);
-				clientNetworkManager.connect(new InetSocketAddress(IPConfig.get("ip"), Integer.valueOf(IPConfig.get("port"))));
+				clientNetworkManager.connect(new InetSocketAddress(ipConfig.get("ip"), Integer.valueOf(ipConfig.get("port"))));
 				networkManager = clientNetworkManager;
 			} catch (SocketException se) {
 				se.printStackTrace();
@@ -89,8 +104,11 @@ public class PlatPorter extends Application {
 			
 			Sounds.loadAllSounds();
 		} else {
+			if (!ipConfig.containsKey("port"))
+				throw new RuntimeException(IP_CONFIG + " does not contain port parameter!");
+			
 			try {
-				networkManager = new ServerNetworkManager(Integer.valueOf(IPConfig.get("port")), this);
+				networkManager = new ServerNetworkManager(Integer.valueOf(ipConfig.get("port")), this);
 			} catch (SocketException se) {
 				se.printStackTrace();
 			}
