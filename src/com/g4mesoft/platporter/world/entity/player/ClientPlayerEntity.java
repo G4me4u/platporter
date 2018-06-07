@@ -58,9 +58,9 @@ public class ClientPlayerEntity extends PlayerEntity {
 		if (KeyManager.KEY_INTERACT.isClicked()) {
 			int xi;
 			if (facing == EntityFacing.LEFT) {
-				xi = (int)(body.x0 - 0.25f);
+				xi = (int)(body.x0 - 0.24f);
 			} else {
-				xi = (int)(body.x1 + 0.25f);
+				xi = (int)(body.x1 + 0.24f);
 			}
 			int yi = (int)(body.y0 + body.y1) >>> 1;
 			
